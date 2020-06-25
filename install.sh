@@ -315,7 +315,7 @@ dns_check(){
         output ""
         output "The entered domain does not resolve to the primary public IP of this server."
         output "Please make an A record pointing to your server's IP. For example, if you make an A record called 'panel' pointing to your server's IP, your FQDN is panel.domain.tld"
-        output "If you are using CloudFlare, please disable the orange cloud."
+        output "If you are using Cloudflare, please disable the orange cloud."
         output "If you do not have a domain, you can get a free one at https://freenom.com"
         dns_check
     else 
