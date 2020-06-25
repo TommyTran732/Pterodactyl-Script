@@ -79,11 +79,11 @@ preflight(){
         output ""
     fi
 
-    output "Kernel Detection Initialized."
+    output "Kernel detection initialized..."
     if echo $(uname -r) | grep -q xxxx; then
-        output "OVH kernel detected. The script will not work. Please reinstall your server using a generic/distribution kernel."
+        output "OVH kernel detected. This script will not work. Please reinstall your server using a generic/distribution kernel."
         output "When you are reinstalling your server, click on 'custom installation' and click on 'use distribution' kernel after that."
-        output "You might also want to do custom partritioning, remove the /home partrition and give / all the remaining space."
+        output "You might also want to do custom partitioning, remove the /home partition and give / all the remaining space."
         output "Please do not hesitate to contact us if you need help regarding this issue."
         exit 6
     elif echo $(uname -r) | grep -q pve; then
@@ -125,7 +125,7 @@ os_check(){
         fi
     elif [ "$lsb_dist" = "debian" ]; then
         if [ "$dist_version" != "10" ] &&[ "$dist_version" != "9" ]; then
-            output "Unsupported Debian version. Only Debian 10, and 9 are supported."
+            output "Unsupported Debian version. Only Debian 10 and 9 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
@@ -147,7 +147,7 @@ os_check(){
         output "Unsupported operating system."
         output ""
         output "Supported OS:"
-        output "Ubuntu: 20.04 18.04, 16.04"
+        output "Ubuntu: 20.04, 18.04, 16.04"
         output "Debian: 10, 9"
         output "Fedora: 32, 31"
         output "CentOS: 8, 7"
@@ -258,7 +258,7 @@ theme_options() {
     read choice
     case $choice in
         1 ) themeoption=1
-            output "You have selected to install vanilla Pterodactyl theme."
+            output "You have selected to install the vanilla Pterodactyl theme."
             output ""
             ;;
         2 ) themeoption=2
@@ -293,7 +293,7 @@ theme_options() {
             output "You have selected to install Fonix's Nothing But Graphite theme."
             output ""
             ;;   
-        * ) output "You did not enter a a valid selection."
+        * ) output "You did not enter a valid selection."
             theme_options
     esac
 }   
@@ -308,7 +308,7 @@ dns_check(){
     output "Please enter your FQDN (panel.domain.tld):"
     read FQDN
     
-    output "Resolving DNS."
+    output "Resolving DNS..."
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
     DOMAIN_RECORD=$(dig +short ${FQDN})
     if [ "${SERVER_IP}" != "${DOMAIN_RECORD}" ]; then
@@ -324,7 +324,7 @@ dns_check(){
 }
 
 theme() {
-    output "Theme installation initialized."
+    output "Theme installation initialized..."
     cd /var/www/pterodactyl
     if [ "$themeoption" = "1" ]; then
         output "Keeping Pterodactyl's vanilla theme."
@@ -350,7 +350,7 @@ theme() {
 }
 
 repositories_setup(){
-    output "Configuring your repositories."
+    output "Configuring your repositories..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install sudo
         apt-get -y install software-properties-common dnsutils gpg-agent
@@ -455,7 +455,7 @@ EOF
 }
 
 install_dependencies(){
-    output "Installing dependencies."
+    output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         if [ "$webserver" = "1" ]; then
             apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server nginx git wget expect
@@ -485,7 +485,7 @@ install_dependencies(){
         fi    
     fi
 
-    output "Enabling Services."
+    output "Enabling Services..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable redis-server
         service redis-server start
@@ -554,7 +554,7 @@ install_pterodactyl() {
 		output 'File my.cnf was not found! Please contact support.'
 	fi
     
-    output "Downloading Pterodactyl."
+    output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
     curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.17/panel.tar.gz
@@ -1060,7 +1060,7 @@ install_standalone_sftp(){
        output "You may have purposely set the SFTP to true which will cause this to fail."
     fi
     service wings restart
-    output "Installing standalone SFTP server."
+    output "Installing standalone SFTP server..."
     curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.4/sftp-server
     chmod +x sftp-server
     bash -c 'cat > /etc/systemd/system/pterosftp.service' <<-'EOF'
@@ -1254,7 +1254,7 @@ firewall(){
     curl -sSL https://raw.githubusercontent.com/tommytran732/Anti-DDOS-Iptables/master/iptables-no-prompt.sh | sudo bash
     block_icmp
     javapipe_kernel
-    output "Setting up Fail2Ban"
+    output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
     elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
@@ -1428,7 +1428,7 @@ broadcast(){
     output ""
     output "All unnecessary ports are blocked by default."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        output "Use 'ufw allow <port>' to enable your desired ports"
+        output "Use 'ufw allow <port>' to enable your desired ports."
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] && [ "$dist_version" != "8" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
