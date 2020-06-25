@@ -11,13 +11,13 @@ warn(){
 version=v1.0
 
 preflight(){
-    output "Pterodactyl Installation & Upgrade script ${version}"
+    output "Pterodactyl Installation & Upgrade Script ${version}"
     output "Copyright © 2020 Thien Tran <contact@thientran.io>."
     output "Please join my Discord for community support: https://thientran.io/discord"
     output ""
 
     output "Please note that this script is meant to be installed on a fresh OS. Installing it on a non-fresh OS may cause problems."
-    output "Automatic Operating System Detection initialized."
+    output "Automatic operating system detection initialized..."
 
     os_check
 
@@ -26,7 +26,7 @@ preflight(){
         exit 3
     fi
 
-    output "Automatic Architecture Detection initialized."
+    output "Automatic architecture detection initialized..."
     MACHINE_TYPE=`uname -m`
     if [ ${MACHINE_TYPE} == 'x86_64' ]; then
         output "64-bit server detected! Good to go."
@@ -36,7 +36,7 @@ preflight(){
         exit 4
     fi
 
-    output "Automatic Virtualization Detection initialized."
+    output "Automatic virtualization detection initialized..."
     if [ "$lsb_dist" =  "ubuntu" ]; then
         apt-get update --fix-missing
         apt-get -y install software-properties-common
@@ -57,15 +57,15 @@ preflight(){
         output "Virtualization: Xen-HVM detected."
     elif [ "$virt_serv" = "xen xen-hvm aws" ]; then
         output "Virtualization: Xen-HVM on AWS detected."
-        warn "When doing allocation for the node, please use the internal ip as Google Cloud uses NAT."
-        warn "Resuming in 10 seconds."
+        warn "When creating allocations for this node, please use the internal IP as Google Cloud uses NAT routing."
+        warn "Resuming in 10 seconds..."
         sleep 10
     else
         output "Virtualization: $virt_serv detected."
     fi
     output ""
     if [ "$virt_serv" != "" ] && [ "$virt_serv" != "kvm" ] && [ "$virt_serv" != "vmware" ] && [ "$virt_serv" != "hyperv" ] && [ "$virt_serv" != "openvz lxc" ] && [ "$virt_serv" != "xen xen-hvm" ] && [ "$virt_serv" != "xen xen-hvm aws" ]; then
-        warn "Unsupported Virtualization method. Please consult with your provider whether your server can run Docker or not. Proceed at your own risk."
+        warn "Unsupported type of virtualization detected. Please consult with your hosting provider whether your server can run Docker or not. Proceed at your own risk."
         warn "No support would be given if your server breaks at any point in the future."
         warn "Proceed?\n[1] Yes.\n[2] No."
         read choice
@@ -81,13 +81,13 @@ preflight(){
 
     output "Kernel Detection Initialized."
     if echo $(uname -r) | grep -q xxxx; then
-        output "OVH Kernel Detected. The script will not work. Please install your server with a generic/distribution kernel."
+        output "OVH kernel detected. The script will not work. Please reinstall your server using a generic/distribution kernel."
         output "When you are reinstalling your server, click on 'custom installation' and click on 'use distribution' kernel after that."
         output "You might also want to do custom partritioning, remove the /home partrition and give / all the remaining space."
         output "Please do not hesitate to contact us if you need help regarding this issue."
         exit 6
     elif echo $(uname -r) | grep -q pve; then
-        output "Proxmox LXE Kernel Detected. You have chosen to continue in the last step, therefore we are proceeding at your own risk."
+        output "Proxmox LXE kernel detected. You have chosen to continue in the last step, therefore we are proceeding at your own risk."
         output "Proceeding with a risky operation..."
     elif echo $(uname -r) | grep -q stab; then
         if echo $(uname -r) | grep -q 2.6; then 
@@ -95,14 +95,14 @@ preflight(){
             exit 6
         fi
     elif echo $(uname -r) | grep -q gcp; then
-        output "Google Cloud Platform Detected."
-        warn "Please make sure you have static ip setup, otherwise the system will not work after a reboot."
-        warn "Please also make sure the google firewall allows the ports needed for the server to function normally."
-        warn "When doing allocation for the node, please use the internal ip as Google Cloud uses NAT."
-        warn "Resuming in 10 seconds."
+        output "Google Cloud Platform detected."
+        warn "Please make sure you have a static IP setup, otherwise the system will not work after a reboot."
+        warn "Please also make sure the GCP firewall allows the ports needed for the server to function normally."
+        warn "When creating allocations for this node, please use the internal IP as Google Cloud uses NAT routing."
+        warn "Resuming in 10 seconds..."
         sleep 10
     else
-        output "Did not detect any bad kernel. Moving forward."
+        output "Did not detect any bad kernel. Moving forward..."
         output ""
     fi
 }
@@ -125,12 +125,12 @@ os_check(){
         fi
     elif [ "$lsb_dist" = "debian" ]; then
         if [ "$dist_version" != "10" ] &&[ "$dist_version" != "9" ]; then
-            output "Unsupported Debian version. Only Debian 10, and 9 are supported.."
+            output "Unsupported Debian version. Only Debian 10, and 9 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
         if [ "$dist_version" != "32" ] && [ "$dist_version" != "31" ]; then
-            output "Unsupported Fedora version. Only 32 and 31 is supported."
+            output "Unsupported Fedora version. Only Fedora 32 and 31 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "centos" ]; then
@@ -144,7 +144,7 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" != "ubuntu" ] && [ "$lsb_dist" != "debian" ] && [ "$lsb_dist" != "centos" ]; then
-        output "Unsupported Operating System."
+        output "Unsupported operating system."
         output ""
         output "Supported OS:"
         output "Ubuntu: 20.04 18.04, 16.04"
@@ -166,13 +166,13 @@ install_options(){
     output "[6] Upgrade 0.6.x daemon to 0.6.13."
     output "[7] Upgrade the panel to 0.7.17 and daemon to 0.6.13"
     output "[8] Upgrade the standalone SFTP server to 1.0.4."
-    output "[9] Make Pterodactyl compatible with the mobile app. (Only use this after you have installed the panel. Check out https://pterodactyl.cloud for the mobile app.)"
-    output "[10] Update Mobile compatibility."
-    output "[11] Install or Update to phpMyAdmin 5.0.2 (Only use this after you have installed the panel.)"
-    output "[12] Install a standalone database host (For use on Daemon only installations only.)"
+    output "[9] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
+    output "[10] Update mobile compatibility."
+    output "[11] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
+    output "[12] Install a standalone database host (only for use on daemon-only installations)."
     output "[13] Change Pterodactyl theme."
     output "[14] Emergency MariaDB root password reset."
-    output "[15] Emergency Database host information reset."
+    output "[15] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
@@ -203,7 +203,7 @@ install_options(){
             output "You have activated mobile app compatibility."
             ;;
         10 ) installoption=10
-            output "you have selected to update the mobile app compatibility."
+            output "You have selected to update the mobile app compatibility."
             ;;
         11 ) installoption=11
             output "You have selected to install or update phpMyAdmin."
@@ -226,7 +226,7 @@ install_options(){
 }
 
 webserver_options() {
-    output "Please select which web server you would like to use:\n[1] Nginx (Recommended).\n[2] Apache2/Httpd."
+    output "Please select which web server you would like to use:\n[1] Nginx (recommended).\n[2] Apache2/httpd."
     read choice
     case $choice in
         1 ) webserver=1
@@ -234,7 +234,7 @@ webserver_options() {
             output ""
             ;;
         2 ) webserver=2
-            output "You have selected Apache2 / Httpd."
+            output "You have selected Apache2/httpd."
             output ""
             ;;
         * ) output "You did not enter a valid selection."
@@ -243,7 +243,7 @@ webserver_options() {
 }
 
 theme_options() {
-    output "Would you like to install Fonix's themes?"
+    output "Would you like to install one of Fonix's themes?"
     output "[1] No."
     output "[2] Super Pink and Fluffy."
     output "[3] Tango Twist."
@@ -305,7 +305,7 @@ required_infos() {
 }
 
 dns_check(){
-    output "Please enter your FQDN (panel.yourdomain.com):"
+    output "Please enter your FQDN (panel.domain.tld):"
     read FQDN
     
     output "Resolving DNS."
@@ -314,12 +314,12 @@ dns_check(){
     if [ "${SERVER_IP}" != "${DOMAIN_RECORD}" ]; then
         output ""
         output "The entered domain does not resolve to the primary public IP of this server."
-        output "Please make an A record pointing to your server's ip. For example, if you make an A record called 'panel' pointing to your server's ip, your FQDN is panel.yourdomain.tld"
-        output "If you are using Cloudflare, please disable the orange cloud."
-        output "If you do not have a domain, you can get a free one at https://www.freenom.com/en/index.html?lang=en."
+        output "Please make an A record pointing to your server's IP. For example, if you make an A record called 'panel' pointing to your server's IP, your FQDN is panel.domain.tld"
+        output "If you are using CloudFlare, please disable the orange cloud."
+        output "If you do not have a domain, you can get a free one at https://freenom.com"
         dns_check
     else 
-        output "Domain resolved correctly. Good to go."
+        output "Domain resolved correctly. Good to go..."
     fi
 }
 
@@ -517,7 +517,7 @@ install_dependencies(){
 }
 
 install_pterodactyl() {
-    output "Creating the databases and setting root password."
+    output "Creating the databases and setting root password..."
     password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     rootpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
@@ -561,7 +561,7 @@ install_pterodactyl() {
     tar --strip-components=1 -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
-    output "Installing Pterodactyl."
+    output "Installing Pterodactyl..."
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     cp .env.example .env
     /usr/local/bin/composer install --no-dev --optimize-autoloader
@@ -584,7 +584,7 @@ install_pterodactyl() {
         restorecon -R /var/www/pterodactyl
     fi
 
-    output "Creating panel queue listeners"
+    output "Creating panel queue listeners..."
     (crontab -l ; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1")| crontab -
     service cron restart
 
@@ -655,15 +655,15 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has been updated to version 0.7.17."
+    output "Your panel has successfully been updated to version 0.7.17."
     php artisan up
     php artisan queue:restart
 }
 
 nginx_config() {
-    output "Disabling default configuration"
+    output "Disabling default configuration..."
     rm -rf /etc/nginx/sites-enabled/default
-    output "Configuring Nginx Webserver"
+    output "Configuring Nginx Webserver..."
     
 echo '
 server_tokens off;
@@ -752,9 +752,9 @@ server {
 }
 
 apache_config() {
-    output "Disabling default configuration"
+    output "Disabling default configuration..."
     rm -rf /etc/nginx/sites-enabled/default
-    output "Configuring Apache2"
+    output "Configuring Apache2 web server..."
 echo '
 <VirtualHost *:80>
   ServerName '"$FQDN"'
@@ -784,7 +784,7 @@ echo '
 }
 
 nginx_config_redhat(){
-    output "Configuring Nginx Webserver"
+    output "Configuring Nginx web server..."
     
 echo '
 server_tokens off;
@@ -877,7 +877,7 @@ server {
 }
 
 apache_config_redhat() {
-    output "Configuring Apache2"
+    output "Configuring Apache2 web server..."
 echo '
 <VirtualHost *:80>
   ServerName '"$FQDN"'
@@ -901,7 +901,7 @@ echo '
 }
 
 php_config(){
-    output "Configuring PHP socket."
+    output "Configuring PHP socket..."
     bash -c 'cat > /etc/php-fpm.d/www-pterodactyl.conf' <<-'EOF'
 [pterodactyl]
 user = nginx
@@ -945,7 +945,7 @@ setup_pterodactyl(){
 
 install_daemon() {
     cd /root
-    output "Installing Pterodactyl Daemon dependencies."
+    output "Installing Pterodactyl Daemon dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install curl tar unzip
     elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
@@ -961,7 +961,7 @@ install_daemon() {
     
     service docker start
     systemctl enable docker 
-    output "Enabling Swap support for Docker & Installing NodeJS."
+    output "Enabling SWAP support for Docker & installing NodeJS..."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         update-grub
@@ -994,7 +994,7 @@ install_daemon() {
         yum -y autoremove
         yum -y clean packages
     fi
-    output "Installing the Pterodactyl Daemon."
+    output "Installing the Pterodactyl daemon..."
     mkdir -p /srv/daemon /srv/daemon-data
     cd /srv/daemon
     curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
@@ -1019,7 +1019,7 @@ EOF
     systemctl daemon-reload
     systemctl enable wings
 
-    output "Daemon installation is nearly complete, Please go to the panel and get your 'Auto deploy' command in the node configuration tab."
+    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
     output "Paste your auto deploy command below: "
     read AUTODEPLOY
     ${AUTODEPLOY}
@@ -1045,19 +1045,19 @@ install_standalone_sftp(){
         yum -y install jq
     fi
     if [ ! -f /srv/daemon/config/core.json ]; then
-        warn "YOU MUST CONFIGURE YOUR DAEMON PROPERLY BEFORE INSTALLING THE STANDALONE SFTP SERVER!!!"
+        warn "YOU MUST CONFIGURE YOUR DAEMON PROPERLY BEFORE INSTALLING THE STANDALONE SFTP SERVER!"
         exit 11
     fi
     cd /srv/daemon
     if [ $(cat /srv/daemon/config/core.json | jq -r '.sftp.enabled') == "null" ]; then
-        output "Updating config to enable sftp-server."
+        output "Updating config to enable sftp-server..."
         cat /srv/daemon/config/core.json | jq '.sftp.enabled |= false' > /tmp/core
         cat /tmp/core > /srv/daemon/config/core.json
         rm -rf /tmp/core
     elif [ $(cat /srv/daemon/config/core.json | jq -r '.sftp.enabled') == "false" ]; then
-       output "Config already set up for golang sftp server."
+       output "Config already set up for Golang SFTP server."
     else 
-       output "You may have purposly set the sftp to true and that will fail."
+       output "You may have purposely set the SFTP to true which will cause this to fail."
     fi
     service wings restart
     output "Installing standalone SFTP server."
@@ -1083,12 +1083,12 @@ EOF
 }
 
 upgrade_standalone_sftp(){
-    output "Turning off the standalone SFTP server."
+    output "Turning off the standalone SFTP server..."
     service pterosftp stop
     curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.4/sftp-server
     chmod +x sftp-server
     service pterosftp start
-    output "Your standalone SFTP server has been updated to v1.0.4"
+    output "Your standalone SFTP server has successfully been updated to v1.0.4."
 }
 
 install_mobile(){
@@ -1101,7 +1101,7 @@ install_mobile(){
 
 
 install_phpmyadmin(){
-    output "Installing phpMyAdmin."
+    output "Installing phpMyAdmin..."
     cd /var/www/pterodactyl/public
     rm -rf phpmyadmin
     wget https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.zip
@@ -1147,7 +1147,7 @@ EOF
 }
 
 ssl_certs(){
-    output "Installing LetsEncrypt and creating an SSL certificate."
+    output "Installing Let's Encrypt and creating an SSL certificate..."
     cd /root
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
@@ -1272,7 +1272,7 @@ enabled = true
 EOF
     service fail2ban restart
 
-    output "Configuring your firewall."
+    output "Configuring your firewall..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install ufw
         ufw allow 22
@@ -1332,14 +1332,14 @@ block_icmp(){
 }
 
 javapipe_kernel(){
-    output "Apply JavaPipe's kernel configurations? (https://javapipe.com/blog/iptables-ddos-protection/)"
+    output "Apply JavaPipe's kernel configurations (https://javapipe.com/blog/iptables-ddos-protection)?"
     output "[1] Yes."
     output "[2] No."
     read javapipe
     case $javapipe in
         1)  sh -c "$(curl -sSL https://raw.githubusercontent.com/tommytran732/Anti-DDOS-Iptables/master/javapipe_kernel.sh)"
             ;;
-        2)  output "Javapipe kernel modifications not applied."
+        2)  output "JavaPipe kernel modifications not applied."
             ;;
         * ) output "You did not enter a valid selection."
             javapipe_kernel
@@ -1357,7 +1357,7 @@ install_database() {
 	    dnf -y install MariaDB-server
 	fi
 
-    output "Creating the databases and setting root password."
+    output "Creating the databases and setting root password..."
     password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     rootpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
