@@ -1155,12 +1155,7 @@ ssl_certs(){
     output "Installing Let's Encrypt and creating an SSL certificate..."
     cd /root
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
-            wget https://dl.eff.org/certbot-auto
-            chmod a+x certbot-auto
-        else
-            apt-get -y install certbot
-        fi
+        apt-get -y install certbot
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         yum -y install certbot
     fi
@@ -1174,11 +1169,8 @@ ssl_certs(){
         fi
     fi
 
-    if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
-        ./certbot-auto certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
-    else
-        certbot certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
-    fi
+    certbot certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
+    
     if [ "$installoption" = "2" ]; then
         if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
             ufw deny 80
@@ -1197,24 +1189,8 @@ ssl_certs(){
             fi
         fi
     fi
-
-    if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
-        if [ "$installoption" = "1" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * ./certbot-auto renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * ./certbot-auto renew --pre-hook "service apache2 stop" --post-hook "service apache2 restart" >> /dev/null 2>&1')| crontab -
-            fi
-        elif [ "$installoption" = "2" ]; then
-            (crontab -l ; echo '0 0,12 * * * ./certbot-auto renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "3" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * ./certbot-auto renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * ./certbot-auto renew --pre-hook "service apache2 stop" --pre-hook "service wings stop" --post-hook "service apache2 restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            fi
-        fi            
-    elif [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
+       
+    if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
         if [ "$installoption" = "1" ]; then
             if [ "$webserver" = "1" ]; then
                 (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
