@@ -165,7 +165,7 @@ install_options(){
     output "[5] Upgrade 0.7.x panel to 0.7.17."
     output "[6] Upgrade 0.6.x daemon to 0.6.13."
     output "[7] Upgrade the panel to 0.7.17 and daemon to 0.6.13"
-    output "[8] Upgrade the standalone SFTP server to 1.0.4."
+    output "[8] Upgrade the standalone SFTP server to 1.0.5."
     output "[9] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[10] Update mobile compatibility."
     output "[11] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
@@ -1066,7 +1066,7 @@ install_standalone_sftp(){
     fi
     service wings restart
     output "Installing standalone SFTP server..."
-    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.4/sftp-server
+    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.5/sftp-server
     chmod +x sftp-server
     bash -c 'cat > /etc/systemd/system/pterosftp.service' <<-'EOF'
 [Unit]
@@ -1090,10 +1090,10 @@ EOF
 upgrade_standalone_sftp(){
     output "Turning off the standalone SFTP server..."
     service pterosftp stop
-    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.4/sftp-server
+    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.5/sftp-server
     chmod +x sftp-server
     service pterosftp start
-    output "Your standalone SFTP server has successfully been updated to v1.0.4."
+    output "Your standalone SFTP server has successfully been updated to v1.0.5."
 }
 
 install_mobile(){
