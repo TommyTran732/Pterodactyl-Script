@@ -934,6 +934,7 @@ webserver_config(){
         if [ "$webserver" = "1" ]; then
             php_config
             nginx_config_redhat
+	    chown -R nginx:nginx /var/lib/php/session
         elif [ "$webserver" = "2" ]; then
             apache_config_redhat
         fi
