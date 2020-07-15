@@ -8,10 +8,8 @@ warn(){
     echo -e '\e[31m'$1'\e[0m';
 }
 
-version=v1.0
-
 preflight(){
-    output "Pterodactyl Installation & Upgrade Script ${version}"
+    output "Pterodactyl Installation & Upgrade Script"
     output "Copyright © 2020 Thien Tran <contact@thientran.io>."
     output "Please join my Discord for community support: https://thientran.io/discord"
     output ""
