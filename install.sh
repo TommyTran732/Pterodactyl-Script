@@ -1098,11 +1098,15 @@ upgrade_standalone_sftp(){
 install_mobile(){
     cd /var/www/pterodactyl
     composer config repositories.cloud composer https://packages.pterodactyl.cloud
-    composer require friendsofphp/php-cs-fixer 2.15.1 --dev
     composer require pterodactyl/mobile-addon --update-no-dev --optimize-autoloader
     php artisan migrate --force
 }
 
+upgrade_mobile(){
+    cd /var/www/pterodactyl
+    composer update pterodactyl/mobile-addon
+    php artisan migrate --force
+}
 
 install_phpmyadmin(){
     output "Installing phpMyAdmin..."
@@ -1476,8 +1480,7 @@ case $installoption in
         ;;
     9)  install_mobile
         ;;
-    10) cd /var/www/pterodactyl
-        composer update pterodactyl/mobile-addon
+    10) upgrade_mobile
         ;;
     11) install_phpmyadmin
         ;;
