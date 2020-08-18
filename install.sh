@@ -364,6 +364,7 @@ repositories_setup(){
                 add-apt-repository -y ppa:nginx/development
             fi
 	        apt -y install tuned
+		apt-get install dnsutils -y 
             tuned-adm profile latency-performance   
         elif [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install ca-certificates apt-transport-https
