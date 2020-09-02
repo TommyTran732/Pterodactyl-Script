@@ -355,7 +355,7 @@ repositories_setup(){
         dpkg --remove-architecture i386
         echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
         apt-get -y update 
-	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
             add-apt-repository -y ppa:chris-lea/redis-server
@@ -363,9 +363,8 @@ repositories_setup(){
                 add-apt-repository -y ppa:certbot/certbot
                 add-apt-repository -y ppa:nginx/development
             fi
-	        apt -y install tuned
-		apt-get install dnsutils -y 
-            tuned-adm profile latency-performance   
+	        apt -y install tuned dnsutils
+                tuned-adm profile latency-performance   
         elif [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install ca-certificates apt-transport-https
             echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
@@ -387,7 +386,7 @@ repositories_setup(){
         apt-get -y upgrade
         apt-get -y autoremove
         apt-get -y autoclean   
-        apt-get -y install dnsutils curl
+        apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
             if [ "$dist_version" = "32" ]; then
