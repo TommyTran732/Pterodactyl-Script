@@ -19,5 +19,6 @@ Pterodactyl v1.0 will NOT be supported until it is ready for production.
 |                   | 9       | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
 | CentOS            | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
 |                   | 7       | :white_check_mark:   | :white_check_mark: |                                      |
+| RHEL              | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
 | Fedora            | 32      | :white_check_mark:   | :white_check_mark: |                                      |
 |                   | 31      | :white_check_mark:   | :red_circle:       | Old, near end of life                |
