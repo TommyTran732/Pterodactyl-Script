@@ -531,22 +531,22 @@ install_pterodactyl() {
     mysql -u root -e "$SQL"
 
     output "Binding MariaDB/MySQL to 0.0.0.0."
-        if [ grep -Fqs "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf ] ; then
+        if grep -Fqs "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf ; then
 		sed -i -- '/bind-address/s/#//g' /etc/mysql/mariadb.conf.d/50-server.cnf
  		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 		output 'Restarting MySQL process...'
 		service mysql restart
-	elif [ grep -Fqs "bind-address" /etc/mysql/my.cnf ] ; then
+	elif grep -Fqs "bind-address" /etc/mysql/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
 		output 'Restarting MySQL process...'
 		service mysql restart
-	elif [ grep -Fqs "bind-address" /etc/my.cnf ] ; then
+	elif grep -Fqs "bind-address" /etc/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf
 		output 'Restarting MySQL process...'
 		service mysql restart
-    	elif [ grep -Fqs "bind-address" /etc/mysql/my.conf.d/mysqld.cnf ] ; then
+    	elif grep -Fqs "bind-address" /etc/mysql/my.conf.d/mysqld.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.conf.d/mysqld.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.conf.d/mysqld.cnf
 		output 'Restarting MySQL process...'
