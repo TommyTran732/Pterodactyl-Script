@@ -14,7 +14,7 @@ Pterodactyl v1.0 will NOT be supported until it is ready for production.
 | ----------------- | ------- | -------------------- | ------------------ | ------------------------------------ |
 | Ubuntu            | 20.04   | :white_check_mark:   | :white_check_mark: |                                      |
 |                   | 18.04   | :white_check_mark:   | :white_check_mark: |                                      |
-|                   | 16.04   | :white_check_mark:   | :red_circl:        | Old, not recently tested             |
+|                   | 16.04   | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
 | Debian            | 10      | :white_check_mark:   | :white_check_mark: |                                      |
 |                   | 9       | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
 | CentOS            | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
