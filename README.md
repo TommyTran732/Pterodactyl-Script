@@ -6,3 +6,5 @@ Please note this script is meant to be used on fresh installations only. You mus
 <br />
 Visit my forum: https://revenact.io <br />
 Community support: https://revenact.io/discord <br />
+<br />
+Pterodactyl v1.0 will NOT be supported until it is ready for production.
