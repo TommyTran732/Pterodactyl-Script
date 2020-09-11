@@ -10,12 +10,14 @@ Community support: https://revenact.io/discord <br />
 Pterodactyl v1.0 will NOT be supported until it is ready for production.
 
 # Supported Operating System
-| Operating System  | Version | Supported            | Recommended        | 
-| ----------------- | ------- | -------------------- | ------------------ |
-| Ubuntu            | 16.04   | :white_check_mark:   | :red_circle:       | 
-|                   | 18.04   | :white_check_mark:   | :white_check_mark: |
-|                   | 20.04   | :white_check_mark:   | :white_check_mark: | 
-| Debian            | 9       | :white_check_mark:   | :red_circle:       |
-|                   | 10      | :white_check_mark:   | :white_check_mark: |
-| CentOS            | 7       | :white_check_mark:   | :white_check_mark: | 
-|                   | 8       | :white_check_mark:   | :red_circle:       |
+| Operating System  | Version | Supported            | Recommended        | Notes                                |
+| ----------------- | ------- | -------------------- | ------------------ | ------------------------------------ |
+| Ubuntu            | 20.04   | :white_check_mark:   | :white_check_mark: |                                      |
+|                   | 18.04   | :white_check_mark:   | :white_check_mark: |                                      |
+|                   | 16.04   | :white_check_mark:   | :red_circle        | Old, not recently tested             |
+| Debian            | 10      | :white_check_mark:   | :white_check_mark: |                                      |
+|                   | 9       | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
+| CentOS            | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
+|                   | 7       | :white_check_mark:   | :white_check_mark: |                                      |
+| Fedora            | 32      | :white_check_mark:   | :white_check_mark: |                                      |
+|                   | 31      | :white_check_mark:   | :red_circle:       | Old, near end of life                |
