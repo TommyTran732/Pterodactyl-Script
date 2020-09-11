@@ -372,14 +372,12 @@ repositories_setup(){
                 apt -y install dirmngr
                 wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
                 sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-                sudo add-apt-repository 'deb [arch=amd64] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.4/debian buster main'
                 apt -y install tuned
                 tuned-adm profile latency-performance
             elif [ "$dist_version" = "9" ]; then
                 apt -y install dirmngr
                 wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
                 sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-                sudo add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.4/debian stretch main'
             fi
         fi
         apt-get -y update 
@@ -421,7 +419,7 @@ EOF
             bash -c 'cat > /etc/yum.repos.d/mariadb.repo' <<-'EOF'
 [mariadb]
 name = MariaDB
-baseurl = http://yum.mariadb.org/10.4/centos7-amd64
+baseurl = http://yum.mariadb.org/10.5/centos7-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
