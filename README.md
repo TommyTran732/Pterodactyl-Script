@@ -8,10 +8,11 @@ Visit my forum: https://revenact.io <br />
 Community support: https://revenact.io/discord <br />
 <br />
 Pterodactyl v1.0 will NOT be supported until it is ready for production. <br />
-That being said, you can still try out the v1.0 script version using: <br />
+With that being said, you can still try out the v1.0 script version using: <br />
 <br />
 `bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/pterodactyl-1.0/install.sh`
 <br />
+<br>
 A migration script from v0.7 to v1.0 will be available at a later date.
 <br />
 # Supported Operating System
