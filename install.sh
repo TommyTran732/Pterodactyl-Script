@@ -159,17 +159,15 @@ install_options(){
     output "[1] Install the panel."
     output "[2] Install the daemon."
     output "[3] Install the panel and daemon."
-    output "[4] Install the standalone SFTP server."
-    output "[5] Upgrade 1.0.0-rc.x RC panel to 1.0.0-rc.5."
-    output "[6] Upgrade 0.6.x daemon to 0.6.13."
-    output "[7] Upgrade the panel to 1.0.0-rc.x and daemon to 1.0.0-rc.5"
-    output "[8] Upgrade the standalone SFTP server to 1.0.5."
-    output "[9] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
-    output "[10] Update mobile compatibility."
-    output "[11] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
-    output "[12] Install a standalone database host (only for use on daemon-only installations)."
-    output "[13] Emergency MariaDB root password reset."
-    output "[14] Emergency database host information reset."
+    output "[4] Upgrade 1.0.0-rc.x RC panel to 1.0.0-rc.5."
+    output "[5] Upgrade 0.6.x daemon to 0.6.13."
+    output "[6] Upgrade the panel to 1.0.0-rc.x and daemon to 1.0.0-rc.5"
+    output "[7] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
+    output "[8] Update mobile compatibility."
+    output "[9] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
+    output "[10] Install a standalone database host (only for use on daemon-only installations)."
+    output "[11] Emergency MariaDB root password reset."
+    output "[12] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
@@ -182,36 +180,30 @@ install_options(){
             output "You have selected panel and daemon installation."
             ;;
         4 ) installoption=4
-            output "You have selected to install the standalone SFTP server."
-            ;;
-        5 ) installoption=5
             output "You have selected to upgrade the panel."
             ;;
-        6 ) installoption=6
+        5 ) installoption=5
             output "You have selected to upgrade the daemon."
             ;;
-        7 ) installoption=7
+        6 ) installoption=6
             output "You have selected to upgrade both the panel and daemon."
             ;;
-        8 ) installoption=8
-            output "You have selected to upgrade the standalone SFTP."
-            ;;
-        9 ) installoption=9
+        7 ) installoption=7
             output "You have activated mobile app compatibility."
             ;;
-        10 ) installoption=10
+        8 ) installoption=8
             output "You have selected to update the mobile app compatibility."
             ;;
-        11 ) installoption=11
+        9 ) installoption=9
             output "You have selected to install or update phpMyAdmin."
             ;;
-        12 ) installoption=12
+        10 ) installoption=10
             output "You have selected to install a Database host."
             ;;
-        13 ) installoption=13
+        11 ) installoption=11
             output "You have selected MariaDB root password reset."
             ;;
-        14 ) installoption=14
+        12 ) installoption=12
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -952,60 +944,6 @@ upgrade_daemon(){
     output "npm has been updated to the latest version."
 }
 
-install_standalone_sftp(){
-    os_check
-    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        apt-get -y install jq
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ]; then
-        yum -y install jq
-    fi
-    if [ ! -f /srv/daemon/config/core.json ]; then
-        warn "YOU MUST CONFIGURE YOUR DAEMON PROPERLY BEFORE INSTALLING THE STANDALONE SFTP SERVER!"
-        exit 11
-    fi
-    cd /srv/daemon
-    if [ $(cat /srv/daemon/config/core.json | jq -r '.sftp.enabled') == "null" ]; then
-        output "Updating config to enable sftp-server..."
-        cat /srv/daemon/config/core.json | jq '.sftp.enabled |= false' > /tmp/core
-        cat /tmp/core > /srv/daemon/config/core.json
-        rm -rf /tmp/core
-    elif [ $(cat /srv/daemon/config/core.json | jq -r '.sftp.enabled') == "false" ]; then
-       output "Config already set up for Golang SFTP server."
-    else 
-       output "You may have purposely set the SFTP to true which will cause this to fail."
-    fi
-    service wings restart
-    output "Installing standalone SFTP server..."
-    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.5/sftp-server
-    chmod +x sftp-server
-    bash -c 'cat > /etc/systemd/system/pterosftp.service' <<-'EOF'
-[Unit]
-Description=Pterodactyl Standalone SFTP Server
-After=wings.service
-[Service]
-User=root
-WorkingDirectory=/srv/daemon
-LimitNOFILE=4096
-PIDFile=/var/run/wings/sftp.pid
-ExecStart=/srv/daemon/sftp-server
-Restart=on-failure
-StartLimitInterval=600
-[Install]
-WantedBy=multi-user.target
-EOF
-    systemctl enable pterosftp
-    service pterosftp restart
-}
-
-upgrade_standalone_sftp(){
-    output "Turning off the standalone SFTP server..."
-    service pterosftp stop
-    curl -Lo sftp-server https://github.com/pterodactyl/sftp-server/releases/download/v1.0.5/sftp-server
-    chmod +x sftp-server
-    service pterosftp start
-    output "Your standalone SFTP server has successfully been updated to v1.0.5."
-}
-
 install_mobile(){
     cd /var/www/pterodactyl
     composer config repositories.cloud composer https://packages.pterodactyl.cloud
@@ -1372,28 +1310,24 @@ case $installoption in
         install_daemon
         broadcast
         ;;
-    4)  install_standalone_sftp
+    4)  upgrade_pterodactyl
         ;;
-    5)  upgrade_pterodactyl
+    5)  upgrade_daemon
         ;;
-    6)  upgrade_daemon
-        ;;
-    7)  upgrade_pterodactyl
+    6)  upgrade_pterodactyl
         upgrade_daemon
         ;;
-    8)  upgrade_standalone_sftp
+    7)  install_mobile
         ;;
-    9)  install_mobile
+    8) upgrade_mobile
         ;;
-    10) upgrade_mobile
+    9) install_phpmyadmin
         ;;
-    11) install_phpmyadmin
-        ;;
-    12) repositories_setup
+    10) repositories_setup
         install_database
         ;;
-    13) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+    11) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
         ;;
-    14) database_host_reset
+    12) database_host_reset
         ;;
 esac
