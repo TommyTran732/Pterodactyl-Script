@@ -160,7 +160,7 @@ install_options(){
     output "[2] Install the daemon."
     output "[3] Install the panel and daemon."
     output "[4] Upgrade 1.0.0-rc.x RC panel to 1.0.0-rc.5."
-    output "[5] Upgrade 0.6.x daemon to 0.6.13."
+    output "[5] Upgrade 1.0.0-rc.x daemon to 1.0.0-rc.5."
     output "[6] Upgrade the panel to 1.0.0-rc.x and daemon to 1.0.0-rc.5"
     output "[7] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[8] Update mobile compatibility."
@@ -870,55 +870,24 @@ install_daemon() {
     systemctl enable docker 
     output "Enabling SWAP support for Docker & installing NodeJS..."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
-    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        update-grub
-        curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-            if [ "$lsb_dist" =  "ubuntu" ] && [ "$dist_version" = "20.04" ]; then
-                apt -y install nodejs make gcc g++
-                npm install node-gyp
-            elif [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "10" ]; then
-                apt -y install nodejs make gcc g++
-            else
-                apt -y install nodejs make gcc g++ node-gyp
-            fi
-        apt-get -y update 
-        apt-get -y upgrade
-        apt-get -y autoremove
-        apt-get -y autoclean
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ]; then
-        grub2-mkconfig -o "$(readlink /etc/grub2.conf)"
-        if [ "$lsb_dist" =  "fedora" ]; then
-            dnf -y module install nodejs:12/minimal
-	    dnf install -y tar unzip make gcc gcc-c++ python2
-	elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
-	    dnf -y module install nodejs:12/minimal
-	    dnf install -y tar unzip make gcc gcc-c++ python2
-	elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-	    curl --silent --location https://rpm.nodesource.com/setup_12.x | sudo bash -
-            yum -y install nodejs tar unzip make gcc-c++ node-gyp
-	fi
-        yum -y upgrade
-        yum -y autoremove
-        yum -y clean packages
-    fi
     output "Installing the Pterodactyl daemon..."
-    mkdir -p /srv/daemon /srv/daemon-data
-    cd /srv/daemon
-    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
-    npm install --only=production --no-audit --unsafe-perm
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.5/wings_linux_amd64
+    chmod u+x /usr/local/bin/wings
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
 Description=Pterodactyl Wings Daemon
 After=docker.service
+
 [Service]
 User=root
-#Group=some_group
-WorkingDirectory=/srv/daemon
+WorkingDirectory=/etc/pterodactyl
 LimitNOFILE=4096
 PIDFile=/var/run/wings/daemon.pid
-ExecStart=/usr/bin/node /srv/daemon/src/index.js
+ExecStart=/usr/local/bin/wings
 Restart=on-failure
 StartLimitInterval=600
+
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -934,13 +903,10 @@ EOF
 }
 
 upgrade_daemon(){
-    cd /srv/daemon
-    service wings stop
-    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
-    npm install -g npm
-    npm install --only=production --no-audit --unsafe-perm
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.5/wings_linux_amd64
+    chmod u+x /usr/local/bin/wings
     service wings restart
-    output "Your daemon has been updated to version 0.6.13."
+    output "Your daemon has been updated to version 1.0.0-rc.5."
     output "npm has been updated to the latest version."
 }
 
