@@ -168,9 +168,8 @@ install_options(){
     output "[10] Update mobile compatibility."
     output "[11] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
     output "[12] Install a standalone database host (only for use on daemon-only installations)."
-    output "[13] Change Pterodactyl theme."
-    output "[14] Emergency MariaDB root password reset."
-    output "[15] Emergency database host information reset."
+    output "[13] Emergency MariaDB root password reset."
+    output "[14] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
@@ -210,12 +209,9 @@ install_options(){
             output "You have selected to install a Database host."
             ;;
         13 ) installoption=13
-            output "You have selected to change Pterodactyl's theme."
-            ;;
-        14 ) installoption=14
             output "You have selected MariaDB root password reset."
             ;;
-        15 ) installoption=15
+        14 ) installoption=14
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -237,62 +233,6 @@ webserver_options() {
             ;;
         * ) output "You did not enter a valid selection."
             webserver_options
-    esac
-}
-
-theme_options() {
-    output "Would you like to install one of Fonix's themes?"
-    output "[1] No."
-    output "[2] Super Pink and Fluffy."
-    output "[3] Tango Twist."
-    output "[4] Blue Brick."
-    output "[5] Minecraft Madness."
-    output "[6] Lime Stitch."
-    output "[7] Red Ape."
-    output "[8] BlackEnd Space."
-    output "[9] Nothing But Graphite."
-    output ""
-    output "You can find out about Fonix's themes here: https://github.com/TheFonix/Pterodactyl-Themes"
-    read choice
-    case $choice in
-        1 ) themeoption=1
-            output "You have selected to install the vanilla Pterodactyl theme."
-            output ""
-            ;;
-        2 ) themeoption=2
-            output "You have selected to install Fonix's Super Pink and Fluffy theme."
-            output ""
-            ;;
-        3 ) themeoption=3
-            output "You have selected to install Fonix's Tango Twist theme."
-            output ""
-            ;;
-        4 ) themeoption=4
-            output "You have selected to install Fonix's Blue Brick theme."
-            output ""
-            ;;
-        5 ) themeoption=5
-            output "You have selected to install Fonix's Minecraft Madness theme."
-            output ""
-            ;;
-        6 ) themeoption=6
-            output "You have selected to install Fonix's Lime Stitch theme."
-            output ""
-            ;;
-        7 ) themeoption=7
-            output "You have selected to install Fonix's Red Ape theme."
-            output ""
-            ;;
-        8 ) themeoption=8
-            output "You have selected to install Fonix's BlackEnd Space theme."
-            output ""
-            ;;        
-        9 ) themeoption=9
-            output "You have selected to install Fonix's Nothing But Graphite theme."
-            output ""
-            ;;   
-        * ) output "You did not enter a valid selection."
-            theme_options
     esac
 }   
 
@@ -319,32 +259,6 @@ dns_check(){
     else 
         output "Domain resolved correctly. Good to go..."
     fi
-}
-
-theme() {
-    output "Theme installation initialized..."
-    cd /var/www/pterodactyl
-    if [ "$themeoption" = "1" ]; then
-        output "Keeping Pterodactyl's vanilla theme."
-    elif [ "$themeoption" = "2" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/PinkAnFluffy/build.sh | sh
-    elif [ "$themeoption" = "3" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/TangoTwist/build.sh | sh
-    elif [ "$themeoption" = "4" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/BlueBrick/build.sh | sh
-    elif [ "$themeoption" = "5" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/MinecraftMadness/build.sh | sh
-    elif [ "$themeoption" = "6" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/LimeStitch/build.sh | sh
-    elif [ "$themeoption" = "7" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/RedApe/build.sh | sh
-    elif [ "$themeoption" = "8" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/BlackEndSpace/build.sh | sh
-    elif [ "$themeoption" = "9" ]; then
-        curl https://raw.githubusercontent.com/TheFonix/Pterodactyl-Themes/master/MasterThemes/NothingButGraphite/build.sh | sh
-    fi
-    php artisan view:clear
-    php artisan cache:clear
 }
 
 repositories_setup(){
@@ -942,7 +856,6 @@ setup_pterodactyl(){
     install_pterodactyl
     ssl_certs
     webserver_config
-    theme
 }
 
 install_daemon() {
@@ -1438,7 +1351,6 @@ preflight
 install_options
 case $installoption in 
     1)  webserver_options
-        theme_options
         repositories_setup
         required_infos
         firewall
@@ -1453,7 +1365,6 @@ case $installoption in
         broadcast
         ;;
     3)  webserver_options
-        theme_options
         repositories_setup
         required_infos
         firewall
@@ -1463,15 +1374,11 @@ case $installoption in
         ;;
     4)  install_standalone_sftp
         ;;
-    5)  theme_options
-        upgrade_pterodactyl
-        theme
+    5)  upgrade_pterodactyl
         ;;
     6)  upgrade_daemon
         ;;
-    7)  theme_options
-        upgrade_pterodactyl
-        theme
+    7)  upgrade_pterodactyl
         upgrade_daemon
         ;;
     8)  upgrade_standalone_sftp
@@ -1485,14 +1392,8 @@ case $installoption in
     12) repositories_setup
         install_database
         ;;
-    13) theme_options
-        if [ "$themeoption" = "1" ]; then
-            upgrade_pterodactyl
-        fi
-        theme
+    13) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
         ;;
-    14) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
-        ;;
-    15) database_host_reset
+    14) database_host_reset
         ;;
 esac
