@@ -394,14 +394,14 @@ repositories_setup(){
             fi
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-7.4
 	    dnf -y module enable nginx:mainline/common
 	    dnf -y module enable mariadb:14/server
         elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
             dnf -y install epel-release boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-7.4
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -436,7 +436,7 @@ EOF
             dnf -y install boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-7.4
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -454,9 +454,9 @@ install_dependencies(){
     output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         if [ "$webserver" = "1" ]; then
-            apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server nginx git wget expect
+            apt-get -y install php7.4 php7.4-cli php7.4-gd php7.4-mysql php7.4-pdo php7.4-mbstring php7.4-tokenizer php7.4-bcmath php7.4-xml php7.4-fpm php7.4-curl php7.4-zip curl tar unzip git redis-server nginx git wget expect
         elif [ "$webserver" = "2" ]; then
-            apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server apache2 libapache2-mod-php7.3 redis-server git wget expect
+            apt-get -y install php7.4 php7.4-cli php7.4-gd php7.4-mysql php7.4-pdo php7.4-mbstring php7.4-tokenizer php7.4-bcmath php7.4-xml php7.4-fpm php7.4-curl php7.4-zip curl tar unzip git redis-server apache2 libapache2-mod-php7.4 redis-server git wget expect
         fi
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
@@ -473,7 +473,7 @@ install_dependencies(){
 	else 
 	    dnf -y install MariaDB-server
 	fi
-	dnf -y module install php:remi-7.3
+	dnf -y module install php:remi-7.4
         if [ "$webserver" = "1" ]; then
             dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
         elif [ "$webserver" = "2" ]; then
@@ -485,8 +485,8 @@ install_dependencies(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable redis-server
         service redis-server start
-        systemctl enable php7.3-fpm
-        service php7.3-fpm start
+        systemctl enable php7.4-fpm
+        service php7.4-fpm start
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         systemctl enable redis
         service redis start
@@ -726,7 +726,7 @@ server {
     }
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
