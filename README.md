@@ -5,7 +5,10 @@ Please note this script is meant to be used on fresh installations only. You mus
 `bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/install.sh)` <br />
 <br />
 Visit my forum: https://revenact.io <br />
-Community support: https://revenact.io/discord <br />
+Telegram group: https://t.me/revenact <br />
+Discord group: https://revenact.io/discord <br />
+
+If you need me to help you fix or debug something, contact me via Telegram Secret Chat. - Please, please don't send me your server credentials via Discord.
 <br />
 # Pterodactyl v1.0 Release Candidate
 Pterodactyl v1.0 will NOT be supported until it is ready for production. <br />
