@@ -159,9 +159,9 @@ install_options(){
     output "[1] Install the panel."
     output "[2] Install the daemon."
     output "[3] Install the panel and daemon."
-    output "[4] Upgrade 1.0.0-rc.x RC panel to 1.0.0-rc.5."
-    output "[5] Upgrade 1.0.0-rc.x daemon to 1.0.0-rc.5."
-    output "[6] Upgrade the panel to 1.0.0-rc.x and daemon to 1.0.0-rc.5"
+    output "[4] Upgrade 1.0.0-rc.x RC panel to 1.0.0-rc.6."
+    output "[5] Upgrade 1.0.0-rc.x daemon to 1.0.0-rc.6."
+    output "[6] Upgrade the panel to 1.0.0-rc.x and daemon to 1.0.0-rc.6"
     output "[7] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[8] Update mobile compatibility."
     output "[9] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
@@ -464,7 +464,7 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0-rc.5/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0-rc.6/panel.tar.gz
     tar --strip-components=1 -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -547,7 +547,7 @@ EOF
 upgrade_pterodactyl(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0-rc.5/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0-rc.6/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -562,7 +562,7 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.0.0-rc.5."
+    output "Your panel has successfully been updated to version 1.0.0-rc.6."
     php artisan up
     php artisan queue:restart
 }
@@ -872,7 +872,7 @@ install_daemon() {
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     output "Installing the Pterodactyl daemon..."
     mkdir -p /etc/pterodactyl
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.5/wings_linux_amd64
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.6/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
@@ -903,10 +903,10 @@ EOF
 }
 
 upgrade_daemon(){
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.5/wings_linux_amd64
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0-rc.6/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
     service wings restart
-    output "Your daemon has been updated to version 1.0.0-rc.5."
+    output "Your daemon has been updated to version 1.0.0-rc.6."
     output "npm has been updated to the latest version."
 }
 
