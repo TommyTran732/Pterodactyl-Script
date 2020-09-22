@@ -14,7 +14,7 @@ If you need me to help you fix or debug something, contact me via Telegram Secre
 Pterodactyl v1.0 will NOT be supported until it is ready for production. <br />
 With that being said, you can still try out the v1.0 script version using: <br />
 <br />
-`bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/pterodactyl-1.0/install.sh`
+`bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/pterodactyl-1.0/install.sh)`
 <br />
 <br>
 A migration script from v0.7 to v1.0 will be available at a later date.
