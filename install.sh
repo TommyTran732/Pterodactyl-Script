@@ -160,9 +160,9 @@ install_options(){
     output "[2] Install the daemon."
     output "[3] Install the panel and daemon."
     output "[4] Install the standalone SFTP server."
-    output "[5] Upgrade 0.7.x panel to 0.7.18."
+    output "[5] Upgrade 0.7.x panel to 0.7.19."
     output "[6] Upgrade 0.6.x daemon to 0.6.13."
-    output "[7] Upgrade the panel to 0.7.18 and daemon to 0.6.13"
+    output "[7] Upgrade the panel to 0.7.19 and daemon to 0.6.13"
     output "[8] Upgrade the standalone SFTP server to 1.0.5."
     output "[9] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[10] Update mobile compatibility."
@@ -558,7 +558,7 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.18/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.19/panel.tar.gz
     tar --strip-components=1 -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -641,7 +641,7 @@ EOF
 upgrade_pterodactyl(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v0.7.18/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/v0.7.19/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -656,7 +656,7 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 0.7.18."
+    output "Your panel has successfully been updated to version 0.7.19."
     php artisan up
     php artisan queue:restart
 }
