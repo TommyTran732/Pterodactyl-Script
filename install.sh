@@ -242,6 +242,7 @@ webserver_options() {
 
 theme_options() {
     output "Would you like to install one of Fonix's themes?"
+    warn "AS OF NOW, FONIX HAS NOT UPDATED HIS THEME TO 0.7.19 TO FIX THE XSS EXPLOIT IN PTERODACTYL <=0.7.18 YET. DO NOT USE THESE IN PRODUCTION. I HIGHLY RECOMMEND THAT YOU SELECT [1]."
     output "[1] No."
     output "[2] Super Pink and Fluffy."
     output "[3] Tango Twist."
