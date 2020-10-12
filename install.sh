@@ -1369,7 +1369,7 @@ webserver_config(){
             elif [ "$webserver" = "2" ]; then
                 apache_config
             fi
-        elif [ "$installoption" = "3" ]; then
+        elif [ "$installoption" = "4" ]; then
             if [ "$webserver" = "1" ]; then
                 nginx_config_0.7.19
             elif [ "$webserver" = "2" ]; then
