@@ -156,66 +156,90 @@ os_check(){
 
 install_options(){
     output "Please select your installation option:"
-    output "[1] Install the panel."
-    output "[2] Install the daemon."
-    output "[3] Install the panel and daemon."
-    output "[4] Install the standalone SFTP server."
-    output "[5] Upgrade 0.7.x panel to 0.7.19."
-    output "[6] Upgrade 0.6.x daemon to 0.6.13."
-    output "[7] Upgrade the panel to 0.7.19 and daemon to 0.6.13"
-    output "[8] Upgrade the standalone SFTP server to 1.0.5."
-    output "[9] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
-    output "[10] Update mobile compatibility."
-    output "[11] Install or update to phpMyAdmin 5.0.2 (only use this after you have installed the panel)."
-    output "[12] Install a standalone database host (only for use on daemon-only installations)."
-    output "[13] Change Pterodactyl theme."
-    output "[14] Emergency MariaDB root password reset."
-    output "[15] Emergency database host information reset."
+    output "[1] Install the panel (1.0)."
+    output "[2] Install the panel (0.7.19)."
+    output "[3] Install the wings."
+    output "[4] Install the daemon."
+    output "[5] Install the (1.0) panel and daemon."
+    output "[6] Install the (0.7.19) panel and daemon."
+    output "[7] Install the standalone SFTP server."
+    output "[8] Upgrade (0.7.x) panel to (1.0)."
+    output "[9] Upgrade (0.7.x) panel to (0.7.19)."
+    output "[10] Upgrade (0.6.x) daemon to (0.6.13)."
+    output "[11] Migrating daemon to wings."
+    output "[12] Upgrade the panel to 1.0 and Migrate to wings"
+    output "[13] Upgrade the panel to 0.7.19 and daemon to (0.6.13)"
+    output "[14] Upgrade the standalone SFTP server to (1.0.5)."
+    output "[15] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
+    output "[16] Update mobile compatibility."
+    output "[17] Install or update to phpMyAdmin (5.0.2) (only use this after you have installed the panel)."
+    output "[18] Install a standalone database host (only for use on daemon-only installations)."
+    output "[19] Change Pterodactyl theme (0.7.19 Only)."
+    output "[20] Emergency MariaDB root password reset."
+    output "[21] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
-            output "You have selected panel installation only."
+            output "You have selected 1.0 panel installation only."
             ;;
         2 ) installoption=2
-            output "You have selected daemon installation only."
+            output "You have selected 0.7.19 panel installation only."
             ;;
         3 ) installoption=3
-            output "You have selected panel and daemon installation."
+            output "You have selected wings installation only."
             ;;
         4 ) installoption=4
-            output "You have selected to install the standalone SFTP server."
+            output "You have selected daemon installation only."
             ;;
         5 ) installoption=5
-            output "You have selected to upgrade the panel."
+            output "You have selected 1.0 panel and daemon installation."
             ;;
         6 ) installoption=6
-            output "You have selected to upgrade the daemon."
+            output "You have selected 0.7.19 panel and daemon installation."
             ;;
         7 ) installoption=7
-            output "You have selected to upgrade both the panel and daemon."
+            output "You have selected to install the standalone SFTP server."
             ;;
         8 ) installoption=8
-            output "You have selected to upgrade the standalone SFTP."
+            output "You have selected to upgrade the panel to 1.0."
             ;;
         9 ) installoption=9
-            output "You have activated mobile app compatibility."
+            output "You have selected to upgrade the panel to 0.7.19."
             ;;
         10 ) installoption=10
-            output "You have selected to update the mobile app compatibility."
+            output "You have selected to upgrade the daemon to 0.6.13."
             ;;
         11 ) installoption=11
-            output "You have selected to install or update phpMyAdmin."
+            output "You have selected to migrate daemon to wings."
             ;;
         12 ) installoption=12
-            output "You have selected to install a Database host."
+            output "You have selected to upgrade both the panel to 1.0 and migrating to wings."
             ;;
         13 ) installoption=13
-            output "You have selected to change Pterodactyl's theme."
+            output "You have selected to upgrade both the panel to 0.7.19 and daemon to 0.6.13."
             ;;
         14 ) installoption=14
-            output "You have selected MariaDB root password reset."
+            output "You have selected to upgrade the standalone SFTP."
             ;;
         15 ) installoption=15
+            output "You have activated mobile app compatibility."
+            ;;
+        16 ) installoption=16
+            output "You have selected to update the mobile app compatibility."
+            ;;
+        17 ) installoption=17
+            output "You have selected to install or update phpMyAdmin."
+            ;;
+        18 ) installoption=18
+            output "You have selected to install a Database host."
+            ;;
+        19 ) installoption=19
+            output "You have selected to change Pterodactyl's 0.7.19 only."
+            ;;
+        20 ) installoption=20
+            output "You have selected MariaDB root password reset."
+            ;;
+        21 ) installoption=21
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -287,15 +311,15 @@ theme_options() {
         8 ) themeoption=8
             output "You have selected to install Fonix's BlackEnd Space theme."
             output ""
-            ;;        
+            ;;
         9 ) themeoption=9
             output "You have selected to install Fonix's Nothing But Graphite theme."
             output ""
-            ;;   
+            ;;
         * ) output "You did not enter a valid selection."
             theme_options
     esac
-}   
+}
 
 required_infos() {
     output "Please enter the desired user email address:"
@@ -349,6 +373,109 @@ theme() {
 }
 
 repositories_setup(){
+    output "Configuring your repositories..."
+    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+        apt-get -y install sudo
+        apt-get -y install software-properties-common curl apt-transport-https ca-certificates gnupg
+        dpkg --remove-architecture i386
+        echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
+        apt-get -y update
+	curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+        if [ "$lsb_dist" =  "ubuntu" ]; then
+            LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+            add-apt-repository -y ppa:chris-lea/redis-server
+            if [ "$dist_version" != "20.04" ]; then
+                add-apt-repository -y ppa:certbot/certbot
+                add-apt-repository -y ppa:nginx/development
+            fi
+	        apt -y install tuned dnsutils
+                tuned-adm profile latency-performance
+        elif [ "$lsb_dist" =  "debian" ]; then
+            apt-get -y install ca-certificates apt-transport-https
+            echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
+            if [ "$dist_version" = "10" ]; then
+                apt -y install dirmngr
+                wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+                sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+                apt -y install tuned
+                tuned-adm profile latency-performance
+            elif [ "$dist_version" = "9" ]; then
+                apt -y install dirmngr
+                wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+                sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+            fi
+        fi
+        apt-get -y update
+        apt-get -y upgrade
+        apt-get -y autoremove
+        apt-get -y autoclean
+        apt-get -y install curl
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
+        if  [ "$lsb_dist" =  "fedora" ] ; then
+            if [ "$dist_version" = "32" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-32.rpm
+            elif [ "$dist_version" = "31" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-31.rpm
+            fi
+            dnf -y install dnf-plugins-core python2 libsemanage-devel
+            dnf config-manager --set-enabled remi
+            dnf -y module enable php:remi-7.4
+	    dnf -y module enable nginx:mainline/common
+	    dnf -y module enable mariadb:14/server
+        elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
+            dnf -y install epel-release boost-program-options
+            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+            dnf config-manager --set-enabled remi
+            dnf -y module enable php:remi-7.4
+            dnf -y module enable nginx:mainline/common
+	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	    dnf config-manager --set-enabled mariadb
+        elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
+
+            bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<-'EOF'
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+EOF
+            bash -c 'cat > /etc/yum.repos.d/mariadb.repo' <<-'EOF'
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.5/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+EOF
+
+            yum -y install epel-release
+            yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+            yum -y install policycoreutils-python yum-utils libsemanage-devel
+            yum-config-manager --enable remi
+            yum-config-manager --enable remi-php74
+	        yum-config-manager --enable nginx-mainline
+	        yum-config-manager --enable mariadb
+        elif  [ "$lsb_dist" =  "rhel" ] && [ "$dist_version" = "8" ]; then
+            dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+            dnf -y install boost-program-options
+            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+            dnf config-manager --set-enabled remi
+            dnf -y module enable php:remi-7.4
+            dnf -y module enable nginx:mainline/common
+	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	    dnf config-manager --set-enabled mariadb
+        fi
+        yum -y install yum-utils tuned
+        tuned-adm profile latency-performance
+        yum -y upgrade
+        yum -y autoremove
+        yum -y clean packages
+        yum -y install curl bind-utils cronie
+    fi
+}
+
+repositories_setup_0.7.19(){
     output "Configuring your repositories..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install sudo
@@ -455,6 +582,68 @@ install_dependencies(){
     output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         if [ "$webserver" = "1" ]; then
+            apt -y install php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
+        elif [ "$webserver" = "2" ]; then
+             apt -y install php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} curl tar unzip git redis-server apache2 libapache2-mod-php7.4 redis-server git wget expect
+        fi
+        sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
+    elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
+        if [ "$webserver" = "1" ]; then
+            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis nginx git policycoreutils-python-utils unzip wget expect tar
+        elif [ "$webserver" = "2" ]; then
+            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect tar
+        fi
+    else
+	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        if [ "$dist_version" = "8" ]; then
+	        dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
+        fi
+	else
+	    dnf -y install MariaDB-server
+	fi
+	dnf -y module install php:remi-7.4
+        if [ "$webserver" = "1" ]; then
+            dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
+        elif [ "$webserver" = "2" ]; then
+            dnf -y install redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect jq php-mysql php-zip php-mcmath tar
+        fi
+    fi
+
+    output "Enabling Services..."
+    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+        systemctl enable redis-server
+        service redis-server start
+        systemctl enable php7.4-fpm
+        service php7.4-fpm start
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        systemctl enable redis
+        service redis start
+        systemctl enable php-fpm
+        service php-fpm start
+    fi
+
+    systemctl enable cron
+    systemctl enable mariadb
+
+    if [ "$webserver" = "1" ]; then
+        systemctl enable nginx
+        service nginx start
+    elif [ "$webserver" = "2" ]; then
+        if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+            systemctl enable apache2
+            service apache2 start
+        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+            systemctl enable httpd
+            service httpd start
+        fi
+    fi
+    service mysql start
+}
+
+install_dependencies_0.7.19(){
+    output "Installing dependencies..."
+    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
+        if [ "$webserver" = "1" ]; then
             apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server nginx git wget expect
         elif [ "$webserver" = "2" ]; then
             apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server apache2 libapache2-mod-php7.3 redis-server git wget expect
@@ -514,6 +703,132 @@ install_dependencies(){
 }
 
 install_pterodactyl() {
+    output "Creating the databases and setting root password..."
+    password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
+    adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
+    rootpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
+    Q0="DROP DATABASE IF EXISTS test;"
+    Q1="CREATE DATABASE IF NOT EXISTS panel;"
+    Q2="SET old_passwords=0;"
+    Q3="GRANT ALL ON panel.* TO 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$password';"
+    Q4="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, EXECUTE, PROCESS, RELOAD, LOCK TABLES, CREATE USER ON *.* TO 'admin'@'$SERVER_IP' IDENTIFIED BY '$adminpassword' WITH GRANT OPTION;"
+    Q5="SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$rootpassword');"
+    Q6="DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+    Q7="DELETE FROM mysql.user WHERE User='';"
+    Q8="DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';"
+    Q9="FLUSH PRIVILEGES;"
+    SQL="${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}"
+    mysql -u root -e "$SQL"
+
+    output "Binding MariaDB/MySQL to 0.0.0.0."
+        if grep -Fqs "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf ; then
+		sed -i -- '/bind-address/s/#//g' /etc/mysql/mariadb.conf.d/50-server.cnf
+ 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+		output 'Restarting MySQL process...'
+		service mysql restart
+	elif grep -Fqs "bind-address" /etc/mysql/my.cnf ; then
+        	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.cnf
+		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
+		output 'Restarting MySQL process...'
+		service mysql restart
+	elif grep -Fqs "bind-address" /etc/my.cnf ; then
+        	sed -i -- '/bind-address/s/#//g' /etc/my.cnf
+		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf
+		output 'Restarting MySQL process...'
+		service mysql restart
+    	elif grep -Fqs "bind-address" /etc/mysql/my.conf.d/mysqld.cnf ; then
+        	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.conf.d/mysqld.cnf
+		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.conf.d/mysqld.cnf
+		output 'Restarting MySQL process...'
+		service mysql restart
+	else
+		output 'A MySQL configuration file could not be detected! Please contact support.'
+	fi
+
+    output "Downloading Pterodactyl..."
+    mkdir -p /var/www/pterodactyl
+    cd /var/www/pterodactyl
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0/panel.tar.gz
+    tar --strip-components=1 -xzvf panel.tar.gz
+    chmod -R 755 storage/* bootstrap/cache/
+
+    output "Installing Pterodactyl..."
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+    cp .env.example .env
+    /usr/local/bin/composer install --no-dev --optimize-autoloader
+    php artisan key:generate --force
+    php artisan p:environment:setup -n --author=$email --url=https://$FQDN --timezone=America/New_York --cache=redis --session=database --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379
+    php artisan p:environment:database --host=127.0.0.1 --port=3306 --database=panel --username=pterodactyl --password=$password
+    output "To use PHP's internal mail sending, select [mail]. To use a custom SMTP server, select [smtp]. TLS Encryption is recommended."
+    php artisan p:environment:mail
+    php artisan migrate --seed --force
+    php artisan p:user:make --email=$email --admin=1
+    if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+        chown -R www-data:www-data * /var/www/pterodactyl
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        if [ "$webserver" = "1" ]; then
+            chown -R nginx:nginx * /var/www/pterodactyl
+        elif [ "$webserver" = "2" ]; then
+            chown -R apache:apache * /var/www/pterodactyl
+        fi
+	semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
+        restorecon -R /var/www/pterodactyl
+    fi
+
+    output "Creating panel queue listeners..."
+    (crontab -l ; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1")| crontab -
+    service cron restart
+
+    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
+        cat > /etc/systemd/system/pteroq.service <<- 'EOF'
+[Unit]
+Description=Pterodactyl Queue Worker
+After=redis-server.service
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+[Install]
+WantedBy=multi-user.target
+EOF
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        if [ "$webserver" = "1" ]; then
+            cat > /etc/systemd/system/pteroq.service <<- 'EOF'
+Description=Pterodactyl Queue Worker
+After=redis-server.service
+[Service]
+User=nginx
+Group=nginx
+Restart=always
+ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+[Install]
+WantedBy=multi-user.target
+EOF
+        elif [ "$webserver" = "2" ]; then
+            cat > /etc/systemd/system/pteroq.service <<- 'EOF'
+[Unit]
+Description=Pterodactyl Queue Worker
+After=redis-server.service
+[Service]
+User=apache
+Group=apache
+Restart=always
+ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+[Install]
+WantedBy=multi-user.target
+EOF
+        fi
+        setsebool -P httpd_can_network_connect 1
+	setsebool -P httpd_execmem 1
+	setsebool -P httpd_unified 1
+    fi
+    sudo systemctl daemon-reload
+    systemctl enable pteroq.service
+    systemctl start pteroq
+}
+
+install_pterodactyl_0.7.19() {
     output "Creating the databases and setting root password..."
     password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
@@ -640,6 +955,29 @@ EOF
 }
 
 upgrade_pterodactyl(){
+    cd /var/www/pterodactyl
+    php artisan down
+    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.0/panel.tar.gz | tar --strip-components=1 -xzv
+    chmod -R 755 storage/* bootstrap/cache
+    composer install --no-dev --optimize-autoloader
+    php artisan view:clear
+    php artisan config:clear
+    php artisan migrate --force
+    php artisan db:seed --force
+    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+        chown -R www-data:www-data * /var/www/pterodactyl
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        chown -R apache:apache * /var/www/pterodactyl
+        chown -R nginx:nginx * /var/www/pterodactyl
+        semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
+        restorecon -R /var/www/pterodactyl
+    fi
+    output "Your panel has successfully been updated to version 0.7.19."
+    php artisan up
+    php artisan queue:restart
+}
+
+upgrade_pterodactyl_0.7.19(){
     cd /var/www/pterodactyl
     php artisan down
     curl -L https://github.com/pterodactyl/panel/releases/download/v0.7.19/panel.tar.gz | tar --strip-components=1 -xzv
@@ -943,7 +1281,71 @@ setup_pterodactyl(){
     install_pterodactyl
     ssl_certs
     webserver_config
+}
+
+
+setup_pterodactyl_0.7.19(){
+    install_dependencies_0.7.19
+    install_pterodactyl_0.7.19
+    ssl_certs
+    webserver_config
     theme
+}
+
+install_wings() {
+    cd /root
+    output "Installing Pterodactyl Wings dependencies..."
+    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
+        apt-get -y install curl tar unzip
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        yum -y install curl tar unzip
+    fi
+
+    if [[ ( "$lsb_dist" =  "centos" ||  "$lsb_dist" =  "rhel" ) && "$dist_version" = "8" ]]; then
+    	curl -sSL https://raw.githubusercontent.com/tommytran732/CentOS-8-Docker-Script/master/get-docker.sh | sudo bash
+    else
+        output "Installing Docker"
+        curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    fi
+
+    service docker start
+    systemctl enable docker
+    output "Enabling SWAP support for Docker & installing NodeJS..."
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0/wings_linux_amd64
+    chmod u+x /usr/local/bin/wings
+
+    output "Installing the Pterodactyl daemon..."
+    mkdir -p /srv/daemon /srv/daemon-data
+    cd /srv/daemon
+    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
+    npm install --only=production --no-audit --unsafe-perm
+    bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
+[Unit]
+Description=Pterodactyl Wings Daemon
+After=docker.service
+
+[Service]
+User=root
+WorkingDirectory=/etc/pterodactyl
+LimitNOFILE=4096
+PIDFile=/var/run/wings/daemon.pid
+ExecStart=/usr/local/bin/wings
+Restart=on-failure
+StartLimitInterval=600
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    systemctl enable --now wings
+
+    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
+    output "Paste your auto deploy command below: "
+    read AUTODEPLOY
+    ${AUTODEPLOY}
+    service wings start
 }
 
 install_daemon() {
@@ -1027,6 +1429,36 @@ EOF
     read AUTODEPLOY
     ${AUTODEPLOY}
     service wings start
+}
+
+migrate_wings(){
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0/wings_linux_amd64
+    chmod u+x /usr/local/bin/wings
+    systemctl stop wings
+    rm -rf /srv/daemon
+    systemctl disable --now pterosftp
+    rm /etc/systemd/system/pterosftp.service
+    bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
+[Unit]
+Description=Pterodactyl Wings Daemon
+After=docker.service
+
+[Service]
+User=root
+WorkingDirectory=/etc/pterodactyl
+LimitNOFILE=4096
+PIDFile=/var/run/wings/daemon.pid
+ExecStart=/usr/local/bin/wings
+Restart=on-failure
+StartLimitInterval=600
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    systemctl daemon-reload
+    systemctl enable --now wings
+    output "Your daemon has been migrated to wings."
 }
 
 upgrade_daemon(){
@@ -1438,62 +1870,89 @@ broadcast_database(){
 preflight
 install_options
 case $installoption in 
-    1)  webserver_options
-        theme_options
-        repositories_setup
-        required_infos
-        firewall
-        setup_pterodactyl
-        broadcast
-        ;;
-    2)  repositories_setup
-        required_infos
-        firewall
-        ssl_certs
-        install_daemon
-        broadcast
-        ;;
-    3)  webserver_options
-        theme_options
-        repositories_setup
-        required_infos
-        firewall
-        setup_pterodactyl
-        install_daemon
-        broadcast
-        ;;
-    4)  install_standalone_sftp
-        ;;
-    5)  theme_options
-        upgrade_pterodactyl
-        theme
-        ;;
-    6)  upgrade_daemon
-        ;;
-    7)  theme_options
-        upgrade_pterodactyl
-        theme
-        upgrade_daemon
-        ;;
-    8)  upgrade_standalone_sftp
-        ;;
-    9)  install_mobile
-        ;;
-    10) upgrade_mobile
-        ;;
-    11) install_phpmyadmin
-        ;;
-    12) repositories_setup
-        install_database
-        ;;
-    13) theme_options
+        1)  webserver_options
+            theme_options
+            repositories_setup
+            required_infos
+            firewall
+            setup_pterodactyl
+            broadcast
+            ;;
+        2)  webserver_options
+            theme_options
+            repositories_setup_0.7.19
+            required_infos
+            firewall
+            setup_pterodactyl_0.7.19
+            broadcast
+            ;;
+        3)  repositories_setup
+            required_infos
+            firewall
+            ssl_certs
+            install_wings
+            broadcast
+            ;;
+        4)  repositories_setup_0.7.19
+            required_infos
+            firewall
+            ssl_certs
+            install_daemon
+            broadcast
+            ;;
+        5)  webserver_options
+            repositories_setup
+            required_infos
+            firewall
+            setup_pterodactyl
+            install_wings
+            broadcast
+            ;;
+        6)  webserver_options
+            theme_options
+            repositories_setup_0.7.19
+            required_infos
+            firewall
+            setup_pterodactyl_0.7.19
+            install_daemon
+            broadcast
+            ;;
+        7)  install_standalone_sftp
+            ;;
+        8)   upgrade_pterodactyl
+            ;;
+        9)   theme_options
+             upgrade_pterodactyl_0.7.19
+             theme
+            ;;
+        10)   upgrade_daemon
+            ;;
+        11)  migrate_wings
+            ;;
+        12)  theme_options
+             upgrade_pterodactyl_0.7.19
+             theme
+             migrate_wings
+            ;;
+        13)  upgrade_standalone_sftp
+            ;;
+        14)  install_mobile
+            ;;
+        15)  upgrade_mobile
+            ;;
+        16)  install_phpmyadmin
+            ;;
+        17)  repositories_setup
+             install_database
+            ;;
+        18)  theme_options
         if [ "$themeoption" = "1" ]; then
-            upgrade_pterodactyl
+             upgrade_pterodactyl
         fi
         theme
-        ;;
-    14) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
-        ;;
-    15) database_host_reset
-        ;;
+            ;;
+        19) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+            ;;
+        20)  database_host_reset
+            ;;
 esac
