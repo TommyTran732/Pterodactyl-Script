@@ -42,9 +42,9 @@ preflight(){
         apt-get -y install virt-what curl
     elif [ "$lsb_dist" =  "debian" ]; then
         apt update --fix-missing
-        apt-get -y install software-properties-common virt-what wget curl
+        apt-get -y install software-properties-common virt-what wget curl dnsutils
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        yum -y install virt-what wget
+        yum -y install virt-what wget bind-utils
     fi
     virt_serv=$(echo $(virt-what))
     if [ "$virt_serv" = "" ]; then
@@ -160,7 +160,7 @@ install_options(){
     output "[2] Install the panel (0.7.19)."
     output "[3] Install the wings."
     output "[4] Install the daemon."
-    output "[5] Install the (1.0) panel and daemon."
+    output "[5] Install the (1.0) panel and wings."
     output "[6] Install the (0.7.19) panel and daemon."
     output "[7] Install the standalone SFTP server."
     output "[8] Upgrade (0.7.x) panel to (1.0)."
@@ -1310,17 +1310,13 @@ install_wings() {
 
     service docker start
     systemctl enable docker
-    output "Enabling SWAP support for Docker & installing NodeJS..."
+    output "Enabling SWAP support for Docker."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
-    mkdir -p /etc/pterodactyl
+    output "Installing the Pterodactyl wings..."
+    mkdir -p /etc/pterodactyl /srv/daemon-data
+    cd /etc/pterodactyl
     curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
-
-    output "Installing the Pterodactyl daemon..."
-    mkdir -p /srv/daemon /srv/daemon-data
-    cd /srv/daemon
-    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
-    npm install --only=production --no-audit --unsafe-perm
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
 Description=Pterodactyl Wings Daemon
@@ -1345,7 +1341,7 @@ EOF
     output "Paste your auto deploy command below: "
     read AUTODEPLOY
     ${AUTODEPLOY}
-    service wings start
+    sudo wings
 }
 
 install_daemon() {
