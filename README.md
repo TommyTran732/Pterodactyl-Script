@@ -10,14 +10,10 @@ Discord group: https://revenact.io/discord <br />
 
 If you need me to help you fix or debug something, contact me via Telegram Secret Chat. - Please, please don't send me your server credentials via Discord.
 <br />
-# Pterodactyl v1.0 Release Candidate
-Pterodactyl v1.0 will NOT be supported until it is ready for production. <br />
-With that being said, you can still try out the v1.0 script version using: <br />
-<br />
-`bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/pterodactyl-1.0/install.sh)`
-<br />
+# Now with extra Pterodactyl v1.0
+This Script now includes the new Pterodactyl v1.0 release <br />
 <br>
-A migration script from v0.7 to v1.0 will be available at a later date.
+This Script also includes a migration script for 0.7 to 1.0 and Daemon to Wings
 <br />
 # Supported Operating System
 | Operating System  | Version | Supported            | Recommended        | Notes                                |
