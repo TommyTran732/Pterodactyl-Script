@@ -1138,7 +1138,7 @@ server {
     client_body_timeout 120s;
     sendfile off;
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
+    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;-
     ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2;
@@ -1461,10 +1461,6 @@ EOF
 
     systemctl enable --now wings
 
-    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
-    output "Paste your auto deploy command below: "
-    read AUTODEPLOY
-    ${AUTODEPLOY}
     sudo wings
 }
 
