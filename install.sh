@@ -192,7 +192,7 @@ install_options(){
             output "You have selected daemon installation only."
             ;;
         5 ) installoption=5
-            output "You have selected 1.0 panel and daemon installation."
+            output "You have selected 1.0 panel and wings installation."
             ;;
         6 ) installoption=6
             output "You have selected 0.7.19 panel and daemon installation."
@@ -1870,52 +1870,52 @@ broadcast_database(){
 preflight
 install_options
 case $installoption in 
-        1)  webserver_options
-            theme_options
-            repositories_setup
-            required_infos
-            firewall
-            setup_pterodactyl
-            broadcast
+        1)   webserver_options
+             theme_options
+             repositories_setup
+             required_infos
+             firewall
+             setup_pterodactyl
+             broadcast
             ;;
-        2)  webserver_options
-            theme_options
-            repositories_setup_0.7.19
-            required_infos
-            firewall
-            setup_pterodactyl_0.7.19
-            broadcast
+        2)   webserver_options
+             theme_options
+             repositories_setup_0.7.19
+             required_infos
+             firewall
+             setup_pterodactyl_0.7.19
+             broadcast
             ;;
-        3)  repositories_setup
-            required_infos
-            firewall
-            ssl_certs
-            install_wings
-            broadcast
+        3)   repositories_setup
+             required_infos
+             firewall
+             ssl_certs
+             install_wings
+             broadcast
             ;;
-        4)  repositories_setup_0.7.19
-            required_infos
-            firewall
-            ssl_certs
-            install_daemon
-            broadcast
+        4)   repositories_setup_0.7.19
+             required_infos
+             firewall
+             ssl_certs
+             install_daemon
+             broadcast
             ;;
-        5)  webserver_options
-            repositories_setup
-            required_infos
-            firewall
-            setup_pterodactyl
-            install_wings
-            broadcast
+        5)   webserver_options
+             repositories_setup
+             required_infos
+             firewall
+             setup_pterodactyl
+             install_wings
+             broadcast
             ;;
-        6)  webserver_options
-            theme_options
-            repositories_setup_0.7.19
-            required_infos
-            firewall
-            setup_pterodactyl_0.7.19
-            install_daemon
-            broadcast
+        6)   webserver_options
+             theme_options
+             repositories_setup_0.7.19
+             required_infos
+             firewall
+             setup_pterodactyl_0.7.19
+             install_daemon
+             broadcast
             ;;
         7)  install_standalone_sftp
             ;;
@@ -1934,25 +1934,30 @@ case $installoption in
              theme
              migrate_wings
             ;;
-        13)  upgrade_standalone_sftp
+        13)  theme_options
+             upgrade_pterodactyl
+             theme
+             upgrade_daemon
             ;;
-        14)  install_mobile
+        14)  upgrade_standalone_sftp
             ;;
-        15)  upgrade_mobile
+        15)  install_mobile
             ;;
-        16)  install_phpmyadmin
+        16)  upgrade_mobile
             ;;
-        17)  repositories_setup
+        17)  install_phpmyadmin
+            ;;
+        18)  repositories_setup
              install_database
             ;;
-        18)  theme_options
+        19)  theme_options
         if [ "$themeoption" = "1" ]; then
-             upgrade_pterodactyl
+             upgrade_pterodactyl_0.7.19
         fi
         theme
             ;;
-        19) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        20)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
-        20)  database_host_reset
+        21)  database_host_reset
             ;;
 esac
