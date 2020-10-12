@@ -155,6 +155,7 @@ os_check(){
 }
 
 install_options(){
+    warn "INSTALLING 1.0 WITH NGINX IS BROKEN AS OF THIS TIME ALSO WITH WINGS YOU NEED THE CONFIG FROM YOUR PANEL IN /etc/pterodactyl/config.yml"
     output "Please select your installation option:"
     output "[1] Install the panel (1.0)."
     output "[2] Install the panel (0.7.19)."
