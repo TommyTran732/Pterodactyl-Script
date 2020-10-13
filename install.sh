@@ -1007,66 +1007,33 @@ nginx_config() {
     output "Configuring Nginx Webserver..."
     
 echo '
-server_tokens off;
-set_real_ip_from 103.21.244.0/22;
-set_real_ip_from 103.22.200.0/22;
-set_real_ip_from 103.31.4.0/22;
-set_real_ip_from 104.16.0.0/12;
-set_real_ip_from 108.162.192.0/18;
-set_real_ip_from 131.0.72.0/22;
-set_real_ip_from 141.101.64.0/18;
-set_real_ip_from 162.158.0.0/15;
-set_real_ip_from 172.64.0.0/13;
-set_real_ip_from 173.245.48.0/20;
-set_real_ip_from 188.114.96.0/20;
-set_real_ip_from 190.93.240.0/20;
-set_real_ip_from 197.234.240.0/22;
-set_real_ip_from 198.41.128.0/17;
-set_real_ip_from 2400:cb00::/32;
-set_real_ip_from 2606:4700::/32;
-set_real_ip_from 2803:f800::/32;
-set_real_ip_from 2405:b500::/32;
-set_real_ip_from 2405:8100::/32;
-set_real_ip_from 2c0f:f248::/32;
-set_real_ip_from 2a06:98c0::/29;
-real_ip_header X-Forwarded-For;
 server {
-    listen 80 default_server;
+    listen 80;
     server_name '"$FQDN"';
-    return 301 https://$server_name$request_uri;
-}
-server {
-    listen 443 ssl http2 default_server;
-    server_name '"$FQDN"';
+
     root /var/www/pterodactyl/public;
-    index index.php;
-    access_log /var/log/nginx/pterodactyl.app-access.log;
-    error_log  /var/log/nginx/pterodactyl.app-error.log error;
-    # allow larger file uploads and longer script runtimes
-    client_max_body_size 100m;
-    client_body_timeout 120s;
-    sendfile off;
-    # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
-    ssl_session_cache shared:SSL:10m;
-    ssl_protocols TLSv1.2;
-    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
-    ssl_prefer_server_ciphers on;
-    # See https://hstspreload.org/ before uncommenting the line below.
-    # add_header Strict-Transport-Security "max-age=15768000; preload;";
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Robots-Tag none;
-    add_header Content-Security-Policy "frame-ancestors 'self'";
-    add_header X-Frame-Options DENY;
-    add_header Referrer-Policy same-origin;
+    index index.html index.htm index.php;
+    charset utf-8;
+
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log  /var/log/nginx/pterodactyl.app-error.log error;
+
+    # allow larger file uploads and longer script runtimes
+    client_max_body_size 100m;
+    client_body_timeout 120s;
+
+    sendfile off;
+
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
@@ -1078,12 +1045,12 @@ server {
         fastcgi_connect_timeout 300;
         fastcgi_send_timeout 300;
         fastcgi_read_timeout 300;
-        include /etc/nginx/fastcgi_params;
     }
+
     location ~ /\.ht {
         deny all;
     }
-}
+}}
 ' | sudo -E tee /etc/nginx/sites-available/pterodactyl.conf >/dev/null 2>&1
     if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
         sed -i 's/http2//g' /etc/nginx/sites-available/pterodactyl.conf
@@ -1403,7 +1370,6 @@ webserver_config(){
 setup_pterodactyl(){
     install_dependencies
     install_pterodactyl
-    ssl_certs
     webserver_config
 }
 
