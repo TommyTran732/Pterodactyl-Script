@@ -155,33 +155,34 @@ os_check(){
 }
 
 install_options(){
-    warn "INSTALLING 1.0 WITH NGINX IS BROKEN AS OF THIS TIME ALSO WITH WINGS YOU NEED THE CONFIG FROM YOUR PANEL IN /etc/pterodactyl/config.yml"
+    warn "INSTALLING 1.0.1 WITH NGINX IS BROKEN AS OF THIS TIME ALSO WITH WINGS YOU NEED THE CONFIG FROM YOUR PANEL IN /etc/pterodactyl/config.yml"
     output "Please select your installation option:"
-    output "[1] Install the panel (1.0)."
+    output "[1] Install the panel (1.0.1)."
     output "[2] Install the panel (0.7.19)."
     output "[3] Install the wings."
     output "[4] Install the daemon."
-    output "[5] Install the (1.0) panel and wings."
+    output "[5] Install the (1.0.1) panel and wings."
     output "[6] Install the (0.7.19) panel and daemon."
     output "[7] Install the standalone SFTP server."
-    output "[8] Upgrade (0.7.x) panel to (1.0)."
-    output "[9] Upgrade (0.7.x) panel to (0.7.19)."
-    output "[10] Upgrade (0.6.x) daemon to (0.6.13)."
-    output "[11] Migrating daemon to wings."
-    output "[12] Upgrade the panel to 1.0 and Migrate to wings"
-    output "[13] Upgrade the panel to 0.7.19 and daemon to (0.6.13)"
-    output "[14] Upgrade the standalone SFTP server to (1.0.5)."
-    output "[15] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
-    output "[16] Update mobile compatibility."
-    output "[17] Install or update to phpMyAdmin (5.0.2) (only use this after you have installed the panel)."
-    output "[18] Install a standalone database host (only for use on daemon-only installations)."
-    output "[19] Change Pterodactyl theme (0.7.19 Only)."
-    output "[20] Emergency MariaDB root password reset."
-    output "[21] Emergency database host information reset."
+    output "[8] Upgrade (1.0) panel to (1.0.1)."
+    output "[9] Upgrade (0.7.x) panel to (1.0.1)."
+    output "[10] Upgrade (0.7.x) panel to (0.7.19)."
+    output "[11] Upgrade (0.6.x) daemon to (0.6.13)."
+    output "[12] Migrating daemon to wings."
+    output "[13] Upgrade the panel to 1.0.1 and Migrate to wings"
+    output "[14] Upgrade the panel to 0.7.19 and daemon to (0.6.13)"
+    output "[15] Upgrade the standalone SFTP server to (1.0.5)."
+    output "[16] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
+    output "[17] Update mobile compatibility."
+    output "[18] Install or update to phpMyAdmin (5.0.2) (only use this after you have installed the panel)."
+    output "[19] Install a standalone database host (only for use on daemon-only installations)."
+    output "[20] Change Pterodactyl theme (0.7.19 Only)."
+    output "[21] Emergency MariaDB root password reset."
+    output "[22] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
-            output "You have selected 1.0 panel installation only."
+            output "You have selected 1.0.1 panel installation only."
             ;;
         2 ) installoption=2
             output "You have selected 0.7.19 panel installation only."
@@ -193,7 +194,7 @@ install_options(){
             output "You have selected daemon installation only."
             ;;
         5 ) installoption=5
-            output "You have selected 1.0 panel and wings installation."
+            output "You have selected 1.0.1 panel and wings installation."
             ;;
         6 ) installoption=6
             output "You have selected 0.7.19 panel and daemon installation."
@@ -202,45 +203,48 @@ install_options(){
             output "You have selected to install the standalone SFTP server."
             ;;
         8 ) installoption=8
-            output "You have selected to upgrade the panel to 1.0."
+            output "You have selected to upgrade the panel to 1.0.1."
             ;;
         9 ) installoption=9
-            output "You have selected to upgrade the panel to 0.7.19."
+            output "You have selected to upgrade the panel to 1.0.1."
             ;;
         10 ) installoption=10
-            output "You have selected to upgrade the daemon to 0.6.13."
+            output "You have selected to upgrade the panel to 0.7.19."
             ;;
         11 ) installoption=11
-            output "You have selected to migrate daemon to wings."
+            output "You have selected to upgrade the daemon to 0.6.13."
             ;;
         12 ) installoption=12
-            output "You have selected to upgrade both the panel to 1.0 and migrating to wings."
+            output "You have selected to migrate daemon to wings."
             ;;
         13 ) installoption=13
-            output "You have selected to upgrade both the panel to 0.7.19 and daemon to 0.6.13."
+            output "You have selected to upgrade both the panel to 1.0.1 and migrating to wings."
             ;;
         14 ) installoption=14
-            output "You have selected to upgrade the standalone SFTP."
+            output "You have selected to upgrade both the panel to 0.7.19 and daemon to 0.6.13."
             ;;
         15 ) installoption=15
-            output "You have activated mobile app compatibility."
+            output "You have selected to upgrade the standalone SFTP."
             ;;
         16 ) installoption=16
-            output "You have selected to update the mobile app compatibility."
+            output "You have activated mobile app compatibility."
             ;;
         17 ) installoption=17
-            output "You have selected to install or update phpMyAdmin."
+            output "You have selected to update the mobile app compatibility."
             ;;
         18 ) installoption=18
-            output "You have selected to install a Database host."
+            output "You have selected to install or update phpMyAdmin."
             ;;
         19 ) installoption=19
-            output "You have selected to change Pterodactyl's 0.7.19 only."
+            output "You have selected to install a Database host."
             ;;
         20 ) installoption=20
-            output "You have selected MariaDB root password reset."
+            output "You have selected to change Pterodactyl's 0.7.19 only."
             ;;
         21 ) installoption=21
+            output "You have selected MariaDB root password reset."
+            ;;
+        22 ) installoption=22
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -749,7 +753,7 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.0/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -958,7 +962,7 @@ EOF
 upgrade_pterodactyl(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.0/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -973,7 +977,30 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.0."
+    output "Your panel has successfully been updated to version 1.0.1"
+    php artisan up
+    php artisan queue:restart
+}
+
+upgrade_pterodactyl_1.0(){
+    cd /var/www/pterodactyl
+    php artisan down
+    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz | tar --strip-components=1 -xzv
+    chmod -R 755 storage/* bootstrap/cache
+    composer install --no-dev --optimize-autoloader
+    php artisan view:clear
+    php artisan config:clear
+    php artisan migrate --force
+    php artisan db:seed --force
+    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+        chown -R www-data:www-data * /var/www/pterodactyl
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+        chown -R apache:apache * /var/www/pterodactyl
+        chown -R nginx:nginx * /var/www/pterodactyl
+        semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
+        restorecon -R /var/www/pterodactyl
+    fi
+    output "Your panel has successfully been updated to version 1.0.1"
     php artisan up
     php artisan queue:restart
 }
@@ -2033,43 +2060,45 @@ case $installoption in
             ;;
         8)   upgrade_pterodactyl
             ;;
-        9)   theme_options
+        9)   upgrade_pterodactyl_1.0
+            ;;
+        10)   theme_options
              upgrade_pterodactyl_0.7.19
              theme
             ;;
-        10)   upgrade_daemon
+        11)   upgrade_daemon
             ;;
-        11)  migrate_wings
+        12)  migrate_wings
             ;;
-        12)  theme_options
+        13)  theme_options
              upgrade_pterodactyl_0.7.19
              theme
              migrate_wings
             ;;
-        13)  theme_options
-             upgrade_pterodactyl
+        14)  theme_options
+             upgrade_pterodactyl_1.0
              theme
              upgrade_daemon
             ;;
-        14)  upgrade_standalone_sftp
+        15)  upgrade_standalone_sftp
             ;;
-        15)  install_mobile
+        16)  install_mobile
             ;;
-        16)  upgrade_mobile
+        17)  upgrade_mobile
             ;;
-        17)  install_phpmyadmin
+        18)  install_phpmyadmin
             ;;
-        18)  repositories_setup
+        19)  repositories_setup
              install_database
             ;;
-        19)  theme_options
+        20)  theme_options
         if [ "$themeoption" = "1" ]; then
              upgrade_pterodactyl_0.7.19
         fi
         theme
             ;;
-        20)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        21)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
-        21)  database_host_reset
+        22)  database_host_reset
             ;;
 esac
