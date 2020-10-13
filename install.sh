@@ -986,6 +986,8 @@ upgrade_pterodactyl_1.0(){
     cd /var/www/pterodactyl
     php artisan down
     curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz | tar --strip-components=1 -xzv
+    rm -rf $(find app public resources -depth | head -n -1 | grep -Fv "$(tar -tf panel.tar.gz)")
+    tar -xzvf panel.tar.gz && rm -f panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
