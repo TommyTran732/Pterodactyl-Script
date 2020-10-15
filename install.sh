@@ -1839,9 +1839,23 @@ EOF
             ufw allow 3306
         elif [ "$installoption" = "2" ]; then
             ufw allow 80
+            ufw allow 443
+            ufw allow 3306
+        elif [ "$installoption" = "3" ]; then
+            ufw allow 80
             ufw allow 8080
             ufw allow 2022
-        elif [ "$installoption" = "3" ]; then
+        elif [ "$installoption" = "4" ]; then
+            ufw allow 80
+            ufw allow 8080
+            ufw allow 2022
+        elif [ "$installoption" = "5" ]; then
+            ufw allow 80
+            ufw allow 443
+            ufw allow 8080
+            ufw allow 2022
+            ufw allow 3306
+        elif [ "$installoption" = "6" ]; then
             ufw allow 80
             ufw allow 443
             ufw allow 8080
@@ -1856,17 +1870,31 @@ EOF
         if [ "$installoption" = "1" ]; then
             firewall-cmd --add-service=http --permanent
             firewall-cmd --add-service=https --permanent 
-            firewall-cmd --add-service=mysql --permanent 
+            firewall-cmd --add-service=mysql --permanent
         elif [ "$installoption" = "2" ]; then
+            firewall-cmd --add-service=http --permanent
+            firewall-cmd --add-service=https --permanent
+            firewall-cmd --add-service=mysql --permanent
+        elif [ "$installoption" = "3" ]; then
             firewall-cmd --permanent --add-service=80/tcp
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
-        elif [ "$installoption" = "3" ]; then
+        elif [ "$installoption" = "4" ]; then
+            firewall-cmd --permanent --add-service=80/tcp
+            firewall-cmd --permanent --add-port=2022/tcp
+            firewall-cmd --permanent --add-port=8080/tcp
+        elif [ "$installoption" = "5" ]; then
             firewall-cmd --add-service=http --permanent
             firewall-cmd --add-service=https --permanent 
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
-            firewall-cmd --permanent --add-service=mysql 
+            firewall-cmd --permanent --add-service=mysql
+        elif [ "$installoption" = "6" ]; then
+            firewall-cmd --add-service=http --permanent
+            firewall-cmd --add-service=https --permanent
+            firewall-cmd --permanent --add-port=2022/tcp
+            firewall-cmd --permanent --add-port=8080/tcp
+            firewall-cmd --permanent --add-service=mysql
         fi
     fi
 }
