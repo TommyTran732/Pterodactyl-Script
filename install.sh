@@ -1784,8 +1784,7 @@ ssl_certs(){
             fi
         elif [ "$installoption" = "3" ]; then
                 (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "3" ]; then
-            if [ "$webserver" = "1" ]; then
+        elif [ "$installoption" = "4" ]; then
                 (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
             fi
         elif [ "$installoption" = "5" ]; then
@@ -2127,11 +2126,11 @@ case $installoption in
             ;;
         9)   upgrade_pterodactyl_1.0
             ;;
-        10)   theme_options
+        10)  theme_options
              upgrade_pterodactyl_0.7.19
              theme
             ;;
-        11)   upgrade_daemon
+        11)  upgrade_daemon
             ;;
         12)  migrate_wings
             ;;
