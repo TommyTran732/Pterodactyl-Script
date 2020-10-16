@@ -1003,8 +1003,8 @@ upgrade_pterodactyl_1.0(){
         restorecon -R /var/www/pterodactyl
     fi
     output "Your panel has successfully been updated to version 1.0.1"
-    php artisan up
     php artisan queue:restart
+    php artisan up
 }
 
 upgrade_pterodactyl_0.7.19(){
@@ -1560,7 +1560,7 @@ WorkingDirectory=/srv/daemon
 LimitNOFILE=4096
 PIDFile=/var/run/wings/daemon.pid
 ExecStart=/usr/bin/node /srv/daemon/src/index.js
-Restart=on-failure
+Restart=on-failuref
 StartLimitInterval=600
 [Install]
 WantedBy=multi-user.target
@@ -2143,9 +2143,7 @@ case $installoption in
              theme
              migrate_wings
             ;;
-        14)  theme_options
-             upgrade_pterodactyl_1.0
-             theme
+        14)  upgrade_pterodactyl_1.0
              upgrade_daemon
             ;;
         15)  upgrade_standalone_sftp
