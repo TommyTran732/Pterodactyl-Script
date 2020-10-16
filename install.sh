@@ -155,7 +155,6 @@ os_check(){
 }
 
 install_options(){
-    warn "INSTALLING 1.0.1 WITH NGINX IS BROKEN AS OF THIS TIME ALSO WITH WINGS YOU NEED THE CONFIG FROM YOUR PANEL IN /etc/pterodactyl/config.yml"
     output "Please select your installation option:"
     output "[1] Install the panel (1.0.1)."
     output "[2] Install the panel (0.7.19)."
@@ -1488,9 +1487,12 @@ StartLimitInterval=600
 WantedBy=multi-user.target
 EOF
 
-    systemctl enable --now wings
-
-    sudo wings
+    systemctl enable wings
+    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
+    output "Paste your auto deploy command below: "
+    read AUTODEPLOY
+    ${AUTODEPLOY}
+    systemctl start wings
 }
 
 install_daemon() {
