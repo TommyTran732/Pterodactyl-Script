@@ -1166,7 +1166,7 @@ server {
     client_body_timeout 120s;
     sendfile off;
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;-
+    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2;
