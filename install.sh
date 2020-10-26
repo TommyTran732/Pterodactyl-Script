@@ -173,7 +173,7 @@ install_options(){
     output "[15] Upgrade the standalone SFTP server to (1.0.5)."
     output "[16] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[17] Update mobile compatibility."
-    output "[18] Install or update to phpMyAdmin (5.0.2) (only use this after you have installed the panel)."
+    output "[18] Install or update to phpMyAdmin (5.0.4) (only use this after you have installed the panel)."
     output "[19] Install a standalone database host (only for use on daemon-only installations)."
     output "[20] Change Pterodactyl theme (0.7.19 Only)."
     output "[21] Emergency MariaDB root password reset."
@@ -1690,10 +1690,10 @@ install_phpmyadmin(){
     output "Installing phpMyAdmin..."
     cd /var/www/pterodactyl/public
     rm -rf phpmyadmin
-    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.zip
-    unzip phpMyAdmin-5.0.2-all-languages.zip
-    mv phpMyAdmin-5.0.2-all-languages phpmyadmin
-    rm -rf phpMyAdmin-5.0.2-all-languages.zip
+    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.zip
+    unzip phpMyAdmin-5.0.4-all-languages.zip
+    mv phpMyAdmin-5.0.4-all-languages phpmyadmin
+    rm -rf phpMyAdmin-5.0.4-all-languages.zip
     cd /var/www/pterodactyl/public/phpmyadmin
 
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
