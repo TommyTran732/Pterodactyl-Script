@@ -5,7 +5,7 @@ Please note this script is meant to be used on fresh installations only. You mus
 `bash <(curl -sSL https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/install.sh)` <br />
 <br />
 Visit my forum: https://revenact.io <br />
-Contact me on Briar (Recommended): `briar://acehybe5fgdjorcnblazwfmmwuvnbsb7i4tktphjwpq4cf6hqjgqa`
+Contact me on Briar (Recommended): `briar://acehybe5fgdjorcnblazwfmmwuvnbsb7i4tktphjwpq4cf6hqjgqa` <br />
 Telegram group: https://t.me/revenact <br />
 Discord group: https://revenact.io/discord <br />
 
