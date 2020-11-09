@@ -156,24 +156,24 @@ os_check(){
 
 install_options(){
     output "Please select your installation option:"
-    output "[1] Install the panel (1.0.1)."
+    output "[1] Install the panel (1.1.0)."
     output "[2] Install the panel (0.7.19)."
     output "[3] Install the wings."
     output "[4] Install the daemon."
-    output "[5] Install the (1.0.1) panel and wings."
+    output "[5] Install the (1.1.0) panel and wings."
     output "[6] Install the (0.7.19) panel and daemon."
     output "[7] Install the standalone SFTP server."
-    output "[8] Upgrade (1.0) panel to (1.0.1)."
-    output "[9] Upgrade (0.7.x) panel to (1.0.1)."
+    output "[8] Upgrade (1.0) panel to (1.1.0)."
+    output "[9] Upgrade (0.7.x) panel to (1.1.0)."
     output "[10] Upgrade (0.7.x) panel to (0.7.19)."
     output "[11] Upgrade (0.6.x) daemon to (0.6.13)."
     output "[12] Migrating daemon to wings."
-    output "[13] Upgrade the panel to 1.0.1 and Migrate to wings"
+    output "[13] Upgrade the panel to 1.1.0 and Migrate to wings"
     output "[14] Upgrade the panel to 0.7.19 and daemon to (0.6.13)"
     output "[15] Upgrade the standalone SFTP server to (1.0.5)."
     output "[16] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[17] Update mobile compatibility."
-    output "[18] Install or update to phpMyAdmin (5.0.2) (only use this after you have installed the panel)."
+    output "[18] Install or update to phpMyAdmin (5.0.4) (only use this after you have installed the panel)."
     output "[19] Install a standalone database host (only for use on daemon-only installations)."
     output "[20] Change Pterodactyl theme (0.7.19 Only)."
     output "[21] Emergency MariaDB root password reset."
@@ -181,7 +181,7 @@ install_options(){
     read choice
     case $choice in
         1 ) installoption=1
-            output "You have selected 1.0.1 panel installation only."
+            output "You have selected 1.1.0 panel installation only."
             ;;
         2 ) installoption=2
             output "You have selected 0.7.19 panel installation only."
@@ -193,7 +193,7 @@ install_options(){
             output "You have selected daemon installation only."
             ;;
         5 ) installoption=5
-            output "You have selected 1.0.1 panel and wings installation."
+            output "You have selected 1.1.0 panel and wings installation."
             ;;
         6 ) installoption=6
             output "You have selected 0.7.19 panel and daemon installation."
@@ -202,10 +202,10 @@ install_options(){
             output "You have selected to install the standalone SFTP server."
             ;;
         8 ) installoption=8
-            output "You have selected to upgrade the panel to 1.0.1."
+            output "You have selected to upgrade the panel to 1.1.0."
             ;;
         9 ) installoption=9
-            output "You have selected to upgrade the panel to 1.0.1."
+            output "You have selected to upgrade the panel to 1.1.0."
             ;;
         10 ) installoption=10
             output "You have selected to upgrade the panel to 0.7.19."
@@ -217,7 +217,7 @@ install_options(){
             output "You have selected to migrate daemon to wings."
             ;;
         13 ) installoption=13
-            output "You have selected to upgrade both the panel to 1.0.1 and migrating to wings."
+            output "You have selected to upgrade both the panel to 1.1.0 and migrating to wings."
             ;;
         14 ) installoption=14
             output "You have selected to upgrade both the panel to 0.7.19 and daemon to 0.6.13."
@@ -752,7 +752,7 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.1.0/panel.tar.gz
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -959,9 +959,10 @@ EOF
 }
 
 upgrade_pterodactyl(){
+
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/v1.1.0/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -976,7 +977,7 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.0.1"
+    output "Your panel has successfully been updated to version 1.1.0"
     php artisan up
     php artisan queue:restart
 }
@@ -984,7 +985,7 @@ upgrade_pterodactyl(){
 upgrade_pterodactyl_1.0(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v1.0.1/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/v1.1.0/panel.tar.gz | tar --strip-components=1 -xzv
     rm -rf $(find app public resources -depth | head -n -1 | grep -Fv "$(tar -tf panel.tar.gz)")
     tar -xzvf panel.tar.gz && rm -f panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache
@@ -1001,9 +1002,9 @@ upgrade_pterodactyl_1.0(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.0.1"
-    php artisan queue:restart
+    output "Your panel has successfully been updated to version 1.1.0"
     php artisan up
+    php artisan queue:restart
 }
 
 upgrade_pterodactyl_0.7.19(){
@@ -1166,7 +1167,7 @@ server {
     client_body_timeout 120s;
     sendfile off;
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;-
+    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2;
@@ -1562,7 +1563,7 @@ WorkingDirectory=/srv/daemon
 LimitNOFILE=4096
 PIDFile=/var/run/wings/daemon.pid
 ExecStart=/usr/bin/node /srv/daemon/src/index.js
-Restart=on-failuref
+Restart=on-failure
 StartLimitInterval=600
 [Install]
 WantedBy=multi-user.target
@@ -1690,10 +1691,10 @@ install_phpmyadmin(){
     output "Installing phpMyAdmin..."
     cd /var/www/pterodactyl/public
     rm -rf phpmyadmin
-    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.2/phpMyAdmin-5.0.2-all-languages.zip
-    unzip phpMyAdmin-5.0.2-all-languages.zip
-    mv phpMyAdmin-5.0.2-all-languages phpmyadmin
-    rm -rf phpMyAdmin-5.0.2-all-languages.zip
+    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.zip
+    unzip phpMyAdmin-5.0.4-all-languages.zip
+    mv phpMyAdmin-5.0.4-all-languages phpmyadmin
+    rm -rf phpMyAdmin-5.0.4-all-languages.zip
     cd /var/www/pterodactyl/public/phpmyadmin
 
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
@@ -2145,7 +2146,9 @@ case $installoption in
              theme
              migrate_wings
             ;;
-        14)  upgrade_pterodactyl_1.0
+        14)  theme_options
+             upgrade_pterodactyl_1.0
+             theme
              upgrade_daemon
             ;;
         15)  upgrade_standalone_sftp
