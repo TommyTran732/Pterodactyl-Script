@@ -2141,13 +2141,11 @@ case $installoption in
             ;;
         12)  migrate_wings
             ;;
-        13)  theme_options
-             upgrade_pterodactyl_0.7.19
-             theme
+        13) upgrade_pterodactyl_1.0
              migrate_wings
             ;;
         14)  theme_options
-             upgrade_pterodactyl_1.0
+             upgrade_pterodactyl_0.7.19
              theme
              upgrade_daemon
             ;;
