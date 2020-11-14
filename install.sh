@@ -178,6 +178,7 @@ install_options(){
     output "[20] Change Pterodactyl theme (0.7.19 Only)."
     output "[21] Emergency MariaDB root password reset."
     output "[22] Emergency database host information reset."
+    output "[23] Setup the firewall."
     read choice
     case $choice in
         1 ) installoption=1
@@ -245,6 +246,9 @@ install_options(){
             ;;
         22 ) installoption=22
             output "You have selected Database Host information reset."
+            ;;
+	23 ) installoption=23
+            output "You have selected to setup the firewall."
             ;;
         * ) output "You did not enter a valid selection."
             install_options
@@ -1900,6 +1904,12 @@ EOF
             ufw allow 8080
             ufw allow 2022
             ufw allow 3306
+        elif [ "$installoption" = "23" ]; then
+            ufw allow 80
+            ufw allow 443
+            ufw allow 8080
+            ufw allow 2022
+            ufw allow 3306	    
         fi
         yes |ufw enable 
     elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
@@ -1934,6 +1944,12 @@ EOF
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
             firewall-cmd --permanent --add-service=mysql
+        elif [ "$installoption" = "23" ]; then
+            firewall-cmd --add-service=http --permanent
+            firewall-cmd --add-service=https --permanent
+            firewall-cmd --permanent --add-port=2022/tcp
+            firewall-cmd --permanent --add-port=8080/tcp
+            firewall-cmd --permanent --add-service=mysql	    
         fi
     fi
 }
@@ -2169,4 +2185,7 @@ case $installoption in
             ;;
         22)  database_host_reset
             ;;
+        23)  firewall
+             broadcast
+            ;;	   
 esac
