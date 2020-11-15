@@ -8,6 +8,12 @@ warn(){
     echo -e '\e[31m'$1'\e[0m';
 }
 
+PANEL=v1.1.1
+WINGS=v1.1.1
+PANEL_LEGACY=v0.7.19
+DAEMON_LEGACY=v0.6.13
+PHPMYADMIN=5.0.4
+
 preflight(){
     output "Pterodactyl Installation & Upgrade Script"
     output "Copyright © 2020 Thien Tran <contact@thientran.io>."
@@ -156,35 +162,35 @@ os_check(){
 
 install_options(){
     output "Please select your installation option:"
-    output "[1] Install the panel (1.1.1)."
-    output "[2] Install the panel (0.7.19)."
+    output "[1] Install the panel ${PANEL}."
+    output "[2] Install the panel ${WINGS}."
     output "[3] Install the wings."
     output "[4] Install the daemon."
-    output "[5] Install the (1.1.1) panel and wings."
-    output "[6] Install the (0.7.19) panel and daemon."
+    output "[5] Install the panel ${PANEL} and wings ${WINGS}."
+    output "[6] Install the panel ${PANEL_LEGACY} and daemon ${DAEMON_LEGACY}."
     output "[7] Install the standalone SFTP server."
-    output "[8] Upgrade (1.0) panel to (1.1.1)."
-    output "[9] Upgrade (0.7.x) panel to (1.1.1)."
-    output "[10] Upgrade (0.7.x) panel to (0.7.19)."
-    output "[11] Upgrade (0.6.x) daemon to (0.6.13)."
+    output "[8] Upgrade (1.x) panel to ${PANEL}."
+    output "[9] Upgrade (0.7.x) panel to ${PANEL}."
+    output "[10] Upgrade (0.7.x) panel to ${PANEL_LEGACY}."
+    output "[11] Upgrade (0.6.x) daemon to ${DAEMON_LEGACY}."
     output "[12] Migrating daemon to wings."
-    output "[13] Upgrade the panel to 1.1.1 and Migrate to wings"
-    output "[14] Upgrade the panel to 0.7.19 and daemon to (0.6.13)"
+    output "[13] Upgrade the panel to ${PANEL} and Migrate to wings"
+    output "[14] Upgrade the panel to ${PANEL_LEGACY} and daemon to ${DAEMON_LEGACY}"
     output "[15] Upgrade the standalone SFTP server to (1.0.5)."
     output "[16] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
     output "[17] Update mobile compatibility."
-    output "[18] Install or update to phpMyAdmin (5.0.4) (only use this after you have installed the panel)."
+    output "[18] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
     output "[19] Install a standalone database host (only for use on daemon-only installations)."
-    output "[20] Change Pterodactyl theme (0.7.19 Only)."
+    output "[20] Change Pterodactyl theme (${PANEL_LEGACY} Only)."
     output "[21] Emergency MariaDB root password reset."
     output "[22] Emergency database host information reset."
     read choice
     case $choice in
         1 ) installoption=1
-            output "You have selected 1.1.1 panel installation only."
+            output "You have selected ${PANEL} panel installation only."
             ;;
         2 ) installoption=2
-            output "You have selected 0.7.19 panel installation only."
+            output "You have selected ${PANEL_LEGACY} panel installation only."
             ;;
         3 ) installoption=3
             output "You have selected wings installation only."
@@ -193,34 +199,34 @@ install_options(){
             output "You have selected daemon installation only."
             ;;
         5 ) installoption=5
-            output "You have selected 1.1.1 panel and wings installation."
+            output "You have selected ${PANEL} panel and wings installation."
             ;;
         6 ) installoption=6
-            output "You have selected 0.7.19 panel and daemon installation."
+            output "You have selected ${PANEL_LEGACY} panel and daemon installation."
             ;;
         7 ) installoption=7
             output "You have selected to install the standalone SFTP server."
             ;;
         8 ) installoption=8
-            output "You have selected to upgrade the panel to 1.1.1."
+            output "You have selected to upgrade the panel to ${PANEL}."
             ;;
         9 ) installoption=9
-            output "You have selected to upgrade the panel to 1.1.1."
+            output "You have selected to upgrade the panel to ${PANEL}."
             ;;
         10 ) installoption=10
-            output "You have selected to upgrade the panel to 0.7.19."
+            output "You have selected to upgrade the panel to ${PANEL_LEGACY}."
             ;;
         11 ) installoption=11
-            output "You have selected to upgrade the daemon to 0.6.13."
+            output "You have selected to upgrade the daemon to ${DAEMON_LEGACY}."
             ;;
         12 ) installoption=12
             output "You have selected to migrate daemon to wings."
             ;;
         13 ) installoption=13
-            output "You have selected to upgrade both the panel to 1.1.1 and migrating to wings."
+            output "You have selected to upgrade both the panel to ${PANEL} and migrating to wings."
             ;;
         14 ) installoption=14
-            output "You have selected to upgrade both the panel to 0.7.19 and daemon to 0.6.13."
+            output "You have selected to upgrade both the panel to ${PANEL} and daemon to ${DAEMON_LEGACY}."
             ;;
         15 ) installoption=15
             output "You have selected to upgrade the standalone SFTP."
@@ -238,7 +244,7 @@ install_options(){
             output "You have selected to install a Database host."
             ;;
         20 ) installoption=20
-            output "You have selected to change Pterodactyl's 0.7.19 only."
+            output "You have selected to change Pterodactyl ${PANEL_LEGACY} only."
             ;;
         21 ) installoption=21
             output "You have selected MariaDB root password reset."
@@ -752,7 +758,7 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v1.1.1/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -878,7 +884,7 @@ install_pterodactyl_0.7.19() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.19/panel.tar.gz
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL_LEGACY}/panel.tar.gz
     tar --strip-components=1 -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -961,7 +967,7 @@ EOF
 upgrade_pterodactyl(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v1.1.1/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -984,7 +990,7 @@ upgrade_pterodactyl(){
 upgrade_pterodactyl_1.0(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v1.1.1/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz | tar --strip-components=1 -xzv
     rm -rf $(find app public resources -depth | head -n -1 | grep -Fv "$(tar -tf panel.tar.gz)")
     tar -xzvf panel.tar.gz && rm -f panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache
@@ -1009,7 +1015,7 @@ upgrade_pterodactyl_1.0(){
 upgrade_pterodactyl_0.7.19(){
     cd /var/www/pterodactyl
     php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/v0.7.19/panel.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL_LEGACY}/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
     composer install --no-dev --optimize-autoloader
     php artisan view:clear
@@ -1467,7 +1473,7 @@ install_wings() {
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl /srv/daemon-data
     cd /etc/pterodactyl
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0/wings_linux_amd64
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
@@ -1549,7 +1555,7 @@ install_daemon() {
     output "Installing the Pterodactyl daemon..."
     mkdir -p /srv/daemon /srv/daemon-data
     cd /srv/daemon
-    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/daemon/releases/download/${DAEMON_LEGACY}/daemon.tar.gz | tar --strip-components=1 -xzv
     npm install --only=production --no-audit --unsafe-perm
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
@@ -1580,7 +1586,7 @@ EOF
 
 migrate_wings(){
     mkdir -p /etc/pterodactyl
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/v1.0.0/wings_linux_amd64
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
     systemctl stop wings
     rm -rf /srv/daemon
@@ -1611,7 +1617,7 @@ EOF
 upgrade_daemon(){
     cd /srv/daemon
     service wings stop
-    curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.13/daemon.tar.gz | tar --strip-components=1 -xzv
+    curl -L https://github.com/pterodactyl/daemon/releases/download/${DAEMON_LEGACY}/daemon.tar.gz | tar --strip-components=1 -xzv
     npm install -g npm
     npm install --only=production --no-audit --unsafe-perm
     service wings restart
@@ -1690,10 +1696,10 @@ install_phpmyadmin(){
     output "Installing phpMyAdmin..."
     cd /var/www/pterodactyl/public
     rm -rf phpmyadmin
-    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.4/phpMyAdmin-5.0.4-all-languages.zip
-    unzip phpMyAdmin-5.0.4-all-languages.zip
-    mv phpMyAdmin-5.0.4-all-languages phpmyadmin
-    rm -rf phpMyAdmin-5.0.4-all-languages.zip
+    wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN}/phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+    unzip phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+    mv phpMyAdmin-${PHPMYADMIN}-all-languages phpmyadmin
+    rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
     cd /var/www/pterodactyl/public/phpmyadmin
 
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
