@@ -2091,7 +2091,8 @@ case $installoption in
              firewall
              setup_pterodactyl
              broadcast
-            ;;
+	     broadcast_database
+             ;;
         2)   webserver_options
              theme_options
              repositories_setup_0.7.19
@@ -2099,21 +2100,22 @@ case $installoption in
              firewall
              setup_pterodactyl_0.7.19
              broadcast
-            ;;
+             ;;
         3)   repositories_setup
              required_infos
              firewall
              ssl_certs
              install_wings
              broadcast
-            ;;
+	     broadcast_database
+             ;;
         4)   repositories_setup_0.7.19
              required_infos
              firewall
              ssl_certs
              install_daemon
              broadcast
-            ;;
+             ;;
         5)   webserver_options
              repositories_setup
              required_infos
@@ -2122,7 +2124,7 @@ case $installoption in
              setup_pterodactyl
              install_wings
              broadcast
-            ;;
+             ;;
         6)   webserver_options
              theme_options
              repositories_setup_0.7.19
@@ -2131,48 +2133,48 @@ case $installoption in
              setup_pterodactyl_0.7.19
              install_daemon
              broadcast
-            ;;
-        7)  install_standalone_sftp
-            ;;
+             ;;
+        7)   install_standalone_sftp
+             ;;
         8)   upgrade_pterodactyl
-            ;;
+             ;;
         9)   upgrade_pterodactyl_1.0
-            ;;
+             ;;
         10)  theme_options
              upgrade_pterodactyl_0.7.19
              theme
-            ;;
+             ;;
         11)  upgrade_daemon
-            ;;
+             ;;
         12)  migrate_wings
-            ;;
+             ;;
         13)  upgrade_pterodactyl_1.0
              migrate_wings
-            ;;
+             ;;
         14)  theme_options
              upgrade_pterodactyl_0.7.19
              theme
              upgrade_daemon
-            ;;
+             ;;
         15)  upgrade_standalone_sftp
-            ;;
+             ;;
         16)  install_mobile
-            ;;
+             ;;
         17)  upgrade_mobile
-            ;;
+             ;;
         18)  install_phpmyadmin
-            ;;
+             ;;
         19)  repositories_setup
              install_database
-            ;;
+             ;;
         20)  theme_options
-        if [ "$themeoption" = "1" ]; then
-             upgrade_pterodactyl_0.7.19
-        fi
-        theme
+             if [ "$themeoption" = "1" ]; then
+             	upgrade_pterodactyl_0.7.19
+             fi
+             theme
             ;;
-        21)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        21) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
-        22)  database_host_reset
+        22) database_host_reset
             ;;
 esac
