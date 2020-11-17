@@ -163,9 +163,9 @@ os_check(){
 install_options(){
     output "Please select your installation option:"
     output "[1] Install the panel ${PANEL}."
-    output "[2] Install the panel ${WINGS}."
-    output "[3] Install the wings."
-    output "[4] Install the daemon."
+    output "[2] Install the panel ${PANEL_LEGACY}."
+    output "[3] Install the wings ${WINGS}."
+    output "[4] Install the daemon ${DAEMON_LEGACY}."
     output "[5] Install the panel ${PANEL} and wings ${WINGS}."
     output "[6] Install the panel ${PANEL_LEGACY} and daemon ${DAEMON_LEGACY}."
     output "[7] Install the standalone SFTP server."
@@ -193,13 +193,13 @@ install_options(){
             output "You have selected ${PANEL_LEGACY} panel installation only."
             ;;
         3 ) installoption=3
-            output "You have selected wings installation only."
+            output "You have selected wings ${WINGS} installation only."
             ;;
         4 ) installoption=4
-            output "You have selected daemon installation only."
+            output "You have selected daemon ${DAEMON_LEGACY} installation only."
             ;;
         5 ) installoption=5
-            output "You have selected ${PANEL} panel and wings installation."
+            output "You have selected ${PANEL} panel and wings ${WINGS} installation."
             ;;
         6 ) installoption=6
             output "You have selected ${PANEL_LEGACY} panel and daemon installation."
@@ -220,10 +220,10 @@ install_options(){
             output "You have selected to upgrade the daemon to ${DAEMON_LEGACY}."
             ;;
         12 ) installoption=12
-            output "You have selected to migrate daemon to wings."
+            output "You have selected to migrate daemon ${DAEMON_LEGACY} to wings ${WINGS}."
             ;;
         13 ) installoption=13
-            output "You have selected to upgrade both the panel to ${PANEL} and migrating to wings."
+            output "You have selected to upgrade both the panel to ${PANEL} and migrating to wings ${WINGS}."
             ;;
         14 ) installoption=14
             output "You have selected to upgrade both the panel to ${PANEL} and daemon to ${DAEMON_LEGACY}."
@@ -238,7 +238,7 @@ install_options(){
             output "You have selected to update the mobile app compatibility."
             ;;
         18 ) installoption=18
-            output "You have selected to install or update phpMyAdmin."
+            output "You have selected to install or update phpMyAdmin ${PHPMYADMIN}."
             ;;
         19 ) installoption=19
             output "You have selected to install a Database host."
