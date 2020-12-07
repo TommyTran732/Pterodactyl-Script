@@ -982,7 +982,7 @@ upgrade_pterodactyl(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.1.1"
+    output "Your panel has successfully been updated to version ${PANEL}"
     php artisan up
     php artisan queue:restart
 }
@@ -1007,7 +1007,7 @@ upgrade_pterodactyl_1.0(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 1.1.1"
+    output "Your panel has successfully been updated to version ${PANEL}"
     php artisan up
     php artisan queue:restart
 }
@@ -1030,7 +1030,7 @@ upgrade_pterodactyl_0.7.19(){
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
-    output "Your panel has successfully been updated to version 0.7.19."
+    output "Your panel has successfully been updated to version ${PANEL_LEGACY}."
     php artisan up
     php artisan queue:restart
 }
@@ -1494,6 +1494,10 @@ WantedBy=multi-user.target
 EOF
 
     systemctl enable wings
+    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
+    output "Paste your auto deploy command below: "
+    read AUTODEPLOY
+    ${AUTODEPLOY}
     systemctl start wings
 }
 
@@ -1617,7 +1621,7 @@ upgrade_daemon(){
     npm install -g npm
     npm install --only=production --no-audit --unsafe-perm
     service wings restart
-    output "Your daemon has been updated to version 0.6.13."
+    output "Your daemon has been updated to version ${DAEMON_LEGACY}."
     output "npm has been updated to the latest version."
 }
 
