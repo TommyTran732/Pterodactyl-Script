@@ -1495,6 +1495,7 @@ EOF
 
     systemctl enable wings
     systemctl start wings
+    output "Wings ${WINGS} has now been installed on your system."
 }
 
 install_daemon() {
@@ -1578,6 +1579,7 @@ EOF
     read AUTODEPLOY
     ${AUTODEPLOY}
     service wings start
+    output "Daemon ${DAEMON_LEGACY} has now been installed on your system."
 }
 
 migrate_wings(){
