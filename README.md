@@ -2,7 +2,7 @@
 Installing Pterodactyl in just a few minutes! <br />
 Please note this script is meant to be used on fresh installations only. You must run it as root. <br />
 <br />
-`bash <(curl -sSL https://raw.githubusercontent.com/Revenact/Pterodactyl-Script/master/install.sh)` <br />
+`bash <(curl -sSL https://github.com/Revenact/Pterodactyl-Script/releases/download/v0.0.1/install.sh)` <br />
 <br />
 Visit my forum: https://revenact.io <br />
 Telegram group: https://t.me/revenact <br />
@@ -18,13 +18,11 @@ This Script also includes a migration script for 0.7 to 1.0 and Daemon to Wings
 # Supported Operating System
 | Operating System  | Version | Supported            | Recommended        | Notes                                |
 | ----------------- | ------- | -------------------- | ------------------ | ------------------------------------ |
-| Ubuntu            | 20.04   | :white_check_mark:   | :white_check_mark: |                                      |
-|                   | 18.04   | :white_check_mark:   | :white_check_mark: |                                      |
-|                   | 16.04   | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
-| Debian            | 10      | :white_check_mark:   | :white_check_mark: |                                      |
-|                   | 9       | :white_check_mark:   | :red_circle:       | Old, not recently tested             |
-| CentOS            | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
-|                   | 7       | :white_check_mark:   | :white_check_mark: |                                      |
-| RHEL              | 8       | :white_check_mark:   | :red_circle:       | Does not officially support Docker   |
-| Fedora            | 32      | :white_check_mark:   | :white_check_mark: |                                      |
-|                   | 31      | :white_check_mark:   | :red_circle:       | Old, near end of life                |
+| Ubuntu            | 20.04   | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+|                   | 18.04   | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Debian            | 10      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| CentOS            | Stream  | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+|                   | 8       | :heavy_check_mark:   | :heavy_check_mark: |   Old, Will be removed in Future.    |
+| RHEL              | 8       | :heavy_check_mark:   | :red_circle:       |                                      |
+| Fedora            | 33      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+|                   | 32      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
