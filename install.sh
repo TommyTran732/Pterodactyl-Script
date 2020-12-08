@@ -133,8 +133,8 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
-        if [ "$dist_version" != "32" ] && [ "$dist_version" != "31" ]; then
-            output "Unsupported Fedora version. Only Fedora 32 and 31 are supported."
+        if [ "$dist_version" != "33" ] && [ "$dist_version" != "32" ]; then
+            output "Unsupported Fedora version. Only Fedora 33 and 32 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "centos" ]; then
@@ -153,7 +153,7 @@ os_check(){
         output "Supported OS:"
         output "Ubuntu: 20.04, 18.04, 16.04"
         output "Debian: 10, 9"
-        output "Fedora: 32, 31"
+        output "Fedora: 33, 32"
         output "CentOS: 8, 7"
         output "RHEL: 8"
         exit 2
@@ -340,7 +340,7 @@ required_infos() {
 dns_check(){
     output "Please enter your FQDN (panel.domain.tld):"
     read FQDN
-    
+
     output "Resolving DNS..."
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
     DOMAIN_RECORD=$(dig +short ${FQDN})
@@ -351,7 +351,7 @@ dns_check(){
         output "If you are using Cloudflare, please disable the orange cloud."
         output "If you do not have a domain, you can get a free one at https://freenom.com"
         dns_check
-    else 
+    else
         output "Domain resolved correctly. Good to go..."
     fi
 }
@@ -422,10 +422,10 @@ repositories_setup(){
         apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            if [ "$dist_version" = "32" ]; then
+            if [ "$dist_version" = "33" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-33.rpm
+            elif [ "$dist_version" = "32" ]; then
                 dnf -y install  http://rpms.remirepo.net/fedora/remi-release-32.rpm
-            elif [ "$dist_version" = "31" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-31.rpm
             fi
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
@@ -492,7 +492,7 @@ repositories_setup_0.7.19(){
         apt-get -y install software-properties-common dnsutils gpg-agent
         dpkg --remove-architecture i386
         echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
-        apt-get -y update 
+        apt-get -y update
 	curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
@@ -502,7 +502,7 @@ repositories_setup_0.7.19(){
                 add-apt-repository -y ppa:nginx/development
             fi
 	        apt -y install tuned dnsutils
-                tuned-adm profile latency-performance   
+                tuned-adm profile latency-performance
         elif [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install ca-certificates apt-transport-https
             echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
@@ -518,17 +518,17 @@ repositories_setup_0.7.19(){
                 sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
             fi
         fi
-        apt-get -y update 
+        apt-get -y update
         apt-get -y upgrade
         apt-get -y autoremove
-        apt-get -y autoclean   
+        apt-get -y autoclean
         apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            if [ "$dist_version" = "32" ]; then
+            if [ "$dist_version" = "33" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-33.rpm
+            elif [ "$dist_version" = "32" ]; then
                 dnf -y install  http://rpms.remirepo.net/fedora/remi-release-32.rpm
-            elif [ "$dist_version" = "31" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-31.rpm
             fi
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
@@ -670,7 +670,7 @@ install_dependencies_0.7.19(){
         if [ "$dist_version" = "8" ]; then
 	        dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
         fi
-	else 
+	else
 	    dnf -y install MariaDB-server
 	fi
 	dnf -y module install php:remi-7.3
@@ -678,7 +678,7 @@ install_dependencies_0.7.19(){
             dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
         elif [ "$webserver" = "2" ]; then
             dnf -y install redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect jq php-mysql php-zip php-mcmath tar
-        fi    
+        fi
     fi
 
     output "Enabling Services..."
@@ -693,7 +693,7 @@ install_dependencies_0.7.19(){
         systemctl enable php-fpm
         service php-fpm start
     fi
-    
+
     systemctl enable cron
     systemctl enable mariadb
 
@@ -877,10 +877,10 @@ install_pterodactyl_0.7.19() {
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.conf.d/mysqld.cnf
 		output 'Restarting MySQL process...'
 		service mysql restart
-	else 
+	else
 		output 'A MySQL configuration file could not be detected! Please contact support.'
 	fi
-    
+
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
@@ -1039,7 +1039,7 @@ nginx_config() {
     output "Disabling default configuration..."
     rm -rf /etc/nginx/sites-enabled/default
     output "Configuring Nginx Webserver..."
-    
+
 echo '
 server_tokens off;
 set_real_ip_from 103.21.244.0/22;
@@ -1226,7 +1226,7 @@ echo '
   ServerName '"$FQDN"'
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 </VirtualHost>
 <VirtualHost *:443>
   ServerName '"$FQDN"'
@@ -1240,9 +1240,9 @@ echo '
   SSLEngine on
   SSLCertificateFile /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/'"$FQDN"'/privkey.pem
-</VirtualHost> 
+</VirtualHost>
 ' | sudo -E tee /etc/apache2/sites-available/pterodactyl.conf >/dev/null 2>&1
-    
+
     ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
     a2enmod ssl
     a2enmod rewrite
@@ -1251,7 +1251,7 @@ echo '
 
 nginx_config_redhat(){
     output "Configuring Nginx web server..."
-    
+
 echo '
 server_tokens off;
 set_real_ip_from 103.21.244.0/22;
@@ -1291,7 +1291,7 @@ server {
     # allow larger file uploads and longer script runtimes
     client_max_body_size 100m;
     client_body_timeout 120s;
-    
+
     sendfile off;
     # strengthen ssl security
     ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
@@ -1300,7 +1300,7 @@ server {
     ssl_prefer_server_ciphers on;
     ssl_session_cache shared:SSL:10m;
     ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
-    
+
     # See the link below for more SSL information:
     #     https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
     #
@@ -1349,7 +1349,7 @@ echo '
   ServerName '"$FQDN"'
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 </VirtualHost>
 <VirtualHost *:443>
   ServerName '"$FQDN"'
@@ -1361,7 +1361,7 @@ echo '
   SSLEngine on
   SSLCertificateFile /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/'"$FQDN"'/privkey.pem
-</VirtualHost> 
+</VirtualHost>
 ' | sudo -E tee /etc/httpd/conf.d/pterodactyl.conf >/dev/null 2>&1
     service httpd restart
 }
@@ -1513,9 +1513,9 @@ install_daemon() {
         output "Installing Docker"
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     fi
-    
+
     service docker start
-    systemctl enable docker 
+    systemctl enable docker
     output "Enabling SWAP support for Docker & installing NodeJS..."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
@@ -1529,7 +1529,7 @@ install_daemon() {
             else
                 apt -y install nodejs make gcc g++ node-gyp
             fi
-        apt-get -y update 
+        apt-get -y update
         apt-get -y upgrade
         apt-get -y autoremove
         apt-get -y autoclean
