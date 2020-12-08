@@ -128,8 +128,8 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" = "debian" ]; then
-        if [ "$dist_version" != "10" ] &&[ "$dist_version" != "9" ]; then
-            output "Unsupported Debian version. Only Debian 10 and 9 are supported."
+        if [ "$dist_version" != "10" ]; then
+            output "Unsupported Debian version. Only Debian 10 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
@@ -152,7 +152,7 @@ os_check(){
         output ""
         output "Supported OS:"
         output "Ubuntu: 20.04, 18.04"
-        output "Debian: 10, 9"
+        output "Debian: 10"
         output "Fedora: 33, 32"
         output "CentOS: 8, 7"
         output "RHEL: 8"
@@ -409,11 +409,6 @@ repositories_setup(){
                 sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
                 apt -y install tuned
                 tuned-adm profile latency-performance
-            elif [ "$dist_version" = "9" ]; then
-                apt -y install dirmngr
-                wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-                sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-            fi
         fi
         apt-get -y update
         apt-get -y upgrade
@@ -512,11 +507,6 @@ repositories_setup_0.7.19(){
                 sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
                 apt -y install tuned
                 tuned-adm profile latency-performance
-            elif [ "$dist_version" = "9" ]; then
-                apt -y install dirmngr
-                wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-                sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-            fi
         fi
         apt-get -y update
         apt-get -y upgrade
