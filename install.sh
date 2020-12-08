@@ -123,8 +123,8 @@ os_check(){
     fi
     
     if [ "$lsb_dist" =  "ubuntu" ]; then
-        if  [ "$dist_version" != "20.04" ] && [ "$dist_version" != "18.04" ] && [ "$dist_version" != "16.04" ]; then
-            output "Unsupported Ubuntu version. Only Ubuntu 20.04, 18.04 and 16.04 are supported."
+        if  [ "$dist_version" != "20.04" ] && [ "$dist_version" != "18.04" ]; then
+            output "Unsupported Ubuntu version. Only Ubuntu 20.04 and 18.04 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "debian" ]; then
@@ -151,7 +151,7 @@ os_check(){
         output "Unsupported operating system."
         output ""
         output "Supported OS:"
-        output "Ubuntu: 20.04, 18.04, 16.04"
+        output "Ubuntu: 20.04, 18.04"
         output "Debian: 10, 9"
         output "Fedora: 33, 32"
         output "CentOS: 8, 7"
