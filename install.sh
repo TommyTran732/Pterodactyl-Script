@@ -1435,12 +1435,8 @@ install_wings() {
         yum -y install curl tar unzip
     fi
 
-    if [[ ( "$lsb_dist" =  "centos" ||  "$lsb_dist" =  "rhel" ) && "$dist_version" = "8" ]]; then
-    	curl -sSL https://raw.githubusercontent.com/tommytran732/CentOS-8-Docker-Script/master/get-docker.sh | sudo bash
-    else
-        output "Installing Docker"
-        curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-    fi
+    output "Installing Docker"
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
 
     service docker start
     systemctl enable docker
@@ -1483,12 +1479,8 @@ install_daemon() {
         yum -y install curl tar unzip
     fi
 
-    if [[ ( "$lsb_dist" =  "centos" ||  "$lsb_dist" =  "rhel" ) && "$dist_version" = "8" ]]; then
-    	curl -sSL https://raw.githubusercontent.com/tommytran732/CentOS-8-Docker-Script/master/get-docker.sh | sudo bash
-    else
-        output "Installing Docker"
-        curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-    fi
+    output "Installing Docker"
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
 
     service docker start
     systemctl enable docker
