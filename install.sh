@@ -138,8 +138,8 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" = "centos" ]; then
-        if [ "$dist_version" != "8" ] && [ "$dist_version" != "7" ]; then
-            output "Unsupported CentOS version. Only CentOS 8 and 7 are supported."
+        if [ "$dist_version" != "8" ]; then
+            output "Unsupported CentOS version. Only CentOS Stream and 8 are supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "rhel" ]; then
@@ -390,7 +390,7 @@ repositories_setup(){
         dpkg --remove-architecture i386
         echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
         apt-get -y update
-	curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	      curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
             add-apt-repository -y ppa:chris-lea/redis-server
@@ -435,8 +435,7 @@ repositories_setup(){
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
-        elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-
+    fi
             bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<-'EOF'
 [nginx-mainline]
 name=nginx mainline repo
@@ -488,7 +487,7 @@ repositories_setup_0.7.19(){
         dpkg --remove-architecture i386
         echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
         apt-get -y update
-	curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	  curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
             add-apt-repository -y ppa:chris-lea/redis-server
@@ -533,8 +532,7 @@ repositories_setup_0.7.19(){
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
-        elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-
+    fi
             bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<-'EOF'
 [nginx-mainline]
 name=nginx mainline repo
@@ -587,12 +585,6 @@ install_dependencies(){
              apt -y install php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} curl tar unzip git redis-server apache2 libapache2-mod-php7.4 redis-server git wget expect
         fi
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
-    elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-        if [ "$webserver" = "1" ]; then
-            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis nginx git policycoreutils-python-utils unzip wget expect tar
-        elif [ "$webserver" = "2" ]; then
-            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect tar
-        fi
     else
 	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         if [ "$dist_version" = "8" ]; then
@@ -649,12 +641,6 @@ install_dependencies_0.7.19(){
             apt-get -y install php7.3 php7.3-cli php7.3-gd php7.3-mysql php7.3-pdo php7.3-mbstring php7.3-tokenizer php7.3-bcmath php7.3-xml php7.3-fpm php7.3-curl php7.3-zip curl tar unzip git redis-server apache2 libapache2-mod-php7.3 redis-server git wget expect
         fi
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
-    elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-        if [ "$webserver" = "1" ]; then
-            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis nginx git policycoreutils-python-utils unzip wget expect tar
-        elif [ "$webserver" = "2" ]; then
-            yum -y install php php-common php-fpm php-cli php-json php-mysqlnd php-mcrypt php-gd php-mbstring php-pdo php-zip php-bcmath php-dom php-opcache MariaDB-server redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect tar
-        fi
     else
 	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         if [ "$dist_version" = "8" ]; then
@@ -1527,14 +1513,11 @@ install_daemon() {
         grub2-mkconfig -o "$(readlink /etc/grub2.conf)"
         if [ "$lsb_dist" =  "fedora" ]; then
             dnf -y module install nodejs:12/minimal
-	    dnf install -y tar unzip make gcc gcc-c++ python2
-	elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
-	    dnf -y module install nodejs:12/minimal
-	    dnf install -y tar unzip make gcc gcc-c++ python2
-	elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "7" ]; then
-	    curl --silent --location https://rpm.nodesource.com/setup_12.x | sudo bash -
-            yum -y install nodejs tar unzip make gcc-c++ node-gyp
-	fi
+	          dnf install -y tar unzip make gcc gcc-c++ python2
+	      fi
+	  elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
+	      dnf -y module install nodejs:12/minimal
+	      dnf install -y tar unzip make gcc gcc-c++ python2
         yum -y upgrade
         yum -y autoremove
         yum -y clean packages
