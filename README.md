@@ -2,7 +2,9 @@
 Installing Pterodactyl in just a few minutes! <br />
 Please note this script is meant to be used on fresh installations only. You must run it as root. <br />
 <br />
-`bash <(curl -sSL https://github.com/Revenact/Pterodactyl-Script/releases/download/v0.0.1/install.sh)` <br />
+`curl -Ls https://api.github.com/repos/Revenact/Pterodactyl-Script/releases/latest | grep -wo "https.*install.sh" | wget -qi -` <br />
+<br /> 
+`bash install.sh` <br />
 <br />
 Visit my forum: https://revenact.io <br />
 Telegram group: https://t.me/revenact <br />
