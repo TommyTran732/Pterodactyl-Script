@@ -342,7 +342,7 @@ dns_check(){
     read FQDN
 
     output "Resolving DNS..."
-    SERVER_IP=$(curl -s http://checkip.amazonaws.com)
+    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
     DOMAIN_RECORD=$(dig +short ${FQDN})
     if [ "${SERVER_IP}" != "${DOMAIN_RECORD}" ]; then
         output ""
