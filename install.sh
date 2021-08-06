@@ -417,21 +417,21 @@ repositories_setup(){
         apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            if [ "$dist_version" = "33" ]; then
+            if [ "$dist_version" = "34" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
+            elif [ "$dist_version" = "33" ]; then
                 dnf -y install  http://rpms.remirepo.net/fedora/remi-release-33.rpm
-            elif [ "$dist_version" = "32" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-32.rpm
             fi
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.4
+            dnf -y module enable php:remi-8.0
 	    dnf -y module enable nginx:mainline/common
 	    dnf -y module enable mariadb:14/server
         elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
             dnf -y install epel-release boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.4
+            dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -457,7 +457,7 @@ EOF
             yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
             yum -y install policycoreutils-python yum-utils libsemanage-devel
             yum-config-manager --enable remi
-            yum-config-manager --enable remi-php74
+            yum-config-manager --enable remi-php80
 	        yum-config-manager --enable nginx-mainline
 	        yum-config-manager --enable mariadb
         elif  [ "$lsb_dist" =  "rhel" ] && [ "$dist_version" = "8" ]; then
@@ -465,7 +465,7 @@ EOF
             dnf -y install boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.4
+            dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -514,21 +514,21 @@ repositories_setup_0.7.19(){
         apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            if [ "$dist_version" = "33" ]; then
+            if [ "$dist_version" = "34" ]; then
+                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
+            elif [ "$dist_version" = "33" ]; then
                 dnf -y install  http://rpms.remirepo.net/fedora/remi-release-33.rpm
-            elif [ "$dist_version" = "32" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-32.rpm
             fi
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-8.0
 	    dnf -y module enable nginx:mainline/common
 	    dnf -y module enable mariadb:14/server
         elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
             dnf -y install epel-release boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -554,7 +554,7 @@ EOF
             yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
             yum -y install policycoreutils-python yum-utils libsemanage-devel
             yum-config-manager --enable remi
-            yum-config-manager --enable remi-php73
+            yum-config-manager --enable remi-php80
 	        yum-config-manager --enable nginx-mainline
 	        yum-config-manager --enable mariadb
         elif  [ "$lsb_dist" =  "rhel" ] && [ "$dist_version" = "8" ]; then
@@ -562,7 +562,7 @@ EOF
             dnf -y install boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-7.3
+            dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
@@ -580,9 +580,9 @@ install_dependencies(){
     output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         if [ "$webserver" = "1" ]; then
-            apt -y install php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
+            apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
         elif [ "$webserver" = "2" ]; then
-             apt -y install php7.4 php7.4-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} curl tar unzip git redis-server apache2 libapache2-mod-php7.4 redis-server git wget expect
+             apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} curl tar unzip git redis-server apache2 libapache2-mod-php7.4 redis-server git wget expect
         fi
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
@@ -593,7 +593,7 @@ install_dependencies(){
 	else
 	    dnf -y install MariaDB-server
 	fi
-	dnf -y module install php:remi-7.4
+	dnf -y module install php:remi-8.0
         if [ "$webserver" = "1" ]; then
             dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
         elif [ "$webserver" = "2" ]; then
@@ -605,8 +605,8 @@ install_dependencies(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable redis-server
         service redis-server start
-        systemctl enable php7.4-fpm
-        service php7.4-fpm start
+        systemctl enable php8.0-fpm
+        service php8.0-fpm start
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         systemctl enable redis
         service redis start
