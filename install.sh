@@ -8,9 +8,7 @@ warn(){
     echo -e '\e[31m'$1'\e[0m';
 }
 
-PANEL=v1.5.1Updated PHP to 8.0
-Updated Pterodactyl to v1.5.1
-Updated Wings to v1.4.6
+PANEL=v1.5.1
 WINGS=v1.4.6
 PANEL_LEGACY=v0.7.19
 DAEMON_LEGACY=v0.6.13
