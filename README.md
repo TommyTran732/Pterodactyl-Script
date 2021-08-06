@@ -26,5 +26,5 @@ This Script also includes a migration script for 0.7 to 1.0 and Daemon to Wings
 | CentOS            | Stream  | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 |                   | 8       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | RHEL              | 8       | :heavy_check_mark:   | :red_circle:       |                                      |
-| Fedora            | 33      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-|                   | 32      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Fedora            | 34      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+|                   | 33      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
