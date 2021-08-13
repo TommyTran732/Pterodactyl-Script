@@ -32,7 +32,7 @@ preflight(){
 
     output "Automatic architecture detection initialized..."
     MACHINE_TYPE=`uname -m`
-    if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+    if [ "${MACHINE_TYPE}" == 'x86_64' ]; then
         output "64-bit server detected! Good to go."
         output ""
     else
@@ -115,7 +115,7 @@ os_check(){
     if [ -r /etc/os-release ]; then
         lsb_dist="$(. /etc/os-release && echo "$ID")"
         dist_version="$(. /etc/os-release && echo "$VERSION_ID")"
-        if [ $lsb_dist = "rhel" ]; then
+        if [ "$lsb_dist" = "rhel" ]; then
             dist_version="$(echo $dist_version | awk -F. '{print $1}')"
         fi
     else
@@ -184,7 +184,7 @@ install_options(){
     output "[20] Change Pterodactyl theme (${PANEL_LEGACY} Only)."
     output "[21] Emergency MariaDB root password reset."
     output "[22] Emergency database host information reset."
-    read choice
+    read -r choice
     case $choice in
         1 ) installoption=1
             output "You have selected ${PANEL} panel installation only."
@@ -259,7 +259,7 @@ install_options(){
 
 webserver_options() {
     output "Please select which web server you would like to use:\n[1] Nginx (recommended).\n[2] Apache2/httpd."
-    read choice
+    read -r choice
     case $choice in
         1 ) webserver=1
             output "You have selected Nginx."
@@ -288,7 +288,7 @@ theme_options() {
     output "[9] Nothing But Graphite."
     output ""
     output "You can find out about Fonix's themes here: https://github.com/TheFonix/Pterodactyl-Themes"
-    read choice
+    read -r choice
     case $choice in
         1 ) themeoption=1
             output "You have selected to install the vanilla Pterodactyl theme."
@@ -333,13 +333,13 @@ theme_options() {
 
 required_infos() {
     output "Please enter the desired user email address:"
-    read email
+    read -r email
     dns_check
 }
 
 dns_check(){
     output "Please enter your FQDN (panel.domain.tld):"
-    read FQDN
+    read -r FQDN
 
     output "Resolving DNS..."
     SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
@@ -358,7 +358,7 @@ dns_check(){
 
 theme() {
     output "Theme installation initialized..."
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     if [ "$themeoption" = "1" ]; then
         output "Keeping Pterodactyl's vanilla theme."
     elif [ "$themeoption" = "2" ]; then
@@ -733,7 +733,7 @@ install_pterodactyl() {
 
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
@@ -863,7 +863,7 @@ install_pterodactyl_0.7.19() {
 
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL_LEGACY}/panel.tar.gz
     tar --strip-components=1 -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
@@ -945,7 +945,7 @@ EOF
 }
 
 upgrade_pterodactyl(){
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     php artisan down
     curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
@@ -968,7 +968,7 @@ upgrade_pterodactyl(){
 }
 
 upgrade_pterodactyl_1.0(){
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     php artisan down
     curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz | tar --strip-components=1 -xzv
     rm -rf $(find app public resources -depth | head -n -1 | grep -Fv "$(tar -tf panel.tar.gz)")
@@ -993,7 +993,7 @@ upgrade_pterodactyl_1.0(){
 }
 
 upgrade_pterodactyl_0.7.19(){
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     php artisan down
     curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL_LEGACY}/panel.tar.gz | tar --strip-components=1 -xzv
     chmod -R 755 storage/* bootstrap/cache
@@ -1431,7 +1431,7 @@ setup_pterodactyl_0.7.19(){
 }
 
 install_wings() {
-    cd /root
+    cd /root || exit
     output "Installing Pterodactyl Wings dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install curl tar unzip
@@ -1448,7 +1448,7 @@ install_wings() {
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl /srv/daemon-data
-    cd /etc/pterodactyl
+    cd /etc/pterodactyl || exit
     curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
@@ -1475,7 +1475,7 @@ EOF
 }
 
 install_daemon() {
-    cd /root
+    cd /root || exit
     output "Installing Pterodactyl Daemon dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install curl tar unzip
@@ -1520,7 +1520,7 @@ install_daemon() {
     fi
     output "Installing the Pterodactyl daemon..."
     mkdir -p /srv/daemon /srv/daemon-data
-    cd /srv/daemon
+    cd /srv/daemon || exit
     curl -L https://github.com/pterodactyl/daemon/releases/download/${DAEMON_LEGACY}/daemon.tar.gz | tar --strip-components=1 -xzv
     npm install --only=production --no-audit --unsafe-perm
     bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
@@ -1647,27 +1647,27 @@ upgrade_standalone_sftp(){
 }
 
 install_mobile(){
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     composer config repositories.cloud composer https://packages.pterodactyl.cloud
     composer require pterodactyl/mobile-addon --update-no-dev --optimize-autoloader
     php artisan migrate --force
 }
 
 upgrade_mobile(){
-    cd /var/www/pterodactyl
+    cd /var/www/pterodactyl || exit
     composer update pterodactyl/mobile-addon
     php artisan migrate --force
 }
 
 install_phpmyadmin(){
     output "Installing phpMyAdmin..."
-    cd /var/www/pterodactyl/public
+    cd /var/www/pterodactyl/public || exit
     rm -rf phpmyadmin
     wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN}/phpMyAdmin-${PHPMYADMIN}-all-languages.zip
     unzip phpMyAdmin-${PHPMYADMIN}-all-languages.zip
     mv phpMyAdmin-${PHPMYADMIN}-all-languages phpmyadmin
     rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
-    cd /var/www/pterodactyl/public/phpmyadmin
+    cd /var/www/pterodactyl/public/phpmyadmin || exit
 
     SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
     BOWFISH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 34 | head -n 1`
@@ -1707,7 +1707,7 @@ EOF
 
 ssl_certs(){
     output "Installing Let's Encrypt and creating an SSL certificate..."
-    cd /root
+    cd /root || exit
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install certbot
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
