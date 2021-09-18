@@ -6,7 +6,7 @@ Please note this script is meant to be used on fresh installations only. You mus
 <br /> 
 `bash install.sh` <br />
 <br />
-Visit my Matrix group: https://matrix.to/#/#revenact:matrix.org
+Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 <br />
 # Now with extra Pterodactyl v1.0
 This Script now includes the new Pterodactyl v1.0 release <br />
