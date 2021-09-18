@@ -8,8 +8,8 @@ warn(){
     echo -e '\e[31m'$1'\e[0m';
 }
 
-PANEL=v1.5.1
-WINGS=v1.4.6
+PANEL=v1.6.1
+WINGS=v1.5.1
 PANEL_LEGACY=v0.7.19
 DAEMON_LEGACY=v0.6.13
 PHPMYADMIN=5.1.1
@@ -342,7 +342,7 @@ dns_check(){
     read -r FQDN
 
     output "Resolving DNS..."
-    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
     DOMAIN_RECORD=$(dig +short ${FQDN})
     if [ "${SERVER_IP}" != "${DOMAIN_RECORD}" ]; then
         output ""
