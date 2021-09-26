@@ -895,8 +895,13 @@ block_icmp(){
     output "[2] No."
     read icmp
     case $icmp in
-        1 ) /sbin/iptables -t mangle -A PREROUTING -p icmp -j DROP
-            (crontab -l ; echo "@reboot /sbin/iptables -t mangle -A PREROUTING -p icmp -j DROP >> /dev/null 2>&1")| crontab - 
+        1 ) if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+                sed -i '/ufw-before-input.*icmp/s/ACCEPT/DROP/g' /etc/ufw/before.rules
+                sudo ufw reload
+            elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
+                firewall-cmd --permanent --add-icmp-block-inversion
+                firewall-cmd --reload
+            fi
             ;;
         2 ) output "Skipping rule..."
             ;;
