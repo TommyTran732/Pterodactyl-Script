@@ -262,7 +262,7 @@ repositories_setup(){
             apt-get -y autoremove
             apt-get -y autoclean
             apt-get -y install curl
-    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
             dnf -y install dnf-plugins-core python2 libsemanage-devel
