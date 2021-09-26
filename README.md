@@ -8,11 +8,6 @@ Please note this script is meant to be used on fresh installations only. You mus
 <br />
 Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 <br />
-# Now with extra Pterodactyl v1.0
-This Script now includes the new Pterodactyl v1.0 release <br />
-<br>
-This Script also includes a migration script for 0.7 to 1.0 and Daemon to Wings
-<br />
 # Supported Operating System
 Note: This list will soon change. The project will focus on supporting more distributions (openSUSE Tumbleweed/Leap, other RHEL derivatives, etc). Support for older versions for these distributions will be dropped.
 
