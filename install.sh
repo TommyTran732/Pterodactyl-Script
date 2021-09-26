@@ -17,7 +17,7 @@ PHPMYADMIN=5.1.1
 preflight(){
     output "Pterodactyl Installation & Upgrade Script"
     output "Copyright © 2020 Thien Tran <contact@thientran.io>."
-    output "Please join my Telegram for community support: https://t.me/revenact"
+    output "Please join my Matrix for community support: https://matrix.to/#/#tommytran732:matrix.org"
     output ""
 
     output "Please note that this script is meant to be installed on a fresh OS. Installing it on a non-fresh OS may cause problems."
