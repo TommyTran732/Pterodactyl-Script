@@ -752,92 +752,12 @@ EOF
     output "Wings ${WINGS} has now been installed on your system."
 }
 
-install_daemon() {
-    cd /root || exit
-    output "Installing Pterodactyl Daemon dependencies..."
-    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        apt-get -y install curl tar unzip
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        yum -y install curl tar unzip
-    fi
 
-    output "Installing Docker"
-    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-
-    service docker start
-    systemctl enable docker
-    output "Enabling SWAP support for Docker & installing NodeJS..."
-    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
-    if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        update-grub
-        curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-            if [ "$lsb_dist" =  "ubuntu" ]; then
-                apt -y install nodejs make gcc g++
-                npm install node-gyp
-            elif [ "$lsb_dist" =  "debian" ]; then
-                apt -y install nodejs make gcc g++
-            else
-                apt -y install nodejs make gcc g++ node-gyp
-            fi
-        apt-get -y update
-        apt-get -y upgrade
-        apt-get -y autoremove
-        apt-get -y autoclean
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ]; then
-        grub2-mkconfig -o "$(readlink /etc/grub2.conf)"
-        if [ "$lsb_dist" =  "fedora" ]; then
-            dnf -y module install nodejs:12/minimal
-	          dnf install -y tar unzip make gcc gcc-c++ python2
-	      fi
-	  elif [ "$lsb_dist" =  "centos" ]; then
-	      dnf -y module install nodejs:12/minimal
-	      dnf install -y tar unzip make gcc gcc-c++ python2
-        yum -y upgrade
-        yum -y autoremove
-        yum -y clean packages
-    fi
-    output "Installing the Pterodactyl daemon..."
-    mkdir -p /srv/daemon /srv/daemon-data
-    cd /srv/daemon || exit
-    curl -L https://github.com/pterodactyl/daemon/releases/download/${DAEMON_LEGACY}/daemon.tar.gz | tar --strip-components=1 -xzv
-    npm install --only=production --no-audit --unsafe-perm
-    bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
-[Unit]
-Description=Pterodactyl Wings Daemon
-After=docker.service
-[Service]
-User=root
-#Group=some_group
-WorkingDirectory=/srv/daemon
-LimitNOFILE=4096
-PIDFile=/var/run/wings/daemon.pid
-ExecStart=/usr/bin/node /srv/daemon/src/index.js
-Restart=on-failure
-StartLimitInterval=600
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
-    systemctl enable wings
-
-    output "Daemon installation is nearly complete, please go to the panel and get your 'Auto Deploy' command in the node configuration tab."
-    output "Paste your auto deploy command below: "
-    read AUTODEPLOY
-    ${AUTODEPLOY}
-    service wings start
-    output "Daemon ${DAEMON_LEGACY} has now been installed on your system."
-}
-
-upgrade_daemon(){
-    cd /srv/daemon
-    service wings stop
-    curl -L https://github.com/pterodactyl/daemon/releases/download/${DAEMON_LEGACY}/daemon.tar.gz | tar --strip-components=1 -xzv
-    npm install -g npm
-    npm install --only=production --no-audit --unsafe-perm
-    service wings restart
-    output "Your daemon has been updated to version ${DAEMON_LEGACY}."
-    output "npm has been updated to the latest version."
+upgrade_wings(){
+    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64
+    chmod u+x /usr/local/bin/wings
+    systemctl restart wings
+    output "Your wings have been updated to version ${WINGS}."
 }
 
 install_mobile(){
@@ -1172,19 +1092,19 @@ case $installoption in
             install_wings
             broadcast
             ;;
-        4)   upgrade_pterodactyl
-             ;;
-        5)  upgrade_daemon
-             ;;
+        4)  upgrade_pterodactyl
+            ;;
+        5)  upgrade_wings
+            ;;
         6)  install_mobile
-             ;;
+            ;;
         7)  upgrade_mobile
-             ;;
+            ;;
         8)  install_phpmyadmin
-             ;;
+            ;;
         9)  repositories_setup
-             install_database
-             ;;
+            install_database
+            ;;
         10) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
         11) database_host_reset
