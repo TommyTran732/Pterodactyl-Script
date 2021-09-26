@@ -16,13 +16,10 @@ This Script also includes a migration script for 0.7 to 1.0 and Daemon to Wings
 # Supported Operating System
 Note: This list will soon change. The project will focus on supporting more distributions (openSUSE Tumbleweed/Leap, other RHEL derivatives, etc). Support for older versions for these distributions will be dropped.
 
-| Operating System  | Version | Supported            | Recommended        | Notes                                |
-| ----------------- | ------- | -------------------- | ------------------ | ------------------------------------ |
-| Ubuntu            | 20.04   | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-|                   | 18.04   | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| Debian            | 10      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| CentOS            | Stream  | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-|                   | 8       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| RHEL              | 8       | :heavy_check_mark:   | :red_circle:       |                                      |
-| Fedora            | 34      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-|                   | 33      | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Operating System  | Version  | Supported            | Recommended        | Notes                                |
+| ----------------- | -------- | -------------------- | ------------------ | ------------------------------------ |
+| Ubuntu            | 20.04    | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Debian            | 10       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| CentOS            | Stream 8 | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| RHEL              | 8        | :heavy_check_mark:   | :red_circle:       |                                      |
+| Fedora            | 34       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
