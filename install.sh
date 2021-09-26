@@ -303,7 +303,7 @@ EOF
             yum-config-manager --enable remi-php80
 	        yum-config-manager --enable nginx-mainline
 	        yum-config-manager --enable mariadb
-        elif  [ "$lsb_dist" =  "rhel" ] && [ "$dist_version" = "8" ]; then
+        elif  [ "$lsb_dist" =  "rhel" ]; then
             dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
             dnf -y install boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
@@ -329,9 +329,7 @@ install_dependencies(){
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
 	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$dist_version" = "8" ]; then
-	        dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
-        fi
+	    dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
 	else
 	    dnf -y install MariaDB-server
 	fi
@@ -574,7 +572,7 @@ server {
     }
 }
 ' | sudo -E tee /etc/nginx/sites-available/pterodactyl.conf >/dev/null 2>&1
-    if [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "8" ]; then
+    if [ "$lsb_dist" =  "debian" ]; then
         sed -i 's/http2//g' /etc/nginx/sites-available/pterodactyl.conf
     fi
     ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
@@ -773,10 +771,10 @@ install_daemon() {
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         update-grub
         curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-            if [ "$lsb_dist" =  "ubuntu" ] && [ "$dist_version" = "20.04" ]; then
+            if [ "$lsb_dist" =  "ubuntu" ]; then
                 apt -y install nodejs make gcc g++
                 npm install node-gyp
-            elif [ "$lsb_dist" =  "debian" ] && [ "$dist_version" = "10" ]; then
+            elif [ "$lsb_dist" =  "debian" ]; then
                 apt -y install nodejs make gcc g++
             else
                 apt -y install nodejs make gcc g++ node-gyp
@@ -791,7 +789,7 @@ install_daemon() {
             dnf -y module install nodejs:12/minimal
 	          dnf install -y tar unzip make gcc gcc-c++ python2
 	      fi
-	  elif [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
+	  elif [ "$lsb_dist" =  "centos" ]; then
 	      dnf -y module install nodejs:12/minimal
 	      dnf install -y tar unzip make gcc gcc-c++ python2
         yum -y upgrade
@@ -1048,9 +1046,7 @@ install_database() {
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install mariadb-server
 	elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$dist_version" = "8" ]; then
-	        dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
-        fi
+	    dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
 	else 
 	    dnf -y install MariaDB-server
 	fi
@@ -1127,7 +1123,7 @@ broadcast(){
     output "All unnecessary ports are blocked by default."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         output "Use 'ufw allow <port>' to enable your desired ports."
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] && [ "$dist_version" != "8" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
     output "###############################################################"
