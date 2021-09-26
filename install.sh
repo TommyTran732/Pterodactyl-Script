@@ -166,11 +166,9 @@ install_options(){
     output "[4] Install the standalone SFTP server."
     output "[5] Upgrade (1.x) panel to ${PANEL}."
     output "[6] Migrating daemon to wings."
-    output "[7] Make Pterodactyl compatible with the mobile app (only use this after you have installed the panel - check out https://pterodactyl.cloud for more information)."
-    output "[8] Update mobile compatibility."
-    output "[9] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
-    output "[10] Emergency MariaDB root password reset."
-    output "[11] Emergency database host information reset."
+    output "[7] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
+    output "[8] Emergency MariaDB root password reset."
+    output "[9] Emergency database host information reset."
     read -r choice
     case $choice in
         1 ) installoption=1
@@ -189,21 +187,15 @@ install_options(){
             output "You have selected to upgrade the panel to ${PANEL}."
             ;;
         6 ) installoption=6
-            output "You have activated mobile app compatibility."
-            ;;
-        7 ) installoption=7
-            output "You have selected to update the mobile app compatibility."
-            ;;
-        8 ) installoption=8
             output "You have selected to install or update phpMyAdmin ${PHPMYADMIN}."
             ;;
-        9 ) installoption=9
+        7 ) installoption=7
             output "You have selected to install a Database host."
             ;;
-        10 ) installoption=10
+        8 ) installoption=8
             output "You have selected MariaDB root password reset."
             ;;
-        11 ) installoption=11
+        9 ) installoption=9
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -739,19 +731,6 @@ upgrade_wings(){
     output "Your wings have been updated to version ${WINGS}."
 }
 
-install_mobile(){
-    cd /var/www/pterodactyl || exit
-    composer config repositories.cloud composer https://packages.pterodactyl.cloud
-    composer require pterodactyl/mobile-addon --update-no-dev --optimize-autoloader
-    php artisan migrate --force
-}
-
-upgrade_mobile(){
-    cd /var/www/pterodactyl || exit
-    composer update pterodactyl/mobile-addon
-    php artisan migrate --force
-}
-
 install_phpmyadmin(){
     output "Installing phpMyAdmin..."
     cd /var/www/pterodactyl/public || exit
@@ -1075,17 +1054,13 @@ case $installoption in
             ;;
         5)  upgrade_wings
             ;;
-        6)  install_mobile
+        6)  install_phpmyadmin
             ;;
-        7)  upgrade_mobile
-            ;;
-        8)  install_phpmyadmin
-            ;;
-        9)  repositories_setup
+        7)  repositories_setup
             install_database
             ;;
-        10) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        8) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
-        11) database_host_reset
+        9) database_host_reset
             ;;
 esac
