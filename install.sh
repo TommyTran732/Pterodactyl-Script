@@ -1009,18 +1009,18 @@ broadcast(){
 }
 
 broadcast_database(){
-        output "###############################################################"
-        output "MARIADB/MySQL INFORMATION"
-        output ""
-        output "Your MariaDB/MySQL root password is $rootpassword"
-        output ""
-        output "Create your MariaDB/MySQL host with the following information:"
-        output "Host: $SERVER_IP"
-        output "Port: 3306"
-        output "User: admin"
-        output "Password: $adminpassword"
-        output "###############################################################"
-        output ""
+    output "###############################################################"
+    output "MARIADB/MySQL INFORMATION"
+    output ""
+    output "Your MariaDB/MySQL root password is $rootpassword"
+    output ""
+    output "Create your MariaDB/MySQL host with the following information:"
+    output "Host: $SERVER_IP"
+    output "Port: 3306"
+    output "User: admin"
+    output "Password: $adminpassword"
+    output "###############################################################"
+    output ""
 }
 
 #Execution
@@ -1059,8 +1059,8 @@ case $installoption in
         7)  repositories_setup
             install_database
             ;;
-        8) curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
-        9) database_host_reset
+        9)  database_host_reset
             ;;
 esac
