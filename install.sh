@@ -291,13 +291,14 @@ EOF
             bash -c 'cat > /etc/yum.repos.d/mariadb.repo' <<-'EOF'
 [mariadb]
 name = MariaDB
-baseurl = http://yum.mariadb.org/10.5/centos7-amd64
+baseurl = http://yum.mariadb.org/10.6/centos8-amd64
+module_hotfixes=1
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 
             yum -y install epel-release
-            yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             yum -y install policycoreutils-python yum-utils libsemanage-devel
             yum-config-manager --enable remi
             yum-config-manager --enable remi-php80
