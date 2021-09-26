@@ -278,32 +278,6 @@ repositories_setup(){
             dnf -y module enable nginx:mainline/common
 	        curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	        dnf config-manager --set-enabled mariadb
-    fi
-            bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<-'EOF'
-[nginx-mainline]
-name=nginx mainline repo
-baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true
-EOF
-            bash -c 'cat > /etc/yum.repos.d/mariadb.repo' <<-'EOF'
-[mariadb]
-name = MariaDB
-baseurl = http://yum.mariadb.org/10.6/centos8-amd64
-module_hotfixes=1
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-gpgcheck=1
-EOF
-
-            yum -y install epel-release
-            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-            yum -y install policycoreutils-python yum-utils libsemanage-devel
-            yum-config-manager --enable remi
-            yum-config-manager --enable remi-php80
-	        yum-config-manager --enable nginx-mainline
-	        yum-config-manager --enable mariadb
         elif  [ "$lsb_dist" =  "rhel" ]; then
             dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
             dnf -y install boost-program-options
