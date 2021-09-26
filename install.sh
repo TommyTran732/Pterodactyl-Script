@@ -718,10 +718,14 @@ install_wings() {
     fi
 
     output "Installing Docker"
-    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    if  [ "$lsb_dist" =  "rhel" ]; then
+        dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+        dnf -y install docker-ce
+    else
+        curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    fi
 
-    service docker start
-    systemctl enable docker
+    systemctl enable --now docker
     output "Enabling SWAP support for Docker."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     output "Installing the Pterodactyl wings..."
