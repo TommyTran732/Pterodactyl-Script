@@ -121,8 +121,8 @@ os_check(){
     fi
     
     if [ "$lsb_dist" =  "ubuntu" ]; then
-        if  [ "$dist_version" != "20.04" ] && [ "$dist_version" != "18.04" ]; then
-            output "Unsupported Ubuntu version. Only Ubuntu 20.04 and 18.04 are supported."
+        if  [ "$dist_version" != "20.04" ]; then
+            output "Unsupported Ubuntu version. Only Ubuntu 20.04 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "debian" ]; then
@@ -131,13 +131,13 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
-        if [ "$dist_version" != "34" ] && [ "$dist_version" != "33" ]; then
-            output "Unsupported Fedora version. Only Fedora 34 and 33 are supported."
+        if [ "$dist_version" != "34" ]; then
+            output "Unsupported Fedora version. Only Fedora 34 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "centos" ]; then
         if [ "$dist_version" != "8" ]; then
-            output "Unsupported CentOS version. Only CentOS Stream and 8 are supported."
+            output "Unsupported CentOS version. Only CentOS Stream 8 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "rhel" ]; then
@@ -149,10 +149,10 @@ os_check(){
         output "Unsupported operating system."
         output ""
         output "Supported OS:"
-        output "Ubuntu: 20.04, 18.04"
+        output "Ubuntu: 20.04"
         output "Debian: 10"
-        output "Fedora: 33, 32"
-        output "CentOS: 8, 7"
+        output "Fedora: 34"
+        output "CentOS Stream: 8"
         output "RHEL: 8"
         exit 2
     fi
@@ -211,23 +211,6 @@ install_options(){
     esac
 }
 
-webserver_options() {
-    output "Please select which web server you would like to use:\n[1] Nginx (recommended).\n[2] Apache2/httpd."
-    read -r choice
-    case $choice in
-        1 ) webserver=1
-            output "You have selected Nginx."
-            output ""
-            ;;
-        2 ) webserver=2
-            output "You have selected Apache2/httpd."
-            output ""
-            ;;
-        * ) output "You did not enter a valid selection."
-            webserver_options
-    esac
-}
-
 required_infos() {
     output "Please enter the desired user email address:"
     read -r email
@@ -261,51 +244,40 @@ repositories_setup(){
         dpkg --remove-architecture i386
         echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
         apt-get -y update
-	      curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-            add-apt-repository -y ppa:chris-lea/redis-server
-            if [ "$dist_version" != "20.04" ]; then
-                add-apt-repository -y ppa:certbot/certbot
-                add-apt-repository -y ppa:nginx/development
-            fi
 	        apt -y install tuned dnsutils
             tuned-adm profile latency-performance
         elif [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install ca-certificates apt-transport-https
             echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
-            if [ "$dist_version" = "10" ]; then
-                apt -y install dirmngr
-                wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-                sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-                apt -y install tuned
-                tuned-adm profile latency-performance
-        fi
-        apt-get -y update
-        apt-get -y upgrade
-        apt-get -y autoremove
-        apt-get -y autoclean
-        apt-get -y install curl
+            apt -y install dirmngr
+            wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+            sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+            apt -y install tuned
+            tuned-adm profile latency-performance
+            apt-get -y update
+            apt-get -y upgrade
+            apt-get -y autoremove
+            apt-get -y autoclean
+            apt-get -y install curl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            if [ "$dist_version" = "34" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
-            elif [ "$dist_version" = "33" ]; then
-                dnf -y install  http://rpms.remirepo.net/fedora/remi-release-33.rpm
-            fi
+            dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
-	    dnf -y module enable nginx:mainline/common
-	    dnf -y module enable mariadb:14/server
-        elif  [ "$lsb_dist" =  "centos" ] && [ "$dist_version" = "8" ]; then
+	        dnf -y module enable nginx:mainline/common
+	        dnf -y module enable mariadb:14/server
+        elif  [ "$lsb_dist" =  "centos" ]; then
             dnf -y install epel-release boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
-	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-	    dnf config-manager --set-enabled mariadb
+	        curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	        dnf config-manager --set-enabled mariadb
     fi
             bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<-'EOF'
 [nginx-mainline]
@@ -353,11 +325,7 @@ EOF
 install_dependencies(){
     output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        if [ "$webserver" = "1" ]; then
-            apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
-        elif [ "$webserver" = "2" ]; then
-             apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} curl tar unzip git redis-server apache2 libapache2-mod-php8.0 redis-server git wget expect
-        fi
+        apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
 	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
@@ -367,12 +335,8 @@ install_dependencies(){
 	else
 	    dnf -y install MariaDB-server
 	fi
-	dnf -y module install php:remi-8.0
-        if [ "$webserver" = "1" ]; then
-            dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
-        elif [ "$webserver" = "2" ]; then
-            dnf -y install redis httpd git policycoreutils-python-utils mod_ssl unzip wget expect jq php-mysql php-zip php-mcmath tar
-        fi
+	    dnf -y module install php:remi-8.0
+        dnf -y install redis nginx git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
     fi
 
     output "Enabling Services..."
@@ -389,21 +353,8 @@ install_dependencies(){
     fi
 
     systemctl enable cron
-    systemctl enable mariadb
-
-    if [ "$webserver" = "1" ]; then
-        systemctl enable nginx
-        service nginx start
-    elif [ "$webserver" = "2" ]; then
-        if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-            systemctl enable apache2
-            service apache2 start
-        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-            systemctl enable httpd
-            service httpd start
-        fi
-    fi
-    service mysql start
+    systemctl enable --now mariadb
+    systemctl enable --now nginx
 }
 
 install_pterodactyl() {
@@ -474,12 +425,8 @@ install_pterodactyl() {
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$webserver" = "1" ]; then
-            chown -R nginx:nginx * /var/www/pterodactyl
-        elif [ "$webserver" = "2" ]; then
-            chown -R apache:apache * /var/www/pterodactyl
-        fi
-	semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
+        chown -R nginx:nginx * /var/www/pterodactyl
+	    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
 
@@ -501,8 +448,7 @@ ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,stan
 WantedBy=multi-user.target
 EOF
     elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$webserver" = "1" ]; then
-            cat > /etc/systemd/system/pteroq.service <<- 'EOF'
+        cat > /etc/systemd/system/pteroq.service <<- 'EOF'
 Description=Pterodactyl Queue Worker
 After=redis-server.service
 [Service]
@@ -513,20 +459,6 @@ ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,stan
 [Install]
 WantedBy=multi-user.target
 EOF
-        elif [ "$webserver" = "2" ]; then
-            cat > /etc/systemd/system/pteroq.service <<- 'EOF'
-[Unit]
-Description=Pterodactyl Queue Worker
-After=redis-server.service
-[Service]
-User=apache
-Group=apache
-Restart=always
-ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
-[Install]
-WantedBy=multi-user.target
-EOF
-        fi
         setsebool -P httpd_can_network_connect 1
 	    setsebool -P httpd_execmem 1
 	    setsebool -P httpd_unified 1
@@ -549,7 +481,6 @@ upgrade_pterodactyl(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        chown -R apache:apache * /var/www/pterodactyl
         chown -R nginx:nginx * /var/www/pterodactyl
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -650,38 +581,6 @@ server {
     service nginx restart
 }
 
-apache_config() {
-    output "Disabling default configuration..."
-    rm -rf /etc/nginx/sites-enabled/default
-    output "Configuring Apache2 web server..."
-echo '
-<VirtualHost *:80>
-  ServerName '"$FQDN"'
-  RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
-</VirtualHost>
-<VirtualHost *:443>
-  ServerName '"$FQDN"'
-  DocumentRoot "/var/www/pterodactyl/public"
-  AllowEncodedSlashes On
-  php_value upload_max_filesize 100M
-  php_value post_max_size 100M
-  <Directory "/var/www/pterodactyl/public">
-    AllowOverride all
-  </Directory>
-  SSLEngine on
-  SSLCertificateFile /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem
-  SSLCertificateKeyFile /etc/letsencrypt/live/'"$FQDN"'/privkey.pem
-</VirtualHost>
-' | sudo -E tee /etc/apache2/sites-available/pterodactyl.conf >/dev/null 2>&1
-
-    ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
-    a2enmod ssl
-    a2enmod rewrite
-    service apache2 restart
-}
-
 nginx_config_redhat(){
     output "Configuring Nginx web server..."
 
@@ -775,30 +674,6 @@ server {
     restorecon -R /var/www/pterodactyl
 }
 
-apache_config_redhat() {
-    output "Configuring Apache2 web server..."
-echo '
-<VirtualHost *:80>
-  ServerName '"$FQDN"'
-  RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
-</VirtualHost>
-<VirtualHost *:443>
-  ServerName '"$FQDN"'
-  DocumentRoot "/var/www/pterodactyl/public"
-  AllowEncodedSlashes On
-  <Directory "/var/www/pterodactyl/public">
-    AllowOverride all
-  </Directory>
-  SSLEngine on
-  SSLCertificateFile /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem
-  SSLCertificateKeyFile /etc/letsencrypt/live/'"$FQDN"'/privkey.pem
-</VirtualHost>
-' | sudo -E tee /etc/httpd/conf.d/pterodactyl.conf >/dev/null 2>&1
-    service httpd restart
-}
-
 php_config(){
     output "Configuring PHP socket..."
     bash -c 'cat > /etc/php-fpm.d/www-pterodactyl.conf' <<-'EOF'
@@ -819,51 +694,11 @@ EOF
 
 webserver_config(){
     if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
-        if [ "$installoption" = "1" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        elif [ "$installoption" = "2" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config_0.7.19
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        elif [ "$installoption" = "3" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        elif [ "$installoption" = "4" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config_0.7.19
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        elif [ "$installoption" = "5" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        elif [ "$installoption" = "6" ]; then
-            if [ "$webserver" = "1" ]; then
-                nginx_config_0.7.19
-            elif [ "$webserver" = "2" ]; then
-                apache_config
-            fi
-        fi
+        nginx_config
     elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$webserver" = "1" ]; then
-            php_config
-            nginx_config_redhat
+        php_config
+        nginx_config_redhat
 	    chown -R nginx:nginx /var/lib/php/session
-        elif [ "$webserver" = "2" ]; then
-            apache_config_redhat
-        fi
     fi
 }
 
@@ -1059,7 +894,6 @@ EOF
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        chown -R apache:apache * /var/www/pterodactyl
         chown -R nginx:nginx * /var/www/pterodactyl
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -1074,16 +908,7 @@ ssl_certs(){
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         yum -y install certbot
     fi
-    if [ "$webserver" = "1" ]; then
-        service nginx stop
-    elif [ "$webserver" = "2" ]; then
-        if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-            service apache2 stop
-        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-            service httpd stop
-        fi
-    fi
-
+    service nginx stop
     certbot certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
     
     if [ "$installoption" = "2" ]; then
@@ -1094,62 +919,24 @@ ssl_certs(){
             firewall-cmd --reload
         fi
     else
-        if [ "$webserver" = "1" ]; then
-            service nginx restart
-        elif [ "$webserver" = "2" ]; then
-            if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-                service apache2 restart
-            elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-                service httpd restart
-            fi
-        fi
+        service nginx restart
     fi
        
-        if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
+    if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
         if [ "$installoption" = "1" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service apache2 stop" --post-hook "service apache2 restart" >> /dev/null 2>&1')| crontab -
-            fi
+            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
         elif [ "$installoption" = "2" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service apache2 stop" --post-hook "service apache2 restart" >> /dev/null 2>&1')| crontab -
-            fi
+            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
         elif [ "$installoption" = "3" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "4" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "5" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service apache2 stop" --pre-hook "service wings stop" --post-hook "service apache2 restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            fi
-        elif [ "$installoption" = "6" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service apache2 stop" --pre-hook "service wings stop" --post-hook "service apache2 restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            fi
+            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
         fi
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
         if [ "$installoption" = "1" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service httpd stop" --post-hook "service httpd restart" >> /dev/null 2>&1')| crontab -
-            fi
+            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
         elif [ "$installoption" = "2" ]; then
             (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "firewall-cmd --add-port=80/tcp && firewall-cmd --reload" --pre-hook "service wings stop" --post-hook "firewall-cmd --remove-port=80/tcp && firewall-cmd --reload" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
         elif [ "$installoption" = "3" ]; then
-            if [ "$webserver" = "1" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            elif [ "$webserver" = "2" ]; then
-                (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service httpd stop" --pre-hook "service wings stop" --post-hook "service httpd restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-            fi
+            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
         fi
     fi
 }
@@ -1393,31 +1180,29 @@ broadcast_database(){
 preflight
 install_options
 case $installoption in 
-        1)   webserver_options
-             repositories_setup
-             required_infos
-             firewall
-             setup_pterodactyl
-             broadcast
-	         broadcast_database
-             ;;
-        2)   repositories_setup
-             required_infos
-             firewall
-             ssl_certs
-             install_wings
-             broadcast
-	         broadcast_database
-             ;;
-        3)   webserver_options
-             repositories_setup
-             required_infos
-             firewall
-             ssl_certs
-             setup_pterodactyl
-             install_wings
-             broadcast
-             ;;
+        1)  repositories_setup
+            required_infos
+            firewall
+            setup_pterodactyl
+            broadcast
+	        broadcast_database
+            ;;
+        2)  repositories_setup
+            required_infos
+            firewall
+            ssl_certs
+            install_wings
+            broadcast
+	        broadcast_database
+            ;;
+        3)  repositories_setup
+            required_infos
+            firewall
+            ssl_certs
+            setup_pterodactyl
+            install_wings
+            broadcast
+            ;;
         4)   upgrade_pterodactyl
              ;;
         5)  upgrade_daemon
