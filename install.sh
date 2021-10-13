@@ -47,7 +47,7 @@ preflight(){
     elif [ "$lsb_dist" =  "debian" ]; then
         apt update --fix-missing
         apt-get -y install software-properties-common virt-what wget curl dnsutils
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
         yum -y install virt-what wget bind-utils
     fi
     virt_serv=$(echo $(virt-what))
