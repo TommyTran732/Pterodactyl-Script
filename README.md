@@ -16,5 +16,6 @@ Note: This list will soon change. The project will focus on supporting more dist
 | Ubuntu            | 20.04    | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | Debian            | 10       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | CentOS            | Stream 8 | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Rocky Linux       | 8        | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | RHEL              | 8        | :heavy_check_mark:   | :red_circle:       |                                      |
 | Fedora            | 34       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
