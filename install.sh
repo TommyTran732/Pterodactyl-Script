@@ -14,7 +14,7 @@ PHPMYADMIN=5.1.1
 
 preflight(){
     output "Pterodactyl Installation & Upgrade Script"
-    output "Copyright © 2020 Thien Tran <contact@tommytran.io>."
+    output "Copyright © 2021 Thien Tran <contact@tommytran.io>."
     output "Please join my Matrix for community support: https://matrix.to/#/#tommytran732:matrix.org"
     output ""
 
@@ -825,9 +825,8 @@ firewall(){
         yum -y install iptables
     fi
 
-    curl -sSL https://raw.githubusercontent.com/tommytran732/Anti-DDOS-Iptables/master/iptables-no-prompt.sh | sudo bash
     block_icmp
-    javapipe_kernel
+
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
@@ -899,7 +898,7 @@ block_icmp(){
         1 ) if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
                 sed -i '/ufw-before-input.*icmp/s/ACCEPT/DROP/g' /etc/ufw/before.rules
                 sudo ufw reload
-            elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
+            elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
                 firewall-cmd --permanent --add-icmp-block-inversion
                 firewall-cmd --reload
             fi
@@ -909,21 +908,6 @@ block_icmp(){
         * ) output "You did not enter a valid selection."
             block_icmp
     esac    
-}
-
-javapipe_kernel(){
-    output "Apply JavaPipe's kernel configurations (https://javapipe.com/blog/iptables-ddos-protection)?"
-    output "[1] Yes."
-    output "[2] No."
-    read javapipe
-    case $javapipe in
-        1)  sh -c "$(curl -sSL https://raw.githubusercontent.com/tommytran732/Anti-DDOS-Iptables/master/javapipe_kernel.sh)"
-            ;;
-        2)  output "JavaPipe kernel modifications not applied."
-            ;;
-        * ) output "You did not enter a valid selection."
-            javapipe_kernel
-    esac 
 }
 
 install_database() {
@@ -974,7 +958,7 @@ install_database() {
 
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         yes | ufw allow 3306
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
+    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
         firewall-cmd --permanent --add-service=mysql
         firewall-cmd --reload
     fi 
