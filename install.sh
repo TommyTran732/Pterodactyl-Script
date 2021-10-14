@@ -1022,7 +1022,7 @@ case $installoption in
             firewall
             setup_pterodactyl
             broadcast
-	        broadcast_database
+	    broadcast_database
             ;;
         2)  repositories_setup
             required_infos
@@ -1030,7 +1030,7 @@ case $installoption in
             ssl_certs
             install_wings
             broadcast
-	        broadcast_database
+	    broadcast_database
             ;;
         3)  repositories_setup
             required_infos
