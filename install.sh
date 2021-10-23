@@ -169,12 +169,11 @@ install_options(){
     output "[1] Install the panel ${PANEL}."
     output "[2] Install the wings ${WINGS}."
     output "[3] Install the panel ${PANEL} and wings ${WINGS}."
-    output "[4] Install the standalone SFTP server."
-    output "[5] Upgrade (1.x) panel to ${PANEL}."
-    output "[6] Migrating daemon to wings."
-    output "[7] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
-    output "[8] Emergency MariaDB root password reset."
-    output "[9] Emergency database host information reset."
+    output "[4] Upgrade (1.x) panel to ${PANEL}."
+    output "[5] Migrating daemon to wings."
+    output "[6] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
+    output "[7] Emergency MariaDB root password reset."
+    output "[8] Emergency database host information reset."
     read -r choice
     case $choice in
         1 ) installoption=1
@@ -187,21 +186,18 @@ install_options(){
             output "You have selected ${PANEL} panel and wings ${WINGS} installation."
             ;;
         4 ) installoption=4
-            output "You have selected to install the standalone SFTP server."
-            ;;
-        5 ) installoption=5
             output "You have selected to upgrade the panel to ${PANEL}."
             ;;
-        6 ) installoption=6
+        5 ) installoption=5
             output "You have selected to install or update phpMyAdmin ${PHPMYADMIN}."
             ;;
-        7 ) installoption=7
+        6 ) installoption=6
             output "You have selected to install a Database host."
             ;;
-        8 ) installoption=8
+        7 ) installoption=7
             output "You have selected MariaDB root password reset."
             ;;
-        9 ) installoption=9
+        8 ) installoption=8
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
