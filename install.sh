@@ -140,17 +140,17 @@ os_check(){
             output "Unsupported CentOS version. Only CentOS Stream 8 is supported."
             exit 2
         fi
-    elif [ "$lsb_dist" = "rocky" ]; then
-        if [ "$dist_version" != "8" ]; then
-            output "Unsupported RockyLinux version. Only RockyLinux 8 is supported."
-            exit 2
-        fi
     elif [ "$lsb_dist" = "rhel" ]; then
         if  [ $dist_version != "8" ]; then
             output "Unsupported RHEL version. Only RHEL 8 is supported."
             exit 2
         fi
-    elif [ "$lsb_dist" != "ubuntu" ] && [ "$lsb_dist" != "debian" ] && [ "$lsb_dist" != "centos" ] && [ "$lsb_dist" != "rocky" ] && [ "$lsb_dist" != "rhel" ]; then
+    elif [ "$lsb_dist" = "rocky" ]; then
+        if [ "$dist_version" != "8" ]; then
+            output "Unsupported RockyLinux version. Only RockyLinux 8 is supported."
+            exit 2
+        fi
+    elif [ "$lsb_dist" != "ubuntu" ] && [ "$lsb_dist" != "debian" ] && [ "$lsb_dist" != "fedora" ] && [ "$lsb_dist" != "centos" ] && [ "$lsb_dist" != "rhel" ] && [ "$lsb_dist" != "rocky" ]; then
         output "Unsupported operating system."
         output ""
         output "Supported OS:"
