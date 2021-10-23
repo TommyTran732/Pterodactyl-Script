@@ -169,11 +169,12 @@ install_options(){
     output "[1] Install the panel ${PANEL}."
     output "[2] Install the wings ${WINGS}."
     output "[3] Install the panel ${PANEL} and wings ${WINGS}."
-    output "[4] Upgrade (1.x) panel to ${PANEL}."
-    output "[5] Migrating daemon to wings."
-    output "[6] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
-    output "[7] Emergency MariaDB root password reset."
-    output "[8] Emergency database host information reset."
+    output "[4] Upgrade panel to ${PANEL}."
+    output "[5] Upgrade daemon to ${DAEMON}."
+    output "[6] Upgrade panel to ${PANEL} and daemon to ${DAEMON}."
+    output "[7] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
+    output "[8] Emergency MariaDB root password reset."
+    output "[9] Emergency database host information reset."
     read -r choice
     case $choice in
         1 ) installoption=1
@@ -188,16 +189,19 @@ install_options(){
         4 ) installoption=4
             output "You have selected to upgrade the panel to ${PANEL}."
             ;;
-        5 ) installoption=5
-            output "You have selected to install or update phpMyAdmin ${PHPMYADMIN}."
+	5 ) installoption=5
+            output "You have selected to upgrade the daemon to ${DAEMON}."
             ;;
         6 ) installoption=6
-            output "You have selected to install a Database host."
+            output "You have selected to upgrade panel to ${PANEL} and daemon to ${DAEMON}."
             ;;
         7 ) installoption=7
-            output "You have selected MariaDB root password reset."
+            output "You have selected to install or update to phpMyAdmin (${PHPMYADMIN}."
             ;;
         8 ) installoption=8
+            output "You have selected MariaDB root password reset."
+            ;;
+        9 ) installoption=9
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -907,62 +911,6 @@ block_icmp(){
     esac    
 }
 
-install_database() {
-    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        apt -y install mariadb-server
-	elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-	    dnf -y install MariaDB-server MariaDB-client --disablerepo=AppStream
-	else 
-	    dnf -y install MariaDB-server
-	fi
-
-    output "Creating the databases and setting root password..."
-    password=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
-    adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
-    rootpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
-    Q0="DROP DATABASE IF EXISTS test;"
-    Q1="CREATE DATABASE IF NOT EXISTS panel;"
-    Q2="SET old_passwords=0;"
-    Q3="GRANT ALL ON panel.* TO 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$password';"
-    Q4="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, EXECUTE, PROCESS, RELOAD, LOCK TABLES, CREATE USER ON *.* TO 'admin'@'$SERVER_IP' IDENTIFIED BY '$adminpassword' WITH GRANT OPTION;"
-    Q5="SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$rootpassword');"
-    Q6="DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
-    Q7="DELETE FROM mysql.user WHERE User='';"
-    Q8="DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';"
-    Q9="FLUSH PRIVILEGES;"
-    SQL="${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}"
-    mysql -u root -e "$SQL"
-
-    output "Binding MariaDB/MySQL to 0.0.0.0."
-	if [ -f /etc/mysql/my.cnf ] ; then
-        sed -i -- 's/bind-address/# bind-address/g' /etc/mysql/my.cnf
-		sed -i '/\[mysqld\]/a bind-address = 0.0.0.0' /etc/mysql/my.cnf
-		output 'Restarting MySQL process...'
-		service mysql restart
-	elif [ -f /etc/my.cnf ] ; then
-        sed -i -- 's/bind-address/# bind-address/g' /etc/my.cnf
-		sed -i '/\[mysqld\]/a bind-address = 0.0.0.0' /etc/my.cnf
-		output 'Restarting MySQL process...'
-		service mysql restart
-    	elif [ -f /etc/mysql/my.conf.d/mysqld.cnf ] ; then
-        sed -i -- 's/bind-address/# bind-address/g' /etc/my.cnf
-		sed -i '/\[mysqld\]/a bind-address = 0.0.0.0' /etc/my.cnf
-		output 'Restarting MySQL process...'
-		service mysql restart
-	else 
-		output 'File my.cnf was not found! Please contact support.'
-	fi
-
-    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        yes | ufw allow 3306
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        firewall-cmd --permanent --add-service=mysql
-        firewall-cmd --reload
-    fi 
-
-    broadcast_database
-}
-
 database_host_reset(){
     SERVER_IP=$(curl -s http://checkip.amazonaws.com)
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
@@ -1041,10 +989,10 @@ case $installoption in
             ;;
         5)  upgrade_wings
             ;;
-        6)  install_phpmyadmin
-            ;;
-        7)  repositories_setup
-            install_database
+	6)  upgrade_pterodactyl
+	    upgrade_wings
+	    ;;
+        7)  install_phpmyadmin
             ;;
         8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
             ;;
