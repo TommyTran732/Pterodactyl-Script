@@ -826,8 +826,6 @@ firewall(){
         yum -y install iptables
     fi
 
-    block_icmp
-
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
@@ -887,28 +885,6 @@ EOF
             firewall-cmd --permanent --add-service=mysql
         fi
     fi
-}
-
-block_icmp(){
-    output "Block ICMP (Ping) Packets?"
-    output "You should choose [1] if you are not using a monitoring system and [2] otherwise."
-    output "[1] Yes."
-    output "[2] No."
-    read icmp
-    case $icmp in
-        1 ) if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-                sed -i '/ufw-before-input.*icmp/s/ACCEPT/DROP/g' /etc/ufw/before.rules
-                sudo ufw reload
-            elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-                firewall-cmd --permanent --add-icmp-block-inversion
-                firewall-cmd --reload
-            fi
-            ;;
-        2 ) output "Skipping rule..."
-            ;;
-        * ) output "You did not enter a valid selection."
-            block_icmp
-    esac    
 }
 
 database_host_reset(){
