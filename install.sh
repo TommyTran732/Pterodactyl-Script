@@ -936,7 +936,7 @@ broadcast(){
     output "All unnecessary ports are blocked by default."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         output "Use 'ufw allow <port>' to enable your desired ports."
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
     output "###############################################################"
