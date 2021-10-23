@@ -260,6 +260,7 @@ repositories_setup(){
             apt-get -y autoremove
             apt-get -y autoclean
             apt-get -y install curl
+        fi
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
