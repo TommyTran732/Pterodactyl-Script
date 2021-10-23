@@ -315,8 +315,7 @@ install_dependencies(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable redis-server
         service redis-server start
-        systemctl enable php8.0-fpm
-        service php8.0-fpm start
+        systemctl enable --now php8.0-fpm
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
         systemctl enable --now redis
         systemctl enable --now php-fpm
@@ -689,8 +688,8 @@ install_wings() {
 
     output "Installing Docker"
     if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-        dnf -y install docker-ce
+        dnf install podman-docker
+        systemctl enable --now podman.socket
     else
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     fi
@@ -784,7 +783,7 @@ ssl_certs(){
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install certbot
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        yum -y install certbot
+        dnf -y install certbot
     fi
     service nginx stop
     certbot certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
@@ -798,24 +797,6 @@ ssl_certs(){
         fi
     else
         service nginx restart
-    fi
-       
-    if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
-        if [ "$installoption" = "1" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "2" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "ufw allow 80" --pre-hook "service wings stop" --post-hook "ufw deny 80" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "3" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        fi
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]; then
-        if [ "$installoption" = "1" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --post-hook "service nginx restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "2" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "firewall-cmd --add-port=80/tcp && firewall-cmd --reload" --pre-hook "service wings stop" --post-hook "firewall-cmd --remove-port=80/tcp && firewall-cmd --reload" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        elif [ "$installoption" = "3" ]; then
-            (crontab -l ; echo '0 0,12 * * * certbot renew --pre-hook "service nginx stop" --pre-hook "service wings stop" --post-hook "service nginx restart" --post-hook "service wings restart" >> /dev/null 2>&1')| crontab -
-        fi
     fi
 }
 
@@ -938,40 +919,40 @@ broadcast_database(){
 preflight
 install_options
 case $installoption in 
-        1)  repositories_setup
-            required_infos
-            firewall
-            setup_pterodactyl
-            broadcast
+    1)  repositories_setup
+        required_infos
+        firewall
+        setup_pterodactyl
+        broadcast
 	    broadcast_database
-            ;;
-        2)  repositories_setup
-            required_infos
-            firewall
-            ssl_certs
-            install_wings
-            broadcast
+        ;;
+    2)  repositories_setup
+        required_infos
+        firewall
+        ssl_certs
+        install_wings
+        broadcast
 	    broadcast_database
-            ;;
-        3)  repositories_setup
-            required_infos
-            firewall
-            ssl_certs
-            setup_pterodactyl
-            install_wings
-            broadcast
-            ;;
-        4)  upgrade_pterodactyl
-            ;;
-        5)  upgrade_wings
-            ;;
+        ;;
+    3)  repositories_setup
+        required_infos
+        firewall
+        ssl_certs
+        setup_pterodactyl
+        install_wings
+        broadcast
+        ;;
+    4)  upgrade_pterodactyl
+        ;;
+    5)  upgrade_wings
+        ;;
 	6)  upgrade_pterodactyl
 	    upgrade_wings
 	    ;;
-        7)  install_phpmyadmin
-            ;;
-        8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
-            ;;
-        9)  database_host_reset
-            ;;
+    7)  install_phpmyadmin
+        ;;
+    8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
+        ;;
+    9)  database_host_reset
+        ;;
 esac
