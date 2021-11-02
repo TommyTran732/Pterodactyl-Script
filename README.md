@@ -14,7 +14,7 @@ Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 - Panel upgrade
 - Daemon installation
 - Daemon upgrade
-- phpMyAdmin installation (on nodes with the panel only)
+- phpMyAdmin installation (on nodes with the panel only - optional)
 - Automatic LetsEncrypt certificate generation
 - HSTS enabled
 - Fail2ban SSHD jail
