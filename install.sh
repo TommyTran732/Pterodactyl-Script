@@ -265,29 +265,9 @@ repositories_setup(){
     	dnf -y install dnf-utils
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install http://rpms.remirepo.net/fedora/remi-release-34.rpm
-	    dnf -y module enable nginx:mainline/common
 	else	
 	    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 	    dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-	    
-	    bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<EOF
-[nginx-stable]
-name=nginx stable repo
-baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true
-
-[nginx-mainline]
-name=nginx mainline repo
-baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true 
-EOF
-	dnf config-manager --enable nginx-mainline
 	fi
 	dnf config-manager --set-enabled remi
         dnf -y install tuned
@@ -306,15 +286,15 @@ install_dependencies(){
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
 	dnf -y module install mariadb:10.5/server
-	dnf -y module install php:remi-8.0
-	dnf -y module install nginx
-        dnf -y install redis git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
+	dnf -y module install php:remi-8.0/common
+	dnf -y module install redis:remi-6.2/common
+	dnf -y module install nginx:mainline/common
+        dnf -y install git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
     fi
 
     output "Enabling Services..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        systemctl enable redis-server
-        service redis-server start
+        systemctl enable --now redis-server
         systemctl enable --now php8.0-fpm
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
         systemctl enable --now redis
