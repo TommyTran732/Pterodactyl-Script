@@ -363,7 +363,11 @@ install_pterodactyl() {
     output "Downloading Pterodactyl..."
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl || exit
-    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz
+    if [ ${PANEL} = "latest" ]; then
+    	curl -Lo https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
+    else
+    	curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz
+    fi
     tar -xzvf panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
@@ -673,7 +677,11 @@ install_wings() {
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl
     cd /etc/pterodactyl || exit
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
+    if [ ${WINGS} = "latest" ]; then
+    	curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64
+    else
+    	curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
+    fi
     chmod u+x /usr/local/bin/wings
     
       bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
@@ -712,7 +720,11 @@ EOF
 
 
 upgrade_wings(){
-    curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64
+    if [ ${WINGS} = "latest" ]; then
+    	curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64
+    else
+    	curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
+    fi
     chmod u+x /usr/local/bin/wings
     systemctl restart wings
     output "Your wings have been updated to version ${WINGS}."
