@@ -9,13 +9,13 @@ Please note this script is meant to be used on fresh installations only. You mus
 Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 <br />
 # Supported Operating System
-Note: This list will soon change. The project will focus on supporting more distributions (openSUSE Tumbleweed/Leap, other RHEL derivatives, etc). Support for older versions for these distributions will be dropped.
+I highly recommend that you use ditributions in the Red Hat family over the Debian family. Red Hat distributions have modular repositories which makes package management so much cleaner.
 
 | Operating System  | Version  | Supported            | Recommended        | Notes                                |
 | ----------------- | -------- | -------------------- | ------------------ | ------------------------------------ |
-| Ubuntu            | 20.04    | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| Debian            | 10       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | CentOS            | Stream 8 | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | Rocky Linux       | 8        | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| RHEL              | 8        | :heavy_check_mark:   | :red_circle:       |                                      |
+| RHEL              | 8        | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | Fedora            | 34       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
+| Ubuntu            | 20.04    | :heavy_check_mark:   | :red-circle:       |                                      |
+| Debian            | 10       | :heavy_check_mark:   | :red-circle:       |                                      |
