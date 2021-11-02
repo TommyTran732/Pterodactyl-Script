@@ -375,7 +375,14 @@ install_pterodactyl() {
     fi
  
     cp .env.example .env
-    /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+    
+    if [ "$lsb_dist" = "fedora" ] || [ "$lsb_dist" = "centos" ] || [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
+    	composer update --no-interaction
+	composer install --no-dev --optimize-autoloader --no-interaction
+    else 
+    	/usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+    fi
+    
     php artisan key:generate --force
     php artisan p:environment:setup -n --author=$email --url=https://$FQDN --timezone=America/New_York --cache=redis --session=database --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379
     php artisan p:environment:database --host=127.0.0.1 --port=3306 --database=panel --username=pterodactyl --password=$password
