@@ -732,7 +732,7 @@ install_phpmyadmin(){
         rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
     fi
     cd /var/www/pterodactyl/public/phpmyadmin || exit
-    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
     BOWFISH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 34 | head -n 1`
     bash -c 'cat > /var/www/pterodactyl/public/phpmyadmin/config.inc.php' <<EOF
 <?php
