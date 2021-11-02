@@ -720,14 +720,18 @@ upgrade_wings(){
 
 install_phpmyadmin(){
     output "Installing phpMyAdmin..."
-    cd /var/www/pterodactyl/public || exit
-    rm -rf phpmyadmin
-    wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN}/phpMyAdmin-${PHPMYADMIN}-all-languages.zip
-    unzip phpMyAdmin-${PHPMYADMIN}-all-languages.zip
-    mv phpMyAdmin-${PHPMYADMIN}-all-languages phpmyadmin
-    rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+    if [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    	dnf -y install phpmyadmin
+	ln -s /usr/share/phpMyAdmin /var/www/pterodactyl/public
+    else
+        cd /var/www/pterodactyl/public || exit
+        rm -rf phpmyadmin
+        wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN}/phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+        unzip phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+        mv phpMyAdmin-${PHPMYADMIN}-all-languages phpmyadmin
+        rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+    fi
     cd /var/www/pterodactyl/public/phpmyadmin || exit
-
     SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
     BOWFISH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 34 | head -n 1`
     bash -c 'cat > /var/www/pterodactyl/public/phpmyadmin/config.inc.php' <<EOF
@@ -790,7 +794,7 @@ firewall(){
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         dnf -y install fail2ban
     fi 
     systemctl enable fail2ban
@@ -825,7 +829,7 @@ EOF
             ufw allow 3306
         fi
         yes | ufw enable 
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         dnf -y install firewalld
         systemctl enable firewalld
         systemctl start firewalld
