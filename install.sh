@@ -329,24 +329,29 @@ install_pterodactyl() {
 		sed -i -- '/bind-address/s/#//g' /etc/mysql/mariadb.conf.d/50-server.cnf
  		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
 		output 'Restarting MySQL process...'
-		service mysql restart
+		service mariadb restart
 	elif grep -Fqs "bind-address" /etc/mysql/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
 		output 'Restarting MySQL process...'
-		service mysql restart
+		service mariadb restart
 	elif grep -Fqs "bind-address" /etc/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf
 		output 'Restarting MySQL process...'
-		service mysql restart
+		service mariadb restart
     	elif grep -Fqs "bind-address" /etc/mysql/my.conf.d/mysqld.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.conf.d/mysqld.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.conf.d/mysqld.cnf
 		output 'Restarting MySQL process...'
-		service mysql restart
+		service mariadb restart
+    	elif grep -Fqs "bind-address" /etc/my.cnf.d/mariadb-server.cnf ; then
+        	sed -i -- '/bind-address/s/#//g' /etc/my.cnf.d/mariadb-server.cnf
+		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf.d/mariadb-server.cnf
+		output 'Restarting MySQL process...'
+		service mariadb restart
 	else
-		output 'A MySQL configuration file could not be detected! Please contact support.'
+		output 'A MariaDB configuration file could not be detected! Please contact support.'
 	fi
 
     output "Downloading Pterodactyl..."
