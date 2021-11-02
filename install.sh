@@ -621,7 +621,6 @@ server {
 
     service nginx restart
     chown -R nginx:nginx $(pwd)
-    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
     restorecon -R /var/www/pterodactyl
 }
 
