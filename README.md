@@ -16,7 +16,9 @@ Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 - Daemon upgrade
 - phpMyAdmin installation (on nodes with the panel only)
 - Automatic LetsEncrypt certificate generation
+- HSTS enabled
 - Fail2ban SSHD jail
+- Basic firewall configuration
 
 # Supported Operating System
 RHEL, CentOS Stream, Rocky Linux and Alma Linux are recommended over Ubuntu and Debian due to the new Appstream system introduced in RHEL 8. With modular repos, package management with dnf became so much easier and cleaner compared to apt. <br />
