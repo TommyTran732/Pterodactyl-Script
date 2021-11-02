@@ -836,13 +836,16 @@ EOF
             firewall-cmd --permanent --add-service=80/tcp
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
-
+	    firewall-cmd --permanent --zone=trusted --change-interface=pterodactyl0
+	    firewall-cmd --zone=trusted --add-masquerade --permanent
         elif [ "$installoption" = "3" ]; then
             firewall-cmd --add-service=http --permanent
             firewall-cmd --add-service=https --permanent 
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
             firewall-cmd --permanent --add-service=mysql
+	    firewall-cmd --permanent --zone=trusted --change-interface=pterodactyl0
+	    firewall-cmd --zone=trusted --add-masquerade --permanent
         fi
     fi
 }
