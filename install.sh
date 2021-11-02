@@ -362,11 +362,8 @@ install_pterodactyl() {
     chmod -R 755 storage/* bootstrap/cache/
 
     output "Installing Pterodactyl..."
-    if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
-    	curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.16
-    else
-        curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-    fi
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+ 
     cp .env.example .env
     /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
     php artisan key:generate --force
