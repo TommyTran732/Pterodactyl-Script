@@ -113,7 +113,7 @@ os_check(){
     if [ -r /etc/os-release ]; then
         lsb_dist="$(. /etc/os-release && echo "$ID")"
         dist_version="$(. /etc/os-release && echo "$VERSION_ID")"
-        if [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+        if [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "alma" ]; then
             dist_version="$(echo $dist_version | awk -F. '{print $1}')"
         fi
     else
