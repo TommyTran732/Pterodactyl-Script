@@ -456,15 +456,7 @@ EOF
 }
 
 upgrade_pterodactyl(){
-    cd /var/www/pterodactyl || exit
-    php artisan down
-    curl -L https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz | tar --strip-components=1 -xzv
-    chmod -R 755 storage/* bootstrap/cache
-    composer install --no-dev --optimize-autoloader
-    php artisan view:clear
-    php artisan config:clear
-    php artisan migrate --force
-    php artisan db:seed --force
+    cd /var/www/pterodactyl && php artisan p:upgrade
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
@@ -472,8 +464,6 @@ upgrade_pterodactyl(){
         restorecon -R /var/www/pterodactyl
     fi
     output "Your panel has successfully been updated to version ${PANEL}"
-    php artisan up
-    php artisan queue:restart
 }
 
 nginx_config() {
