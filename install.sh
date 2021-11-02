@@ -275,8 +275,10 @@ repositories_setup(){
 	    dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
 	fi
 	dnf config-manager --set-enabled remi
-        dnf -y install tuned
+        dnf -y install tuned dnf-automatic
         tuned-adm profile latency-performance
+	sed -i 's/apply_updates = no/apply_updates = yes/g' /etc/dnf/automatic.conf
+	systemctl enable --now dnf-automatic.timer
         dnf -y upgrade
         dnf -y autoremove
         dnf -y clean packages
