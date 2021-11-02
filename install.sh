@@ -126,12 +126,12 @@ os_check(){
             exit 2
         fi
     elif [ "$lsb_dist" = "debian" ]; then
-        if [ "$dist_version" != "10" ]; then
+        if [ "$dist_version" != "11" ]; then
             output "Unsupported Debian version. Only Debian 10 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "fedora" ]; then
-        if [ "$dist_version" != "34" ]; then
+        if [ "$dist_version" != "35" ]; then
             output "Unsupported Fedora version. Only Fedora 34 is supported."
             exit 2
         fi
@@ -155,8 +155,8 @@ os_check(){
         output ""
         output "Supported OS:"
         output "Ubuntu: 20.04"
-        output "Debian: 10"
-        output "Fedora: 34"
+        output "Debian: 11"
+        output "Fedora: 35"
         output "CentOS Stream: 8"
         output "Rocky Linux: 8"
         output "RHEL: 8"
