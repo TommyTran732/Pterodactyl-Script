@@ -8,6 +8,16 @@ Please note this script is meant to be used on fresh installations only. You mus
 <br />
 Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 <br />
+
+# Features
+- Panel installation
+- Panel upgrade
+- Daemon installation
+- Daemon upgrade
+- phpMyAdmin installation (on nodes with the panel only)
+- Automatic LetsEncrypt certificate generation
+- Fail2ban SSHD jail
+
 # Supported Operating System
 RHEL, CentOS Stream, Rocky Linux and Alma Linux are recommended over Ubuntu and Debian due to the new Appstream system introduced in RHEL 8. With modular repos, package management with dnf became so much easier and cleaner compared to apt. <br />
 
