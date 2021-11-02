@@ -493,21 +493,27 @@ server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
     server_name '"$FQDN"';
+    
     root /var/www/pterodactyl/public;
     index index.php;
+
     access_log /var/log/nginx/pterodactyl.app-access.log;
     error_log  /var/log/nginx/pterodactyl.app-error.log error;
+
     # allow larger file uploads and longer script runtimes
     client_max_body_size 100m;
     client_body_timeout 120s;
+
     sendfile off;
+
     # SSL Configuration
     ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
     ssl_session_cache shared:SSL:10m;
-    ssl_protocols TLSv1.2;
-    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
     ssl_prefer_server_ciphers on;
+
     # See https://hstspreload.org/ before uncommenting the line below.
     # add_header Strict-Transport-Security "max-age=15768000; preload;";
     add_header X-Content-Type-Options nosniff;
@@ -521,7 +527,7 @@ server {
     }
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.0-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
@@ -535,6 +541,7 @@ server {
         fastcgi_read_timeout 300;
         include /etc/nginx/fastcgi_params;
     }
+
     location ~ /\.ht {
         deny all;
     }
