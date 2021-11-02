@@ -686,7 +686,30 @@ install_wings() {
     cd /etc/pterodactyl || exit
     curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
-    bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
+    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+	bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
+[Unit]
+Description=Pterodactyl Wings Daemon
+After=podman.service
+Requires=podman.service
+PartOf=podman.service
+
+[Service]
+User=root
+WorkingDirectory=/etc/pterodactyl
+LimitNOFILE=4096
+PIDFile=/var/run/wings/daemon.pid
+ExecStart=/usr/local/bin/wings
+Restart=on-failure
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    else
+       bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
 Description=Pterodactyl Wings Daemon
 After=docker.service
@@ -707,7 +730,7 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 EOF
-
+    fi
     systemctl enable --now wings
     output "Wings ${WINGS} has now been installed on your system."
 }
