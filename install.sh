@@ -267,7 +267,7 @@ repositories_setup(){
             apt-get -y autoclean
             apt-get -y install curl
         fi
-    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
     	dnf -y install dnf-utils
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install http://rpms.remirepo.net/fedora/remi-release-35.rpm
@@ -302,7 +302,7 @@ install_dependencies(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable --now redis-server
         systemctl enable --now php8.0-fpm
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         systemctl enable --now redis
         systemctl enable --now php-fpm
     fi
@@ -392,7 +392,7 @@ install_pterodactyl() {
     php artisan p:user:make --email=$email --admin=1
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
 	semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -424,7 +424,7 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 EOF
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         cat > /etc/systemd/system/pteroq.service <<- 'EOF'
 # Pterodactyl Queue Worker File
 # ----------------------------------
@@ -459,7 +459,7 @@ upgrade_pterodactyl(){
     cd /var/www/pterodactyl && php artisan p:upgrade
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
         restorecon -R /var/www/pterodactyl
     fi
@@ -637,7 +637,7 @@ EOF
 webserver_config(){
     if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
         nginx_config
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         php_config
         nginx_config_redhat
 	chown -R nginx:nginx /var/lib/php/session
@@ -657,12 +657,12 @@ install_wings() {
     output "Installing Pterodactyl Wings dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install curl tar unzip
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install curl tar unzip
     fi
 
     output "Installing Docker"
-    if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
         dnf -y install docker-ce
     else
@@ -702,7 +702,7 @@ EOF
     output "Wings ${WINGS} has now been installed on your system."
     output "You should go to your panel and configure the node now."
     output "Do `systemctl start wings` after you have run the auto deployment command."
-    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
     	output "------------------------------------------------------------------"
 	output "IMPORTANT NOTICE!!!"
 	output "Since you are on a system with targetted SELinux policies, you should be changing the Daemon Server File Directory from /var/lib/pterodactyl/volumes to /var/srv/containers/pterodactyl."
@@ -720,7 +720,7 @@ upgrade_wings(){
 
 install_phpmyadmin(){
     output "Installing phpMyAdmin..."
-    if [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    if [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
     	dnf -y install phpmyadmin
 	ln -s /usr/share/phpMyAdmin /var/www/pterodactyl/public
     else
@@ -760,7 +760,7 @@ EOF
     output "Installation completed."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -772,14 +772,14 @@ ssl_certs(){
     cd /root || exit
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install certbot
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install certbot
     fi
     
     if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
         if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install python3-certbot-nginx
-    	elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    	elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
             dnf -y install python3-certbot-nginx
     	fi
 	certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
@@ -794,7 +794,7 @@ firewall(){
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install fail2ban
     fi 
     systemctl enable fail2ban
@@ -829,7 +829,7 @@ EOF
             ufw allow 3306
         fi
         yes | ufw enable 
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install firewalld
         systemctl enable firewalld
         systemctl start firewalld
@@ -880,7 +880,7 @@ broadcast(){
     output "All unnecessary ports are blocked by default."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         output "Use 'ufw allow <port>' to enable your desired ports."
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
     output "------------------------------------------------------------------"
