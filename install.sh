@@ -758,6 +758,11 @@ ssl_certs(){
     fi
     
     if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
+        if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+            apt-get -y install python3-certbot-nginx
+    	elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+            dnf -y install python3-certbot-nginx
+    	fi
 	certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
     fi
     
