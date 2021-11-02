@@ -731,8 +731,15 @@ RestartSec=5s
 WantedBy=multi-user.target
 EOF
     fi
-    systemctl enable --now wings
+    systemctl enable wings
     output "Wings ${WINGS} has now been installed on your system."
+    output "You should go to your panel and configure the node now."
+    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    	output "------------------------------------------------------------------"
+	output "IMPORTANT NOTICE!!!"
+	output "Since you are on a system with targetted SELinux policies, you should be changing the Daemon Server File Directory from /var/lib/pterodactyl/volumes to /var/srv/containers/pterodactyl."
+	output "------------------------------------------------------------------"
+    fi
 }
 
 
@@ -895,7 +902,7 @@ broadcast(){
     if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
         broadcast_database
     fi
-    output "###############################################################"
+    output "------------------------------------------------------------------"
     output "FIREWALL INFORMATION"
     output ""
     output "All unnecessary ports are blocked by default."
@@ -904,12 +911,12 @@ broadcast(){
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
-    output "###############################################################"
+    output "------------------------------------------------------------------"
     output ""
 }
 
 broadcast_database(){
-    output "###############################################################"
+    output "------------------------------------------------------------------"
     output "MARIADB/MySQL INFORMATION"
     output ""
     output "Your MariaDB/MySQL root password is $rootpassword"
@@ -919,7 +926,7 @@ broadcast_database(){
     output "Port: 3306"
     output "User: admin"
     output "Password: $adminpassword"
-    output "###############################################################"
+    output "------------------------------------------------------------------"
     output ""
 }
 
