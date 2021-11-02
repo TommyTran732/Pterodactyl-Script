@@ -245,7 +245,7 @@ repositories_setup(){
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
         if [ "$lsb_dist" =  "ubuntu" ]; then
             LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-	        apt -y install tuned dnsutils
+	    apt -y install tuned dnsutils
             tuned-adm profile latency-performance
         elif [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install ca-certificates apt-transport-https
@@ -267,8 +267,8 @@ repositories_setup(){
             dnf -y install dnf-plugins-core python2 libsemanage-devel
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
-	        dnf -y module enable nginx:mainline/common
-	        dnf -y module enable mariadb:14/server
+	    dnf -y module enable nginx:mainline/common
+	    dnf -y module enable mariadb:14/server
         elif  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" = "rocky" ]; then
             dnf -y install epel-release boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
