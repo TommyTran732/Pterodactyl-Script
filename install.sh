@@ -368,7 +368,11 @@ install_pterodactyl() {
     chmod -R 755 storage/* bootstrap/cache/
 
     output "Installing Pterodactyl..."
-    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+    if [ "$lsb_dist" = "fedora" ] || [ "$lsb_dist" = "centos" ] || [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
+    	dnf -y install composer
+    else 
+    	curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+    fi
  
     cp .env.example .env
     /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
