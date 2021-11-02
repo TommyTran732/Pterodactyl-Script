@@ -304,6 +304,7 @@ enabled=0
 gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true 
 EOF
+	yum-config-manager --enable nginx-mainline
 	fi
         dnf -y install tuned
         tuned-adm profile latency-performance
