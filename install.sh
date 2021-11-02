@@ -275,8 +275,8 @@ repositories_setup(){
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
             dnf -y module enable nginx:mainline/common
-	        curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-	        dnf config-manager --set-enabled mariadb
+	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+	    dnf config-manager --set-enabled mariadb
         elif  [ "$lsb_dist" =  "rhel" ]; then
             dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
             dnf -y install boost-program-options
