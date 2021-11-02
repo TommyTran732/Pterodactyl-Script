@@ -852,7 +852,7 @@ EOF
 }
 
 database_host_reset(){
-    SERVER_IP=$(curl -s http://checkip.amazonaws.com)
+    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     Q0="SET old_passwords=0;"
     Q1="SET PASSWORD FOR 'admin'@'$SERVER_IP' = PASSWORD('$adminpassword');"
