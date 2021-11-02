@@ -734,6 +734,7 @@ EOF
     systemctl enable wings
     output "Wings ${WINGS} has now been installed on your system."
     output "You should go to your panel and configure the node now."
+    output "Do `systemctl start wings` after you have run the auto deployment command."
     if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
     	output "------------------------------------------------------------------"
 	output "IMPORTANT NOTICE!!!"
