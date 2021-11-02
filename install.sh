@@ -924,7 +924,7 @@ case $installoption in
         firewall
         setup_pterodactyl
         broadcast
-	    broadcast_database
+	broadcast_database
         ;;
     2)  repositories_setup
         required_infos
@@ -932,7 +932,7 @@ case $installoption in
         ssl_certs
         install_wings
         broadcast
-	    broadcast_database
+	broadcast_database
         ;;
     3)  repositories_setup
         required_infos
@@ -946,9 +946,9 @@ case $installoption in
         ;;
     5)  upgrade_wings
         ;;
-	6)  upgrade_pterodactyl
-	    upgrade_wings
-	    ;;
+    6)  upgrade_pterodactyl
+	upgrade_wings
+	;;
     7)  install_phpmyadmin
         ;;
     8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
