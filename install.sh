@@ -429,8 +429,8 @@ ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,stan
 WantedBy=multi-user.target
 EOF
         setsebool -P httpd_can_network_connect 1
-	    setsebool -P httpd_execmem 1
-	    setsebool -P httpd_unified 1
+	setsebool -P httpd_execmem 1
+	setsebool -P httpd_unified 1
     fi
     sudo systemctl daemon-reload
     systemctl enable --now pteroq.service
@@ -810,7 +810,7 @@ firewall(){
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ]; then
+    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
         yum -y install fail2ban
     fi 
     systemctl enable fail2ban
