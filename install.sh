@@ -47,7 +47,7 @@ preflight(){
     elif [ "$lsb_dist" =  "debian" ]; then
         apt update --fix-missing
         apt-get -y install software-properties-common virt-what wget curl dnsutils
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
+    elif [ "$lsb_dist" = "fedora" ] || [ "$lsb_dist" = "centos" ] || [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         yum -y install virt-what wget bind-utils
     fi
     virt_serv=$(echo $(virt-what))
@@ -147,10 +147,15 @@ os_check(){
         fi
     elif [ "$lsb_dist" = "rocky" ]; then
         if [ "$dist_version" != "8" ]; then
-            output "Unsupported RockyLinux version. Only RockyLinux 8 is supported."
+            output "Unsupported Rocky Linux version. Only Rocky Linux 8 is supported."
             exit 2
         fi
-    elif [ "$lsb_dist" != "ubuntu" ] && [ "$lsb_dist" != "debian" ] && [ "$lsb_dist" != "fedora" ] && [ "$lsb_dist" != "centos" ] && [ "$lsb_dist" != "rhel" ] && [ "$lsb_dist" != "rocky" ]; then
+    elif [ "$lsb_dist" = "almalinux" ]; then
+        if [ "$dist_version" != "8" ]; then
+            output "Unsupported AlmaLinux version. Only AlmaLinux 8 is supported."
+            exit 2
+        fi
+    elif [ "$lsb_dist" != "ubuntu" ] && [ "$lsb_dist" != "debian" ] && [ "$lsb_dist" != "fedora" ] && [ "$lsb_dist" != "centos" ] && [ "$lsb_dist" != "rhel" ] && [ "$lsb_dist" != "rocky" ] && [ "$lsb_dist" != "almalinux" ]; then
         output "Unsupported operating system."
         output ""
         output "Supported OS:"
@@ -159,6 +164,7 @@ os_check(){
         output "Fedora: 35"
         output "CentOS Stream: 8"
         output "Rocky Linux: 8"
+	output "AlmaLinux: 8"
         output "RHEL: 8"
         exit 2
     fi
@@ -261,10 +267,10 @@ repositories_setup(){
             apt-get -y autoclean
             apt-get -y install curl
         fi
-    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
     	dnf -y install dnf-utils
         if  [ "$lsb_dist" =  "fedora" ] ; then
-            dnf -y install http://rpms.remirepo.net/fedora/remi-release-34.rpm
+            dnf -y install http://rpms.remirepo.net/fedora/remi-release-35.rpm
 	else	
 	    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 	    dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
@@ -296,7 +302,7 @@ install_dependencies(){
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         systemctl enable --now redis-server
         systemctl enable --now php8.0-fpm
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         systemctl enable --now redis
         systemctl enable --now php-fpm
     fi
@@ -375,7 +381,7 @@ install_pterodactyl() {
     php artisan p:user:make --email=$email --admin=1
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
 	    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -398,7 +404,7 @@ ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,stan
 [Install]
 WantedBy=multi-user.target
 EOF
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         cat > /etc/systemd/system/pteroq.service <<- 'EOF'
 Description=Pterodactyl Queue Worker
 After=redis-server.service
@@ -430,7 +436,7 @@ upgrade_pterodactyl(){
     php artisan db:seed --force
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -446,30 +452,6 @@ nginx_config() {
     output "Configuring Nginx Webserver..."
 
 echo '
-server_tokens off;
-set_real_ip_from 103.21.244.0/22;
-set_real_ip_from 103.22.200.0/22;
-set_real_ip_from 103.31.4.0/22;
-set_real_ip_from 104.16.0.0/13;
-set_real_ip_from 104.24.0.0/14;
-set_real_ip_from 108.162.192.0/18;
-set_real_ip_from 131.0.72.0/22;
-set_real_ip_from 141.101.64.0/18;
-set_real_ip_from 162.158.0.0/15;
-set_real_ip_from 172.64.0.0/13;
-set_real_ip_from 173.245.48.0/20;
-set_real_ip_from 188.114.96.0/20;
-set_real_ip_from 190.93.240.0/20;
-set_real_ip_from 197.234.240.0/22;
-set_real_ip_from 198.41.128.0/17;
-set_real_ip_from 2400:cb00::/32;
-set_real_ip_from 2606:4700::/32;
-set_real_ip_from 2803:f800::/32;
-set_real_ip_from 2405:b500::/32;
-set_real_ip_from 2405:8100::/32;
-set_real_ip_from 2c0f:f248::/32;
-set_real_ip_from 2a06:98c0::/29;
-real_ip_header X-Forwarded-For;
 server {
     listen 80 default_server;
     server_name '"$FQDN"';
@@ -533,30 +515,6 @@ nginx_config_redhat(){
     output "Configuring Nginx web server..."
 
 echo '
-server_tokens off;
-set_real_ip_from 103.21.244.0/22;
-set_real_ip_from 103.22.200.0/22;
-set_real_ip_from 103.31.4.0/22;
-set_real_ip_from 104.16.0.0/13;
-set_real_ip_from 104.24.0.0/14;
-set_real_ip_from 108.162.192.0/18;
-set_real_ip_from 131.0.72.0/22;
-set_real_ip_from 141.101.64.0/18;
-set_real_ip_from 162.158.0.0/15;
-set_real_ip_from 172.64.0.0/13;
-set_real_ip_from 173.245.48.0/20;
-set_real_ip_from 188.114.96.0/20;
-set_real_ip_from 190.93.240.0/20;
-set_real_ip_from 197.234.240.0/22;
-set_real_ip_from 198.41.128.0/17;
-set_real_ip_from 2400:cb00::/32;
-set_real_ip_from 2606:4700::/32;
-set_real_ip_from 2803:f800::/32;
-set_real_ip_from 2405:b500::/32;
-set_real_ip_from 2405:8100::/32;
-set_real_ip_from 2c0f:f248::/32;
-set_real_ip_from 2a06:98c0::/29;
-real_ip_header X-Forwarded-For;
 server {
     listen 80 default_server;
     server_name '"$FQDN"';
@@ -644,10 +602,10 @@ EOF
 webserver_config(){
     if [ "$lsb_dist" =  "debian" ] || [ "$lsb_dist" =  "ubuntu" ]; then
         nginx_config
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         php_config
         nginx_config_redhat
-	    chown -R nginx:nginx /var/lib/php/session
+	chown -R nginx:nginx /var/lib/php/session
     fi
 }
 
@@ -664,19 +622,19 @@ install_wings() {
     output "Installing Pterodactyl Wings dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install curl tar unzip
-    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        yum -y install curl tar unzip
+    elif  [ "$lsb_dist" =  "fedora" ] ||  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+        dnf -y install curl tar unzip
     fi
 
     output "Installing Docker"
-    if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        dnf install podman-docker
+    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+        dnf -y install podman-docker
         systemctl enable --now podman.socket
     else
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+	systemctl enable --now docker
     fi
 
-    systemctl enable --now docker
     output "Enabling SWAP support for Docker."
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     output "Installing the Pterodactyl wings..."
@@ -752,7 +710,7 @@ EOF
     output "Installation completed."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         chown -R www-data:www-data * /var/www/pterodactyl
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
         semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
@@ -764,7 +722,7 @@ ssl_certs(){
     cd /root || exit
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt-get -y install certbot
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         dnf -y install certbot
     fi
     service nginx stop
@@ -773,7 +731,7 @@ ssl_certs(){
     if [ "$installoption" = "2" ]; then
         if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
             ufw deny 80
-        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]|| [ "$lsb_dist" =  "rocky" ]; then
+        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]|| [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
             firewall-cmd --permanent --remove-port=80/tcp
             firewall-cmd --reload
         fi
@@ -783,17 +741,11 @@ ssl_certs(){
 }
 
 firewall(){
-    if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-        apt -y install iptables
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rocky" ]; then
-        yum -y install iptables
-    fi
-
     output "Setting up Fail2Ban..."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         apt -y install fail2ban
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        yum -y install fail2ban
+    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+        dnf -y install fail2ban
     fi 
     systemctl enable fail2ban
     bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
@@ -827,8 +779,8 @@ EOF
             ufw allow 3306
         fi
         yes | ufw enable 
-    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
-        yum -y install firewalld
+    elif [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+        dnf -y install firewalld
         systemctl enable firewalld
         systemctl start firewalld
         if [ "$installoption" = "1" ]; then
@@ -875,7 +827,7 @@ broadcast(){
     output "All unnecessary ports are blocked by default."
     if [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
         output "Use 'ufw allow <port>' to enable your desired ports."
-    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ]; then
+    elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         output "Use 'firewall-cmd --permanent --add-port=<port>/tcp' to enable your desired ports."
     fi
     output "###############################################################"
