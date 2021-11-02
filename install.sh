@@ -288,14 +288,14 @@ repositories_setup(){
 install_dependencies(){
     output "Installing dependencies..."
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
-        apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect
+        apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect composer
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
 	dnf -y module install mariadb:10.5/server
 	dnf -y module install php:remi-8.0/common
 	dnf -y module install redis:remi-6.2/common
 	dnf -y module install nginx:mainline/common
-        dnf -y install git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar
+        dnf -y install git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar composer
     fi
 
     output "Enabling Services..."
@@ -364,7 +364,7 @@ install_pterodactyl() {
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl || exit
     if [ ${PANEL} = "latest" ]; then
-    	curl -Lo https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
+    	curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
     else
     	curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/${PANEL}/panel.tar.gz
     fi
@@ -372,20 +372,10 @@ install_pterodactyl() {
     chmod -R 755 storage/* bootstrap/cache/
 
     output "Installing Pterodactyl..."
-    if [ "$lsb_dist" = "fedora" ] || [ "$lsb_dist" = "centos" ] || [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
-    	dnf -y install composer
-    else 
-    	curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-    fi
  
     cp .env.example .env
-    
-    if [ "$lsb_dist" = "fedora" ] || [ "$lsb_dist" = "centos" ] || [ "$lsb_dist" = "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
-    	composer update --no-interaction
-	composer install --no-dev --optimize-autoloader --no-interaction
-    else 
-    	/usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
-    fi
+    composer update --no-interaction
+    composer install --no-dev --optimize-autoloader --no-interaction
     
     php artisan key:generate --force
     php artisan p:environment:setup -n --author=$email --url=https://$FQDN --timezone=America/New_York --cache=redis --session=database --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379
