@@ -263,7 +263,6 @@ repositories_setup(){
         fi
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
     	dnf -y install dnf-utils
-	
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install http://rpms.remirepo.net/fedora/remi-release-34.rpm
 	    dnf -y module enable nginx:mainline/common
