@@ -673,7 +673,7 @@ install_wings() {
     fi
 
     output "Installing Docker"
-    if  [ "$lsb_dist" != "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
+    if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         dnf -y install podman-docker
         systemctl enable --now podman.socket
     else
