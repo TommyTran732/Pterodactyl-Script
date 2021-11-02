@@ -9,13 +9,15 @@ Please note this script is meant to be used on fresh installations only. You mus
 Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 <br />
 # Supported Operating System
-I highly recommend that you use ditributions in the Red Hat family over the Debian family. Red Hat distributions have modular repositories which makes package management so much cleaner.
+RHEL, CentOS Stream and Rocky Linux are recommended over Ubuntu and Debian due to the new Appstream system introduced in RHEL 8. With modular repos, package management with dnf becomes so much easier and cleaner compared to apt. <br />
+
+Fedora is not recommended due to its short life cycle. However, if you live on the edge and can handle frequent major updates on your own, then it is fine.
 
 | Operating System  | Version  | Supported            | Recommended        | Notes                                |
 | ----------------- | -------- | -------------------- | ------------------ | ------------------------------------ |
-| Fedora            | 35       | :heavy_check_mark:   | ✔️ |                                      |
-| CentOS            | Stream 8 | :heavy_check_mark:   | ✔️ |                                      |
-| RHEL              | 8        | :heavy_check_mark:   | ✔️ |                                      |
-| Rocky Linux       | 8        | :heavy_check_mark:   | ✔️ |                                      |
-| Ubuntu            | 20.04    | :heavy_check_mark:   | 🔴     |                                      |
-| Debian            | 11       | :heavy_check_mark:   | 🔴     |                                      |
+| Fedora            | 35       | :heavy_check_mark:   | 🔴                 |                                      |
+| CentOS            | Stream 8 | :heavy_check_mark:   | ✔️                  |                                      |
+| RHEL              | 8        | :heavy_check_mark:   | ✔️                  |                                      |
+| Rocky Linux       | 8        | :heavy_check_mark:   | ✔️                  |                                      |
+| Ubuntu            | 20.04    | :heavy_check_mark:   | 🔴                 |                                      |
+| Debian            | 11       | :heavy_check_mark:   | 🔴                 |                                      |
