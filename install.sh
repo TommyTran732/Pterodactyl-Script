@@ -682,7 +682,7 @@ install_wings() {
     fi
 
     output "Installing the Pterodactyl wings..."
-    mkdir -p /etc/pterodactyl /srv/daemon-data
+    mkdir -p /etc/pterodactyl
     cd /etc/pterodactyl || exit
     curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     chmod u+x /usr/local/bin/wings
