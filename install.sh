@@ -620,12 +620,15 @@ php_config(){
     output "Configuring PHP socket..."
     bash -c 'cat > /etc/php-fpm.d/www-pterodactyl.conf' <<-'EOF'
 [pterodactyl]
+
 user = nginx
 group = nginx
+
 listen = /var/run/php-fpm/pterodactyl.sock
 listen.owner = nginx
 listen.group = nginx
 listen.mode = 0750
+
 pm = ondemand
 pm.max_children = 9
 pm.process_idle_timeout = 10s
