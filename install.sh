@@ -10,7 +10,6 @@ warn(){
 
 PANEL=latest
 WINGS=latest
-PHPMYADMIN=5.1.1
 
 preflight(){
     output "Pterodactyl Installation & Upgrade Script"
@@ -178,7 +177,7 @@ install_options(){
     output "[4] Upgrade panel to ${PANEL}."
     output "[5] Upgrade wings to ${WINGS}."
     output "[6] Upgrade panel to ${PANEL} and daemon to ${DAEMON}."
-    output "[7] Install or update to phpMyAdmin (${PHPMYADMIN}) (only use this after you have installed the panel)."
+    output "[7] Install phpMyAdmin (only use this after you have installed the panel)."
     output "[8] Emergency MariaDB root password reset."
     output "[9] Emergency database host information reset."
     read -r choice
@@ -724,14 +723,10 @@ install_phpmyadmin(){
     output "Installing phpMyAdmin..."
     if [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
     	dnf -y install phpmyadmin
-	ln -s /usr/share/phpMyAdmin /var/www/pterodactyl/public
+	ln -s /usr/share/phpMyAdmin /var/www/pterodactyl/public/phpmyadmin
     else
-        cd /var/www/pterodactyl/public || exit
-        rm -rf phpmyadmin
-        wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN}/phpMyAdmin-${PHPMYADMIN}-all-languages.zip
-        unzip phpMyAdmin-${PHPMYADMIN}-all-languages.zip
-        mv phpMyAdmin-${PHPMYADMIN}-all-languages phpmyadmin
-        rm -rf phpMyAdmin-${PHPMYADMIN}-all-languages.zip
+    	apt -y install phpmyadmin
+	ln -s /usr/share/phpmyadmin /var/www/pterodactyl/public/phpmyadmin
     fi
     cd /var/www/pterodactyl/public/phpmyadmin || exit
     SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
