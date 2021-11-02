@@ -17,5 +17,5 @@ I highly recommend that you use ditributions in the Red Hat family over the Debi
 | Rocky Linux       | 8        | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | RHEL              | 8        | :heavy_check_mark:   | :heavy_check_mark: |                                      |
 | Fedora            | 34       | :heavy_check_mark:   | :heavy_check_mark: |                                      |
-| Ubuntu            | 20.04    | :heavy_check_mark:   | :red-circle:       |                                      |
-| Debian            | 10       | :heavy_check_mark:   | :red-circle:       |                                      |
+| Ubuntu            | 20.04    | :heavy_check_mark:   | 🔴     |                                      |
+| Debian            | 10       | :heavy_check_mark:   | 🔴     |                                      |
