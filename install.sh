@@ -290,10 +290,10 @@ install_dependencies(){
         apt -y install php8.0 php8.0-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} nginx tar unzip git redis-server nginx git wget expect composer
         sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated mariadb-server"
     else
-	dnf -y module install mariadb:10.5/server
+    	dnf -y module install nginx:mainline/common
 	dnf -y module install php:remi-8.0/common
 	dnf -y module install redis:remi-6.2/common
-	dnf -y module install nginx:mainline/common
+	dnf -y module install mariadb:10.5/server
         dnf -y install git policycoreutils-python-utils unzip wget expect jq php-mysql php-zip php-bcmath tar composer
     fi
 
