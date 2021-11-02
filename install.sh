@@ -201,7 +201,7 @@ install_options(){
             output "You have selected to upgrade panel to ${PANEL} and daemon to ${DAEMON}."
             ;;
         7 ) installoption=7
-            output "You have selected to install or update to phpMyAdmin (${PHPMYADMIN}."
+            output "You have selected to install phpMyAdmin."
             ;;
         8 ) installoption=8
             output "You have selected MariaDB root password reset."
