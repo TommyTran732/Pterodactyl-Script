@@ -674,13 +674,13 @@ install_wings() {
 
     output "Installing Docker"
     if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
-        dnf -y install podman-docker
-        systemctl enable --now podman.socket
+        dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+        dnf -y install docker-ce
     else
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-	systemctl enable --now docker
     fi
-
+    
+    systemctl enable --now docker
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl
     cd /etc/pterodactyl || exit
