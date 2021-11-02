@@ -13,9 +13,9 @@ I highly recommend that you use ditributions in the Red Hat family over the Debi
 
 | Operating System  | Version  | Supported            | Recommended        | Notes                                |
 | ----------------- | -------- | -------------------- | ------------------ | ------------------------------------ |
-| CentOS            | Stream 8 | :heavy_check_mark:   | ✔️ |                                      |
-| Rocky Linux       | 8        | :heavy_check_mark:   | ✔️ |                                      |
-| RHEL              | 8        | :heavy_check_mark:   | ✔️ |                                      |
 | Fedora            | 35       | :heavy_check_mark:   | ✔️ |                                      |
+| CentOS            | Stream 8 | :heavy_check_mark:   | ✔️ |                                      |
+| RHEL              | 8        | :heavy_check_mark:   | ✔️ |                                      |
+| Rocky Linux       | 8        | :heavy_check_mark:   | ✔️ |                                      |
 | Ubuntu            | 20.04    | :heavy_check_mark:   | 🔴     |                                      |
 | Debian            | 11       | :heavy_check_mark:   | 🔴     |                                      |
