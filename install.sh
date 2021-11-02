@@ -756,18 +756,13 @@ ssl_certs(){
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         dnf -y install certbot
     fi
-    service nginx stop
-    certbot certonly --standalone --email "$email" --agree-tos -d "$FQDN" --non-interactive
+    
+    if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
+	certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
+    fi
     
     if [ "$installoption" = "2" ]; then
-        if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
-            ufw deny 80
-        elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ]|| [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
-            firewall-cmd --permanent --remove-port=80/tcp
-            firewall-cmd --reload
-        fi
-    else
-        service nginx restart
+	certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
     fi
 }
 
