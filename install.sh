@@ -394,13 +394,12 @@ install_pterodactyl() {
         chown -R www-data:www-data * /var/www/pterodactyl
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ] || [ "$lsb_dist" != "almalinux" ]; then
         chown -R nginx:nginx * /var/www/pterodactyl
-	    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
+	semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/pterodactyl/storage(/.*)?"
         restorecon -R /var/www/pterodactyl
     fi
 
     output "Creating panel queue listeners..."
     (crontab -l ; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1")| crontab -
-    service cron restart
 
     if  [ "$lsb_dist" =  "ubuntu" ] ||  [ "$lsb_dist" =  "debian" ]; then
         cat > /etc/systemd/system/pteroq.service <<- 'EOF'
