@@ -753,7 +753,7 @@ install_phpmyadmin(){
 \$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5'
 ?>    
 EOF
-    chown -R nginx:nginx /var/www/pterodactyl
+   	chown -R nginx:nginx /var/www/pterodactyl
     if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
     	bash -c 'cat > /etc/phpmyadmin/config.inc.php' <<EOF
 <?php
@@ -778,7 +778,7 @@ EOF
 \$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5'
 ?>    
 EOF
-    chown -R www-data:www-data /var/www/pterodactyl
+    	chown -R www-data:www-data /var/www/pterodactyl
     fi
 }
 
