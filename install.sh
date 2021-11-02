@@ -262,31 +262,15 @@ repositories_setup(){
             apt-get -y install curl
         fi
     elif  [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
-        if  [ "$lsb_dist" =  "fedora" ] ; then
-            dnf -y install  http://rpms.remirepo.net/fedora/remi-release-34.rpm
-            dnf -y install dnf-plugins-core python2 libsemanage-devel
-            dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-8.0
-	    dnf -y module enable nginx:mainline/common
-	    dnf -y module enable mariadb:14/server
-        elif  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" = "rocky" ]; then
-            dnf -y install epel-release dnf-utils
-            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-            dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-8.0
-	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-	    dnf config-manager --set-enabled mariadb
-        elif  [ "$lsb_dist" =  "rhel" ]; then
-            dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-            dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
-	    dnf -y install dnf-utils
-            dnf config-manager --set-enabled remi
-            dnf -y module enable php:remi-8.0
-	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-	    dnf config-manager --set-enabled mariadb
-        fi
+    	dnf -y install dnf-utils
 	
-	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+        if  [ "$lsb_dist" =  "fedora" ] ; then
+            dnf -y install http://rpms.remirepo.net/fedora/remi-release-34.rpm
+	    dnf -y module enable nginx:mainline/common
+	else	
+	    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+	    dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+	    
 	    bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<EOF
 [nginx-stable]
 name=nginx stable repo
@@ -304,8 +288,11 @@ enabled=0
 gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true 
 EOF
-	yum-config-manager --enable nginx-mainline
+	dnf config-manager --enable nginx-mainline
 	fi
+	dnf config-manager --set-enabled remi
+	dnf -y module enable php:remi-8.0
+	dnf -y module enable mariadb:10.5/server
         dnf -y install tuned
         tuned-adm profile latency-performance
         dnf -y upgrade
