@@ -270,7 +270,7 @@ repositories_setup(){
 	    dnf -y module enable nginx:mainline/common
 	    dnf -y module enable mariadb:14/server
         elif  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" = "rocky" ]; then
-            dnf -y install epel-release boost-program-options
+            dnf -y install epel-release
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
@@ -279,7 +279,6 @@ repositories_setup(){
 	    dnf config-manager --set-enabled mariadb
         elif  [ "$lsb_dist" =  "rhel" ]; then
             dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-            dnf -y install boost-program-options
             dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
             dnf config-manager --set-enabled remi
             dnf -y module enable php:remi-8.0
@@ -287,12 +286,12 @@ repositories_setup(){
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
         fi
-        yum -y install yum-utils tuned
+        dnf -y install yum-utils tuned
         tuned-adm profile latency-performance
-        yum -y upgrade
-        yum -y autoremove
-        yum -y clean packages
-        yum -y install curl bind-utils cronie
+        dnf -y upgrade
+        dnf -y autoremove
+        dnf -y clean packages
+        dnf -y install curl bind-utils cronie
     fi
 }
 
