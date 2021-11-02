@@ -681,8 +681,6 @@ install_wings() {
 	systemctl enable --now docker
     fi
 
-    output "Enabling SWAP support for Docker."
-    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& swapaccount=1/' /etc/default/grub
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl /srv/daemon-data
     cd /etc/pterodactyl || exit
