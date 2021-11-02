@@ -657,7 +657,7 @@ install_wings() {
     output "Installing Docker"
     if  [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        dnf -y install docker-ce
+        dnf -y install docker-ce --allowerasing
     else
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     fi
