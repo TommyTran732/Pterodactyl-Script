@@ -285,6 +285,26 @@ repositories_setup(){
 	    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 	    dnf config-manager --set-enabled mariadb
         fi
+	
+	if [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" = "rocky" ]; then
+	    bash -c 'cat > /etc/yum.repos.d/nginx.repo' <<EOF
+[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true 
+EOF
+	fi
         dnf -y install tuned
         tuned-adm profile latency-performance
         dnf -y upgrade
