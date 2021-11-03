@@ -18,7 +18,7 @@ Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 - Automatic LetsEncrypt certificate generation
 - HSTS enabled
 - MariaDB SSL
-- Fail2ban SSHD jail
+- Fail2ban sshd & phpMyAdmin-syslog jails
 - Basic firewall configuration
 - Database password reset
 
