@@ -17,6 +17,7 @@ Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
 - phpMyAdmin installation (on nodes with the panel only - optional)
 - Automatic LetsEncrypt certificate generation
 - HSTS enabled
+- MariaDB SSL
 - Fail2ban SSHD jail
 - Basic firewall configuration
 - Database password reset
