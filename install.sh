@@ -331,31 +331,46 @@ install_pterodactyl() {
     SQL="${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}"
     mysql -u root -e "$SQL"
 
-    output "Binding MariaDB/MySQL to 0.0.0.0."
+    output "Binding MariaDB/MySQL to 0.0.0.0"
         if grep -Fqs "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf ; then
 		sed -i -- '/bind-address/s/#//g' /etc/mysql/mariadb.conf.d/50-server.cnf
  		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
-		output 'Restarting MySQL process...'
+		sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/mysql/mariadb.conf.d/50-server.cnf
+		sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/mysql/mariadb.conf.d/50-server.cnf
+		sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/mysql/mariadb.conf.d/50-server.cnf
+		output 'Restarting MariaDB process...'
 		service mariadb restart
 	elif grep -Fqs "bind-address" /etc/mysql/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
-		output 'Restarting MySQL process...'
+		sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/mysql/my.cnf
+		sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/mysql/my.cnf
+		sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/mysql/my.cnf
+		output 'Restarting MariaDB process...'
 		service mariadb restart
 	elif grep -Fqs "bind-address" /etc/my.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/my.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf
-		output 'Restarting MySQL process...'
+		sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/my.cnf
+		sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/my.cnf
+		sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/my.cnf
+		output 'Restarting MariaDB process...'
 		service mariadb restart
     	elif grep -Fqs "bind-address" /etc/mysql/my.conf.d/mysqld.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/mysql/my.conf.d/mysqld.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/mysql/my.conf.d/mysqld.cnf
-		output 'Restarting MySQL process...'
+		sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/mysql/my.conf.d/mysqld.cnf
+		sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/mysql/my.conf.d/mysqld.cnf
+		sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/mysql/my.conf.d/mysqld.cnf
+		output 'Restarting MariaDB process...'
 		service mariadb restart
     	elif grep -Fqs "bind-address" /etc/my.cnf.d/mariadb-server.cnf ; then
         	sed -i -- '/bind-address/s/#//g' /etc/my.cnf.d/mariadb-server.cnf
 		sed -i -- '/bind-address/s/127.0.0.1/0.0.0.0/g' /etc/my.cnf.d/mariadb-server.cnf
-		output 'Restarting MySQL process...'
+		sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/my.cnf.d/mariadb-server.cnf
+		sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/my.cnf.d/mariadb-server.cnf
+		sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/my.cnf.d/mariadb-server.cnf
+		output 'Restarting MariaDB process...'
 		service mariadb restart
 	else
 		output 'A MariaDB configuration file could not be detected! Please contact support.'
@@ -745,6 +760,8 @@ install_phpmyadmin(){
 \$cfg['Servers'][\$i]['auth_type'] = 'cookie';
 \$cfg['Servers'][\$i]['user'] = 'root';
 \$cfg['Servers'][\$i]['password'] = '';
+\$cfg['Servers'][$i]['ssl'] = true;  
+\$cfg['ForceSSL'] = true;
 /* End of servers configuration */
 \$cfg['blowfish_secret'] = '${BOWFISH}';
 \$cfg['DefaultLang'] = 'en';
@@ -768,11 +785,13 @@ EOF
 \$i++;
 \$cfg['Servers'][\$i]['verbose'] = 'MariaDB';
 \$cfg['Servers'][\$i]['host'] = '${SERVER_IP}';
-\$cfg['Servers'][\$i]['port'] = '';
+\$cfg['Servers'][\$i]['port'] = '3306';
 \$cfg['Servers'][\$i]['socket'] = '';
 \$cfg['Servers'][\$i]['auth_type'] = 'cookie';
 \$cfg['Servers'][\$i]['user'] = 'root';
 \$cfg['Servers'][\$i]['password'] = '';
+\$cfg['Servers'][$i]['ssl'] = true;  
+\$cfg['ForceSSL'] = true;
 /* End of servers configuration */
 \$cfg['blowfish_secret'] = '${BOWFISH}';
 \$cfg['DefaultLang'] = 'en';
@@ -806,6 +825,9 @@ ssl_certs(){
             dnf -y install python3-certbot-nginx
     	fi
 	certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN"
+	setfacl -Rdm u:mysql:rx /etc/letsencrypt
+	setfacl -Rm u:mysql:rx /etc/letsencrypt
+	systemctl restart mariadb
     fi
     
     if [ "$installoption" = "2" ]; then
