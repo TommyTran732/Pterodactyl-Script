@@ -277,6 +277,7 @@ repositories_setup(){
 	dnf config-manager --set-enabled remi
         dnf -y install tuned dnf-automatic
         tuned-adm profile latency-performance
+	systemctl enable --now irqbalance
 	sed -i 's/apply_updates = no/apply_updates = yes/g' /etc/dnf/automatic.conf
 	systemctl enable --now dnf-automatic.timer
         dnf -y upgrade
