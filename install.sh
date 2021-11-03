@@ -819,7 +819,7 @@ banaction = iptables-multiport
 [sshd]
 enabled = true
 [phpmyadmin-syslog]
-enable = true
+enabled = true
 maxentry = 15
 EOF
     service fail2ban restart
