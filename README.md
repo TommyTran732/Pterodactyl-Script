@@ -33,6 +33,7 @@ Ideally, we would want everything to be reproducible from the OS to the Pterodac
 
 # Supported Distributions
 Fedora, CentOS Stream, RHEL, Rocky Linux, AlmaLinux, Ubuntu, and Debian are currently supported distributions. <br />
+
 As it currently stands, RHEL is the best distribution for a production system. RHEL and its derivatives have much longer life cycle support (10 years) than Ubuntu LTS (5 years) and Debian (roughly 3 years - not counting Debian LTS), a much better Mandatory Access Control system, and a superior package manager. CentOS Stream is slightly (~1 minor version) ahead of RHEL, so you could expect it to be ever so slightly less stable. Rocky and AlmaLinux are RHEL rebuilds, so they are likely to get security patches after RHEL, just like how the old CentOS was. Red Hat now offers 16 licenses for free for production use, which also comes with Red Hat Insights, and I highly recommend that you choose RHEL over other distributions if possible. I am using RHEL on my personal Pterodactyl instance as well.<br />
 
 If you live on the edge and don't mind doing a major OS upgrade every 6 months, then Fedora may be a perfect choice. However, I am not recommending it at the moment as it is probably not what people are looking for and I do not have enough energy to help with issues that may arise from doing in-place OS upgrades. <br />
