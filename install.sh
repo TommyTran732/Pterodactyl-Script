@@ -769,7 +769,8 @@ install_phpmyadmin(){
 \$cfg['UploadDir'] = '/var/lib/phpMyAdmin/upload';
 \$cfg['SaveDir'] = '/var/lib/phpMyAdmin/save';
 \$cfg['CaptchaLoginPublicKey'] = '6LcJcjwUAAAAAO_Xqjrtj9wWufUpYRnK6BW8lnfn';
-\$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5'
+\$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5';
+\$cfg['AuthLog'] = syslog
 ?>    
 EOF
 	chmod 755 /etc/phpMyAdmin
@@ -799,7 +800,8 @@ EOF
 \$cfg['UploadDir'] = '/var/lib/phpmyadmin/upload';
 \$cfg['SaveDir'] = '/var/lib/phpmyadmin/save';
 \$cfg['CaptchaLoginPublicKey'] = '6LcJcjwUAAAAAO_Xqjrtj9wWufUpYRnK6BW8lnfn';
-\$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5'
+\$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5';
+\$cfg['AuthLog'] = syslog
 ?>    
 EOF
 	chmod 755 /etc/phpmyadmin
@@ -807,6 +809,20 @@ EOF
    	chown -R www-data:www-data /var/www/pterodactyl
 	chown -R www-data:www-data /var/lib/phpmyadmin/temp
     fi
+    
+    bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
+[DEFAULT]
+# Ban hosts for ten hours:
+bantime = 36000
+# Override /etc/fail2ban/jail.d/00-firewalld.conf:
+banaction = iptables-multiport
+[sshd]
+enabled = true
+[phpmyadmin-syslog]
+enable = true
+maxentry = 15
+EOF
+    service fail2ban restart
 }
 
 ssl_certs(){
@@ -851,6 +867,7 @@ bantime = 36000
 banaction = iptables-multiport
 [sshd]
 enabled = true
+
 EOF
     service fail2ban restart
 
