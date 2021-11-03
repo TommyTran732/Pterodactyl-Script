@@ -285,7 +285,7 @@ repositories_setup(){
         dnf -y clean packages
         dnf -y install curl bind-utils cronie
     fi
-    systemctl enable --now fstrimer.timer
+    systemctl enable --now fstrim.timer
 }
 
 install_dependencies(){
