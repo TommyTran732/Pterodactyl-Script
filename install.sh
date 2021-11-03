@@ -755,7 +755,7 @@ install_phpmyadmin(){
 \$i++;
 \$cfg['Servers'][\$i]['verbose'] = 'MariaDB';
 \$cfg['Servers'][\$i]['host'] = '${SERVER_IP}';
-\$cfg['Servers'][\$i]['port'] = '';
+\$cfg['Servers'][\$i]['port'] = '3306';
 \$cfg['Servers'][\$i]['socket'] = '';
 \$cfg['Servers'][\$i]['auth_type'] = 'cookie';
 \$cfg['Servers'][\$i]['user'] = 'root';
