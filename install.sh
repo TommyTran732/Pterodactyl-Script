@@ -814,8 +814,8 @@ EOF
     
     bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
 [DEFAULT]
-# Ban hosts for ten hours:
-bantime = 36000
+# Ban hosts for one hours:
+bantime = 3600
 # Override /etc/fail2ban/jail.d/00-firewalld.conf:
 banaction = iptables-multiport
 [sshd]
