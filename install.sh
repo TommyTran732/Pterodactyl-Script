@@ -779,7 +779,7 @@ EOF
 	chmod 644 /etc/phpMyAdmin/config.inc.php
    	chown -R nginx:nginx /var/www/pterodactyl
 	chown -R nginx:nginx /var/lib/phpMyAdmin/temp
-    if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
+    elif  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
     	bash -c 'cat > /etc/phpmyadmin/config.inc.php' <<EOF
 <?php
 /* Servers configuration */
