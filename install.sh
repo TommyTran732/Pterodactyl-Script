@@ -176,7 +176,7 @@ install_options(){
     output "[3] Install the panel ${PANEL} and wings ${WINGS}."
     output "[4] Upgrade panel to ${PANEL}."
     output "[5] Upgrade wings to ${WINGS}."
-    output "[6] Upgrade panel to ${PANEL} and daemon to ${DAEMON}."
+    output "[6] Upgrade panel to ${PANEL} and daemon to ${WINGS}."
     output "[7] Install phpMyAdmin (only use this after you have installed the panel)."
     output "[8] Emergency MariaDB root password reset."
     output "[9] Emergency database host information reset."
