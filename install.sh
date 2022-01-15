@@ -921,6 +921,13 @@ EOF
     fi
 }
 
+harden_linux(){
+    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/modprobe.d/30_security-misc.conf >> /etc/modprobe.d/30_security-misc.conf
+    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_security-misc.conf >> /etc/sysctl.d/30_security-misc.conf
+    sed -i 's/kernel.yama.ptrace_scope=2/kernel.yama.ptrace_scope=3/g' /etc/sysctl.d/30_security-misc.conf
+    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_silent-kernel-printk.conf >> /etc/sysctl.d/30_silent-kernel-printk.conf
+}
+
 database_host_reset(){
     SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
@@ -975,6 +982,7 @@ case $installoption in
     1)  repositories_setup
         required_infos
         firewall
+	harden_linux
         setup_pterodactyl
         broadcast
 	broadcast_database
@@ -982,6 +990,7 @@ case $installoption in
     2)  repositories_setup
         required_infos
         firewall
+	harden_linux
         ssl_certs
         install_wings
         broadcast
@@ -990,6 +999,7 @@ case $installoption in
     3)  repositories_setup
         required_infos
         firewall
+	harden_linux
         setup_pterodactyl
         install_wings
         broadcast
