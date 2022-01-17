@@ -6,7 +6,7 @@ Please note this script is meant to be used on fresh installations only. You mus
 <br /> 
 `bash install.sh` <br />
 <br />
-Visit my Matrix group: https://matrix.to/#/#tommytran732:matrix.org
+Visit my Matrix group: https://matrix.to/#/#tommy:arcticfoxes.net
 <br />
 
 # Features
