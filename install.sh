@@ -519,7 +519,7 @@ server {
     add_header X-Content-Type-Options nosniff;
     add_header X-XSS-Protection "0";
     add_header X-Robots-Tag none;
-    add_header Content-Security-Policy "upgrade-insecure-requests; block-all-mixed-content; form-action 'none'; frame-ancestors 'self'" always;
+    add_header Content-Security-Policy "upgrade-insecure-requests; block-all-mixed-content; frame-ancestors 'self'" always;
     add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()" always;
     add_header X-Frame-Options DENY;
     add_header Referrer-Policy same-origin;
@@ -588,7 +588,7 @@ server {
     add_header X-Content-Type-Options nosniff;
     add_header X-XSS-Protection "0";
     add_header X-Robots-Tag none;
-    add_header Content-Security-Policy "upgrade-insecure-requests; block-all-mixed-content; form-action 'none'; frame-ancestors 'self'" always;
+    add_header Content-Security-Policy "upgrade-insecure-requests; block-all-mixed-content; frame-ancestors 'self'" always;
     add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), clipboard-write=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()" always;
     add_header X-Frame-Options DENY;
     add_header Referrer-Policy same-origin;
