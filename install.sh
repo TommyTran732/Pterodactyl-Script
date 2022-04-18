@@ -853,6 +853,7 @@ ssl_certs(){
     if [ "$installoption" = "2" ]; then
 	certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
     fi
+    systemctl enable --now certbot.timer
 }
 
 firewall(){
