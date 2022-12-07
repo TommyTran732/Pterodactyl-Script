@@ -214,11 +214,40 @@ install_pterodactyl() {
 	php artisan p:environment:mail
 	php artisan migrate --seed --force
 	php artisan p:user:make --email=$email --admin=1
+	sed -i 's/PTERODACTYL_TELEMETRY_ENABLED=true/PTERODACTYL_TELEMETRY_ENABLED=false/' /var/www/pterodactyl/.env
 
 	chown -R nginx:nginx * /var/www/pterodactyl
 
-	output "Creating panel queue listeners..."
-	(crontab -l ; echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1")| crontab -
+	cat > /etc/systemd/system/pteros.service <<- 'EOF'
+# Pterodactyl Schedule Service
+# ----------------------------------
+
+[Unit]
+Description=Pterodactyl Schedule Service
+
+[Service]
+# On some systems the user and group might be different.
+# Some systems use `apache` or `nginx` as the user and group.
+User=nginx
+Group=nginx
+ExecStart=php /var/www/pterodactyl/artisan schedule:run
+StandardOutput=null
+Type=oneshot
+EOF
+
+	cat > /etc/systemd/system/pteros.timer <<- 'EOF'
+# Pterodactyl Schedule Service Timer
+# ----------------------------------
+
+[Unit]
+Description=Pterodactyl Schedule Service Timer
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=timers.target
+EOF
 
 	cat > /etc/systemd/system/pteroq.service <<- 'EOF'
 # Pterodactyl Queue Worker File
@@ -242,10 +271,9 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 EOF
-	setsebool -P httpd_can_network_connect 1
-	setsebool -P httpd_execmem 1
-	setsebool -P httpd_unified 1
+
 	sudo systemctl daemon-reload
+	systemctl enable --now pteros.timer
 	systemctl enable --now pteroq.service
 }
 
@@ -327,6 +355,9 @@ server {
 	service nginx restart
 	chown -R nginx:nginx $(pwd)
 	restorecon -R /var/www/pterodactyl
+	setsebool -P httpd_can_network_connect 1
+	setsebool -P httpd_execmem 1
+	setsebool -P httpd_unified 1
 }
 
 php_config(){
@@ -355,14 +386,6 @@ webserver_config(){
 	nginx_config
 	chown -R nginx:nginx /var/lib/php/session
 }
-
-setup_pterodactyl(){
-	install_dependencies
-	install_pterodactyl
-	ssl_certs
-	webserver_config
-}
-
 
 install_wings() {
 	cd /root || exit
@@ -484,7 +507,6 @@ EOF
 
 ssl_certs(){
 	output "Installing Let's Encrypt and creating an SSL certificate..."
-	cd /root || exit
 	dnf -y install certbot
 
 	if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
@@ -501,48 +523,59 @@ ssl_certs(){
 	if [ "$installoption" = "2" ]; then
 	certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
 	fi
-	systemctl enable --now certbot.timer
+	systemctl enable --now certbot-renew.timer
 }
 
 firewall(){
+	if [ "$installoption" = "2" ]; then
+		if [ "$lsb_dist" != "rhel" ]; then
+			subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
+			rpm --import https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/epel9.asc
+			dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+		elif [ "$lsb_dist" != "centos" ]; then
+			dnf config-manager --set-enabled crb
+			dnf install -y epel-release epel-next-release
+		else
+			dnf config-manager --set-enabled crb
+			dnf install -y epel-release
+		fi
+	fi
+
 	output "Setting up Fail2Ban..."
 	dnf -y install fail2ban
-	systemctl enable fail2ban
+	systemctl enable --now fail2ban
 	bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
 [DEFAULT]
 # Ban hosts for ten hours:
 bantime = 36000
-# Override /etc/fail2ban/jail.d/00-firewalld.conf:
-banaction = iptables-multiport
 [sshd]
 enabled = true
-
 EOF
-	service fail2ban restart
+	systemctl restart fail2ban
 
 	output "Configuring your firewall..."
-		dnf -y install firewalld
-		systemctl enable firewalld
-		systemctl start firewalld
-		if [ "$installoption" = "1" ]; then
-			firewall-cmd --add-service=http --permanent
-			firewall-cmd --add-service=https --permanent
-			firewall-cmd --add-service=mysql --permanent
-		elif [ "$installoption" = "2" ]; then
-			firewall-cmd --permanent --add-service=80/tcp
-			firewall-cmd --permanent --add-port=2022/tcp
-			firewall-cmd --permanent --add-port=8080/tcp
+	dnf -y install firewalld
+	systemctl enable --now firewalld
+	if [ "$installoption" = "1" ]; then
+		firewall-cmd --add-service=http --permanent
+		firewall-cmd --add-service=https --permanent
+		firewall-cmd --add-service=mysql --permanent
+	elif [ "$installoption" = "2" ]; then
+		firewall-cmd --permanent --add-service=80/tcp
+		firewall-cmd --permanent --add-port=2022/tcp
+		firewall-cmd --permanent --add-port=8080/tcp
 		firewall-cmd --permanent --zone=trusted --change-interface=pterodactyl0
 		firewall-cmd --zone=trusted --add-masquerade --permanent
-		elif [ "$installoption" = "3" ]; then
-			firewall-cmd --add-service=http --permanent
-			firewall-cmd --add-service=https --permanent
-			firewall-cmd --permanent --add-port=2022/tcp
-			firewall-cmd --permanent --add-port=8080/tcp
-			firewall-cmd --permanent --add-service=mysql
+	elif [ "$installoption" = "3" ]; then
+		firewall-cmd --add-service=http --permanent
+		firewall-cmd --add-service=https --permanent
+		firewall-cmd --permanent --add-port=2022/tcp
+		firewall-cmd --permanent --add-port=8080/tcp
+		firewall-cmd --permanent --add-service=mysql
 		firewall-cmd --permanent --zone=trusted --change-interface=pterodactyl0
 		firewall-cmd --zone=trusted --add-masquerade --permanent
-		fi
+	fi
+	firewall-cmd --reload
 }
 
 database_host_reset(){
@@ -593,8 +626,11 @@ preflight
 install_options
 case $installoption in
 	1)  required_infos
+		install_dependencies
+		install_pterodactyl
 		firewall
-		setup_pterodactyl
+		ssl_certs
+		webserver_config
 		broadcast
 		broadcast_database
 		;;
@@ -606,8 +642,11 @@ case $installoption in
 		broadcast_database
 		;;
 	3)  required_infos
+		install_dependencies
+		install_pterodactyl
 		firewall
-		setup_pterodactyl
+		ssl_certs
+		webserver_config
 		install_wings
 		broadcast
 		;;
