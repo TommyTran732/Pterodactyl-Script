@@ -560,6 +560,13 @@ linux_hardening(){
     mkdir -p /etc/systemd/system/sshd.service.d
     curl https://raw.githubusercontent.com/GrapheneOS/infrastructure/main/systemd/system/sshd.service.d/limits.conf -o /etc/systemd/system/sshd.service.d/limits.conf
     systemctl restart sshd
+
+    if [ "$lsb_dist" = "rhel" ]; then
+        insights-client --register
+        dnf install -y yara
+        insights-client --collector malware-detection
+        sed -i 's/test_scan: true/test_scan: false/' /etc/insights-client/malware-detection-config.yml
+    fi
 }
 
 database_host_reset(){
