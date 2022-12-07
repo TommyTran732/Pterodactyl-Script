@@ -363,7 +363,7 @@ server {
     ssl_prefer_server_ciphers on;
 
     add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload" always;
-    add_header Content-Security-Policy "default-src 'none'; connect-src *; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://www.gravatar.com; manifest-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; frame-ancestors 'self'; block-all-mixed-content; base-uri 'none'";
+    add_header Content-Security-Policy "default-src 'none'; connect-src *; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://www.gravatar.com; frame-src https://recaptcha.net; manifest-src 'self'; script-src 'self' 'unsafe-inline' https://recaptcha.net https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; frame-ancestors 'self'; block-all-mixed-content; base-uri 'none'";
     add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), clipboard-read=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), magnetometer=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), sync-xhr=(), xr-spatial-tracking=()";
     add_header Referrer-Policy "same-origin" always;
     add_header X-Content-Type-Options "nosniff" always;
