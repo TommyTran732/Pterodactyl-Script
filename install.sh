@@ -70,7 +70,7 @@ preflight(){
         warn "No support would be given if your server breaks at any point in the future."
         warn "Proceed?\n[1] Yes.\n[2] No."
         read choice
-        case $choice in 
+        case $choice in
             1)  output "Proceeding..."
                 ;;
             2)  output "Cancelling installation..."
@@ -91,7 +91,7 @@ preflight(){
         output "Proxmox LXE kernel detected. You have chosen to continue in the last step, therefore we are proceeding at your own risk."
         output "Proceeding with a risky operation..."
     elif echo $(uname -r) | grep -q stab; then
-        if echo $(uname -r) | grep -q 2.6; then 
+        if echo $(uname -r) | grep -q 2.6; then
             output "OpenVZ 6 detected. This server will definitely not work with Docker, regardless of what your provider might say. Exiting to avoid further damages."
             exit 6
         fi
@@ -118,7 +118,7 @@ os_check(){
     else
         exit 1
     fi
-    
+
     if [ "$lsb_dist" =  "ubuntu" ]; then
         if  [ "$dist_version" != "20.04" ]; then
             output "Unsupported Ubuntu version. Only Ubuntu 20.04 is supported."
@@ -270,7 +270,7 @@ repositories_setup(){
     	dnf -y install dnf-utils
         if  [ "$lsb_dist" =  "fedora" ] ; then
             dnf -y install http://rpms.remirepo.net/fedora/remi-release-35.rpm
-	else	
+	else
 	    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 	    dnf -y install http://rpms.remirepo.net/enterprise/remi-release-8.rpm
 	fi
@@ -390,11 +390,11 @@ install_pterodactyl() {
     chmod -R 755 storage/* bootstrap/cache/
 
     output "Installing Pterodactyl..."
- 
+
     cp .env.example .env
     composer update --no-interaction
     composer install --no-dev --optimize-autoloader --no-interaction
-    
+
     php artisan key:generate --force
     php artisan p:environment:setup -n --author=$email --url=https://$FQDN --timezone=America/New_York --cache=redis --session=database --queue=redis --redis-host=127.0.0.1 --redis-pass= --redis-port=6379
     php artisan p:environment:database --host=127.0.0.1 --port=3306 --database=panel --username=pterodactyl --password=$password
@@ -494,7 +494,7 @@ server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
     server_name '"$FQDN"';
-    
+
     root /var/www/pterodactyl/public;
     index index.php;
 
@@ -575,7 +575,7 @@ server {
     # allow larger file uploads and longer script runtimes
     client_max_body_size 100m;
     client_body_timeout 120s;
-    
+
     sendfile off;
     ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
@@ -680,7 +680,7 @@ install_wings() {
     else
         curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     fi
-    
+
     systemctl enable --now docker
     output "Installing the Pterodactyl wings..."
     mkdir -p /etc/pterodactyl
@@ -691,7 +691,7 @@ install_wings() {
     	curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     fi
     chmod u+x /usr/local/bin/wings
-    
+
       bash -c 'cat > /etc/systemd/system/wings.service' <<-'EOF'
 [Unit]
 Description=Pterodactyl Wings Daemon
@@ -764,7 +764,7 @@ install_phpmyadmin(){
 \$cfg['Servers'][\$i]['auth_type'] = 'cookie';
 \$cfg['Servers'][\$i]['user'] = 'root';
 \$cfg['Servers'][\$i]['password'] = '';
-\$cfg['Servers'][$i]['ssl'] = true;  
+\$cfg['Servers'][$i]['ssl'] = true;
 \$cfg['ForceSSL'] = true;
 /* End of servers configuration */
 \$cfg['blowfish_secret'] = '${BOWFISH}';
@@ -775,7 +775,7 @@ install_phpmyadmin(){
 \$cfg['CaptchaLoginPublicKey'] = '6LcJcjwUAAAAAO_Xqjrtj9wWufUpYRnK6BW8lnfn';
 \$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5';
 \$cfg['AuthLog'] = syslog
-?>    
+?>
 EOF
 	chmod 755 /etc/phpMyAdmin
 	chmod 644 /etc/phpMyAdmin/config.inc.php
@@ -795,7 +795,7 @@ EOF
 \$cfg['Servers'][\$i]['auth_type'] = 'cookie';
 \$cfg['Servers'][\$i]['user'] = 'root';
 \$cfg['Servers'][\$i]['password'] = '';
-\$cfg['Servers'][$i]['ssl'] = true;  
+\$cfg['Servers'][$i]['ssl'] = true;
 \$cfg['ForceSSL'] = true;
 /* End of servers configuration */
 \$cfg['blowfish_secret'] = '${BOWFISH}';
@@ -806,14 +806,14 @@ EOF
 \$cfg['CaptchaLoginPublicKey'] = '6LcJcjwUAAAAAO_Xqjrtj9wWufUpYRnK6BW8lnfn';
 \$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5';
 \$cfg['AuthLog'] = syslog
-?>    
+?>
 EOF
 	chmod 755 /etc/phpmyadmin
 	chmod 644 /etc/phpmyadmin/config.inc.php
    	chown -R www-data:www-data /var/www/pterodactyl
 	chown -R www-data:www-data /var/lib/phpmyadmin/temp
     fi
-    
+
     bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
 [DEFAULT]
 # Ban hosts for one hours:
@@ -837,7 +837,7 @@ ssl_certs(){
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install certbot
     fi
-    
+
     if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
         if  [ "$lsb_dist" =  "ubuntu" ] || [ "$lsb_dist" =  "debian" ]; then
             apt-get -y install python3-certbot-nginx
@@ -849,7 +849,7 @@ ssl_certs(){
 	setfacl -Rm u:mysql:rx /etc/letsencrypt
 	systemctl restart mariadb
     fi
-    
+
     if [ "$installoption" = "2" ]; then
 	certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
     fi
@@ -862,7 +862,7 @@ firewall(){
         apt -y install fail2ban
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install fail2ban
-    fi 
+    fi
     systemctl enable fail2ban
     bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
 [DEFAULT]
@@ -895,14 +895,14 @@ EOF
             ufw allow 2022
             ufw allow 3306
         fi
-        yes | ufw enable 
+        yes | ufw enable
     elif [ "$lsb_dist" =  "fedora" ] || [ "$lsb_dist" =  "centos" ] || [ "$lsb_dist" =  "rhel" ] || [ "$lsb_dist" =  "rocky" ] || [ "$lsb_dist" = "almalinux" ]; then
         dnf -y install firewalld
         systemctl enable firewalld
         systemctl start firewalld
         if [ "$installoption" = "1" ]; then
             firewall-cmd --add-service=http --permanent
-            firewall-cmd --add-service=https --permanent 
+            firewall-cmd --add-service=https --permanent
             firewall-cmd --add-service=mysql --permanent
         elif [ "$installoption" = "2" ]; then
             firewall-cmd --permanent --add-service=80/tcp
@@ -912,7 +912,7 @@ EOF
 	    firewall-cmd --zone=trusted --add-masquerade --permanent
         elif [ "$installoption" = "3" ]; then
             firewall-cmd --add-service=http --permanent
-            firewall-cmd --add-service=https --permanent 
+            firewall-cmd --add-service=https --permanent
             firewall-cmd --permanent --add-port=2022/tcp
             firewall-cmd --permanent --add-port=8080/tcp
             firewall-cmd --permanent --add-service=mysql
@@ -920,13 +920,6 @@ EOF
 	    firewall-cmd --zone=trusted --add-masquerade --permanent
         fi
     fi
-}
-
-harden_linux(){
-    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/modprobe.d/30_security-misc.conf >> /etc/modprobe.d/30_security-misc.conf
-    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_security-misc.conf >> /etc/sysctl.d/30_security-misc.conf
-    sed -i 's/kernel.yama.ptrace_scope=2/kernel.yama.ptrace_scope=3/g' /etc/sysctl.d/30_security-misc.conf
-    curl https://raw.githubusercontent.com/Whonix/security-misc/master/etc/sysctl.d/30_silent-kernel-printk.conf >> /etc/sysctl.d/30_silent-kernel-printk.conf
 }
 
 database_host_reset(){
@@ -979,28 +972,25 @@ broadcast_database(){
 #Execution
 preflight
 install_options
-case $installoption in 
+case $installoption in
     1)  repositories_setup
         required_infos
         firewall
-	harden_linux
         setup_pterodactyl
         broadcast
-	broadcast_database
+	    broadcast_database
         ;;
     2)  repositories_setup
         required_infos
         firewall
-	harden_linux
         ssl_certs
         install_wings
         broadcast
-	broadcast_database
+	    broadcast_database
         ;;
     3)  repositories_setup
         required_infos
         firewall
-	harden_linux
         setup_pterodactyl
         install_wings
         broadcast
@@ -1010,7 +1000,7 @@ case $installoption in
     5)  upgrade_wings
         ;;
     6)  upgrade_pterodactyl
-	upgrade_wings
+	    upgrade_wings
 	;;
     7)  install_phpmyadmin
         ;;
