@@ -69,9 +69,8 @@ install_options(){
     output "[4] Upgrade panel to ${PANEL}."
     output "[5] Upgrade wings to ${WINGS}."
     output "[6] Upgrade panel to ${PANEL} and daemon to ${WINGS}."
-    output "[7] Install phpMyAdmin (only use this after you have installed the panel)."
-    output "[8] Emergency MariaDB root password reset."
-    output "[9] Emergency database host information reset."
+    output "[7] Emergency MariaDB root password reset."
+    output "[8] Emergency database host information reset."
     read -r choice
     case $choice in
         1 ) installoption=1
@@ -92,13 +91,10 @@ install_options(){
         6 ) installoption=6
             output "You have selected to upgrade panel to ${PANEL} and daemon to ${DAEMON}."
             ;;
-        7 ) installoption=7
-            output "You have selected to install phpMyAdmin."
-            ;;
-        8 ) installoption=8
+        7 ) installoption=8
             output "You have selected MariaDB root password reset."
             ;;
-        9 ) installoption=9
+        8 ) installoption=9
             output "You have selected Database Host information reset."
             ;;
         * ) output "You did not enter a valid selection."
@@ -136,9 +132,6 @@ required_infos() {
 install_dependencies(){
     output "Installing dependencies..."
 
-    #Adding upstream repo because RHEL's version is extremely oudated.
-    curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash
-
     if [ "$lsb_dist" != "rhel" ]; then
         subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
         rpm --import https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/epel9.asc
@@ -155,15 +148,44 @@ install_dependencies(){
     rpm --import https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/remi9.asc
     dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm
 
-    dnf install -y nginx redis mariadb-server composer tuned
-    systemctl enable --now nginx
-    systemctl enable --now redis
-    systemctl enable --now mariadb
-    tune-adm profile latency-performance
-
-    dnf module install php:remi-8.1/common
+    dnf module install -y php:remi-8.1/common
     dnf install -y php-bcmath php-gd php-mysqlnd php-pdo php-sodium
     systemctl enable --now php-fpm
+
+    dnf module install -y composer:2/common
+
+    dnf module install -y redis:remi-7.0/common
+    systemctl enable --now redis
+
+    #Adding upstream repo because RHEL's version is extremely oudated.
+    curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash
+    dnf install -y nginx mariadb-server
+    systemctl enable --now mariadb
+
+    cat > /etc/yum.repos.d/nginx.repo <<- 'EOF'
+[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+EOF
+    dnf config-manager --enable nginx-mainline
+    dnf install -y nginx
+    systemctl enable --now nginx
+
+
+    dnf install -y tuned
+    tune-adm profile latency-performance
 }
 
 install_pterodactyl() {
@@ -175,7 +197,7 @@ install_pterodactyl() {
     Q1="CREATE DATABASE IF NOT EXISTS panel;"
     Q2="SET old_passwords=0;"
     Q3="GRANT ALL ON panel.* TO 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$password';"
-    Q4="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, CREATE ROUTINE, ALTER ROUTINE, EXECUTE, PROCESS, RELOAD, LOCK TABLES, CREATE USER ON *.* TO 'admin'@'$SERVER_IP' IDENTIFIED BY '$adminpassword' WITH GRANT OPTION;"
+    Q4="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, RELOAD, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, CREATE VIEW, EVENT, TRIGGER, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EXECUTE ON *.* TO 'admin'@'$SERVER_IP' IDENTIFIED BY '$adminpassword' WITH GRANT OPTION;"
     Q5="SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$rootpassword');"
     Q6="DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
     Q7="DELETE FROM mysql.user WHERE User='';"
@@ -309,17 +331,19 @@ EOF
 
     output "Configuring Nginx web server..."
 
-echo '
+    rm -f /etc/nginx/conf.d/default.conf
+
+    cat > /etc/nginx/conf.d/pterodactyl.conf <<- 'EOF'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name '"$FQDN"';
+    server_name FQDN;
     return 301 https://$server_name$request_uri;
 }
 server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
-    server_name '"$FQDN"';
+    server_name FQDN;
     root /var/www/pterodactyl/public;
     index index.php;
 
@@ -331,8 +355,8 @@ server {
     client_body_timeout 120s;
 
     sendfile off;
-    ssl_certificate /etc/letsencrypt/live/'"$FQDN"'/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/'"$FQDN"'/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/FQDN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/FQDN/privkey.pem;
     ssl_session_cache shared:SSL:10m;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256";
@@ -374,7 +398,10 @@ server {
     location ~ /\.ht {
         deny all;
     }
-}' | tee /etc/nginx/conf.d/pterodactyl.conf >/dev/null 2>&1
+}
+EOF
+
+    sed -i "s/FQDN/${FQDN}/g" /etc/nginx/conf.d/pterodactyl.conf
 
     service nginx restart
     restorecon -R /var/www/pterodactyl
@@ -440,80 +467,6 @@ upgrade_wings(){
     output "Your wings have been updated to version ${WINGS}."
 }
 
-install_phpmyadmin(){
-    output "Installing phpMyAdmin..."
-    dnf -y install phpmyadmin
-    ln -s /usr/share/phpMyAdmin /var/www/pterodactyl/public/phpmyadmin
-    cd /var/www/pterodactyl/public/phpmyadmin || exit
-    SERVER_IP=$(dig +short myip.opendns.com @resolver1.opendns.com -4)
-    BOWFISH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 34 | head -n 1`
-    bash -c 'cat > /etc/phpMyAdmin/config.inc.php' <<EOF
-<?php
-/* Servers configuration */
-\$i = 0;
-/* Server: MariaDB [1] */
-\$i++;
-\$cfg['Servers'][\$i]['verbose'] = 'MariaDB';
-\$cfg['Servers'][\$i]['host'] = '${SERVER_IP}';
-\$cfg['Servers'][\$i]['port'] = '3306';
-\$cfg['Servers'][\$i]['socket'] = '';
-\$cfg['Servers'][\$i]['auth_type'] = 'cookie';
-\$cfg['Servers'][\$i]['user'] = 'root';
-\$cfg['Servers'][\$i]['password'] = '';
-\$cfg['Servers'][$i]['ssl'] = true;
-\$cfg['ForceSSL'] = true;
-/* End of servers configuration */
-\$cfg['blowfish_secret'] = '${BOWFISH}';
-\$cfg['DefaultLang'] = 'en';
-\$cfg['ServerDefault'] = 1;
-\$cfg['UploadDir'] = '/var/lib/phpMyAdmin/upload';
-\$cfg['SaveDir'] = '/var/lib/phpMyAdmin/save';
-\$cfg['CaptchaLoginPublicKey'] = '6LcJcjwUAAAAAO_Xqjrtj9wWufUpYRnK6BW8lnfn';
-\$cfg['CaptchaLoginPrivateKey'] = '6LcJcjwUAAAAALOcDJqAEYKTDhwELCkzUkNDQ0J5';
-\$cfg['AuthLog'] = syslog
-?>
-EOF
-    chmod 755 /etc/phpMyAdmin
-    chmod 644 /etc/phpMyAdmin/config.inc.php
-       chown -R nginx:nginx /var/www/pterodactyl
-    chown -R nginx:nginx /var/lib/phpMyAdmin/temp
-
-    bash -c 'cat > /etc/fail2ban/jail.local' <<-'EOF'
-[DEFAULT]
-# Ban hosts for one hours:
-bantime = 3600
-# Override /etc/fail2ban/jail.d/00-firewalld.conf:
-banaction = iptables-multiport
-[sshd]
-enabled = true
-[phpmyadmin-syslog]
-enabled = true
-maxentry = 15
-EOF
-    service fail2ban restart
-}
-
-ssl_certs(){
-    output "Installing Let's Encrypt and creating an SSL certificate..."
-    dnf -y install certbot
-
-    if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
-        dnf -y install python3-certbot-nginx
-        certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN"
-        setfacl -Rdm u:mysql:rx /etc/letsencrypt
-        setfacl -Rm u:mysql:rx /etc/letsencrypt
-        sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/my.cnf.d/server.cnf
-        sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/my.cnf.d/server.cnf
-        sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/my.cnf.d/server.cnf
-        systemctl restart mariadb
-    fi
-
-    if [ "$installoption" = "2" ]; then
-    certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
-    fi
-    systemctl enable --now certbot-renew.timer
-}
-
 firewall(){
     if [ "$installoption" = "2" ]; then
         if [ "$lsb_dist" != "rhel" ]; then
@@ -565,6 +518,50 @@ EOF
     firewall-cmd --reload
 }
 
+ssl_certs(){
+    output "Installing Let's Encrypt and creating an SSL certificate..."
+    dnf -y install certbot
+
+    if [ "$installoption" = "1" ] || [ "$installoption" = "3" ]; then
+        dnf -y install python3-certbot-nginx
+        certbot --nginx --redirect --no-eff-email --email "$email" --agree-tos -d "$FQDN"
+        setfacl -Rdm u:mysql:rx /etc/letsencrypt
+        setfacl -Rm u:mysql:rx /etc/letsencrypt
+        sed -i '/\[mysqld\]/a ssl-key=/etc/letsencrypt/live/'"${FQDN}"'/privkey.pem' /etc/my.cnf.d/server.cnf
+        sed -i '/\[mysqld\]/a ssl-ca=/etc/letsencrypt/live/'"${FQDN}"'/chain.pem' /etc/my.cnf.d/server.cnf
+        sed -i '/\[mysqld\]/a ssl-cert=/etc/letsencrypt/live/'"${FQDN}"'/cert.pem' /etc/my.cnf.d/server.cnf
+        systemctl restart mariadb
+    fi
+
+    if [ "$installoption" = "2" ]; then
+    certbot certonly --standalone --no-eff-email --email "$email" --agree-tos -d "$FQDN" --non-interactive
+    fi
+    systemctl enable --now certbot-renew.timer
+}
+
+linux_hardening(){
+    curl https://raw.githubusercontent.com/Kicksecure/security-misc/master/etc/modprobe.d/30_security-misc.conf -o /etc/modprobe.d/30_security-misc.conf
+    curl https://raw.githubusercontent.com/Kicksecure/security-misc/master/etc/sysctl.d/30_security-misc.conf -o /etc/sysctl.d/30_security-misc.conf
+    sed -i 's/kernel.yama.ptrace_scope=2/kernel.yama.ptrace_scope=3/g' /etc/sysctl.d/30_security-misc.conf
+    curl https://raw.githubusercontent.com/Kicksecure/security-misc/master/etc/sysctl.d/30_silent-kernel-printk.conf -o /etc/sysctl.d/30_silent-kernel-printk.conf
+    sysctl -p
+
+    curl https://raw.githubusercontent.com/GrapheneOS/infrastructure/main/chrony.conf -o /etc/chrony.conf
+    systemctl restart chronyd
+
+    mkdir -p /etc/systemd/system/NetworkManager.service.d
+    curl https://gitlab.com/divested/brace/-/raw/master/brace/usr/lib/systemd/system/NetworkManager.service.d/99-brace.conf -o /etc/systemd/system/NetworkManager.service.d/99-brace.conf
+    systemctl restart NetworkManager
+
+    mkdir -p /etc/systemd/system/irqbalance.service.d
+    curl https://gitlab.com/divested/brace/-/raw/master/brace/usr/lib/systemd/system/irqbalance.service.d/99-brace.conf -o /etc/systemd/system/irqbalance.service.d/99-brace.conf
+    systemctl restart irqbalance
+
+    mkdir -p /etc/systemd/system/sshd.service.d
+    curl https://raw.githubusercontent.com/GrapheneOS/infrastructure/main/systemd/system/sshd.service.d/limits.conf -o /etc/systemd/system/sshd.service.d/limits.conf
+    systemctl restart sshd
+}
+
 database_host_reset(){
     adminpassword=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1`
     Q0="SET old_passwords=0;"
@@ -610,6 +607,7 @@ preflight
 install_options
 case $installoption in
     1)  required_infos
+        linux_hardening
         install_dependencies
         install_pterodactyl
         firewall
@@ -619,6 +617,7 @@ case $installoption in
         print_info_database
         ;;
     2)  required_infos
+        linux_hardening
         firewall
         ssl_certs
         install_wings
@@ -626,6 +625,7 @@ case $installoption in
         print_info_database
         ;;
     3)  required_infos
+        linux_hardening
         install_dependencies
         install_pterodactyl
         firewall
@@ -641,10 +641,8 @@ case $installoption in
     6)  upgrade_pterodactyl
         upgrade_wings
         ;;
-    7)  install_phpmyadmin
+    7)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
         ;;
-    8)  curl -sSL https://raw.githubusercontent.com/tommytran732/MariaDB-Root-Password-Reset/master/mariadb-104.sh | sudo bash
-        ;;
-    9)  database_host_reset
+    8)  database_host_reset
         ;;
 esac
