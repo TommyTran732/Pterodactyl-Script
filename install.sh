@@ -457,13 +457,14 @@ EOF
 
 
 upgrade_wings(){
+    systemctl stop wings
     if [ ${WINGS} = "latest" ]; then
         curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64
     else
         curl -L -o /usr/local/bin/wings https://github.com/pterodactyl/wings/releases/download/${WINGS}/wings_linux_amd64
     fi
     chmod u+x /usr/local/bin/wings
-    systemctl restart wings
+    systemctl start wings
     output "Your wings have been updated to version ${WINGS}."
 }
 
