@@ -449,6 +449,35 @@ WantedBy=multi-user.target
 EOF
 
     systemctl enable wings
+
+    output "Adding Fail2ban rules for Wings SFTP"
+    echo '[wings]
+enabled = true
+port    = 2022
+logpath = /var/log/pterodactyl/wings.log
+maxretry = 5
+findtime = 3600
+bantime = -1
+backend = systemd' | tee -a /etc/fail2ban/jail.local
+
+    bash -c 'cat > /etc/fail2ban/conf.d/wings.conf' <<-'EOF'
+# Fail2Ban filter for wings (Pterodactyl daemon)
+#
+#
+#
+# "WARN: [Sep  8 18:51:00.414] failed to validate user credentials (invalid format) ip=<HOST>:51782 subsystem=sftp username=logout"
+#
+[INCLUDES]
+before = common.conf
+[Definition]
+_daemon = wings
+failregex = failed to validate user credentials \([^\)]+\) ip=<HOST>:.* subsystem=sftp username=.*$
+ignoreregex =
+[Init]
+datepattern = \[%%b %%d %%H:%%M:%%S.%%f\]
+EOF
+    systemctl restart fail2ban
+
     output "Wings ${WINGS} has now been installed on your system."
     output "You should go to your panel and configure the node now."
     output "If you get `bash: wings: command not found` when running the auto deployment command, replace `wings` with `/usr/local/bin/wings` and it will work."

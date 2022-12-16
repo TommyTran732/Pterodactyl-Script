@@ -15,6 +15,7 @@ Visit my Matrix group: https://matrix.to/#/#tommy:arcticfoxes.net
 - Daemon installation
 - Daemon upgrade
 - Basic firewall configuration
+- Fail2ban for SSH and Wings
 - Automatic LetsEncrypt certificate generation
 - MariaDB SSL
 - HSTS enabled
@@ -26,9 +27,7 @@ Visit my Matrix group: https://matrix.to/#/#tommy:arcticfoxes.net
 Currently, PHP, Composer, and Redis are installed from Remi's modular repository. As such, they will only get minor version updates with `dnf upgrade` (PHP 8.1.0 -> PHP 8.1.x for example). For updates between major versions of these dependencies, use `dnf module` to change the appstream for these dependencies.<br />
 
 ```bash
-dnf module reset php:remi-8.0
-dnf module install php:remi-8.1
-dnf distro-sync
+dnf module switch-to php:remi-8.1
 ```
 
 NGINX, MariaDB, and Docker-CE uses upstream repositories and will get the latest version available on there automatically.
