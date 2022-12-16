@@ -449,6 +449,51 @@ WantedBy=multi-user.target
 EOF
 
     systemctl enable wings
+    
+    output "Adding Fail2ban rules for Wings SFTP"
+    echo '[wings]
+enabled = true
+port    = 2022
+logpath = /var/log/pterodactyl/wings.log
+maxretry = 5
+findtime = 3600
+bantime = -1
+backend = systemd' | tee -a /etc/fail2ban/jail.local
+
+    bash -c 'cat > /etc/fail2ban/conf.d/wings.conf' <<-'EOF'
+# Fail2Ban filter for wings (Pterodactyl daemon)
+#
+#
+#
+# "WARN: [Sep  8 18:51:00.414] failed to validate user credentials (invalid format) ip=<HOST>:51782 subsystem=sftp username=logout"
+#
+[INCLUDES]
+before = common.conf
+[Definition]
+_daemon = wings
+failregex = failed to validate user credentials \([^\)]+\) ip=<HOST>:.* subsystem=sftp username=.*$
+ignoreregex =
+[Init]
+datepattern = \[%%b %%d %%H:%%M:%%S.%%f\]
+```
+
+### Step 5: Enable Fail2ban service
+
+`systemctl enable fail2ban`
+
+
+#### Notes:  
+The rules applied to wings are fairly strict so if you feel like you need to adjust them, the settings are as follows  
+Max retry is the number of failed attempts someone can do within the time defined in "findtime" before they are banned 
+
+example: maxretry = 5 with findtime = 3600 with bantime = -1  
+
+this will allow 5 failed login attempts within 3600 seconds (1 hour) before permanently banning someone  
+There are different time modifiers you can use, Most people will be using dd (day) mm (month) yy (year)  
+I do suggest you read up on fail2ban docs, you can get highly customised protection from custom configuration  
+https://manpages.debian.org/testing/fail2ban/jail.conf.5.en.html#TIME_ABBREVIATION_FORMAT    
+EOF
+    
     output "Wings ${WINGS} has now been installed on your system."
     output "You should go to your panel and configure the node now."
     output "If you get `bash: wings: command not found` when running the auto deployment command, replace `wings` with `/usr/local/bin/wings` and it will work."
