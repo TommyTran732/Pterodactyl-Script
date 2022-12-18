@@ -132,11 +132,11 @@ required_infos() {
 install_dependencies(){
     output "Installing dependencies..."
 
-    if [ "$lsb_dist" != "rhel" ]; then
+    if [ "$lsb_dist" == "rhel" ]; then
         subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
         rpm --import https://raw.githubusercontent.com/tommytran732/Pterodactyl-Script/master/epel9.asc
         dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-    elif [ "$lsb_dist" != "centos" ]; then
+    elif [ "$lsb_dist" == "centos" ]; then
         dnf config-manager --set-enabled crb
         dnf install -y epel-release epel-next-release
     else
