@@ -36,17 +36,17 @@ preflight(){
         fi
     elif [ "$lsb_dist" = "centos" ]; then
         if [ "$dist_version" != "9" ]; then
-            output "Unsupported CentOS version. Only CentOS Stream 8 is supported."
+            output "Unsupported CentOS version. Only CentOS Stream 9 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "rocky" ]; then
         if [ "$dist_version" != "9" ]; then
-            output "Unsupported Rocky Linux version. Only Rocky Linux 8 is supported."
+            output "Unsupported Rocky Linux version. Only Rocky Linux 9 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" = "almalinux" ]; then
         if [ "$dist_version" != "9" ]; then
-            output "Unsupported AlmaLinux version. Only AlmaLinux 8 is supported."
+            output "Unsupported AlmaLinux version. Only AlmaLinux 9 is supported."
             exit 2
         fi
     elif [ "$lsb_dist" != "rhel" ] && [ "$lsb_dist" != "centos" ] && [ "$lsb_dist" != "rocky" ] && [ "$lsb_dist" != "almalinux" ]; then
