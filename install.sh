@@ -413,7 +413,7 @@ EOF
 install_wings() {
     output "Installing Docker"
     dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    dnf -y install docker-ce
+    dnf -y --allowerasing install docker-ce
 
     systemctl enable --now docker
     output "Installing the Pterodactyl wings..."
