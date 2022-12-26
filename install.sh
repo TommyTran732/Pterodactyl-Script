@@ -186,6 +186,9 @@ EOF
 
     dnf install -y tuned
     tune-adm profile latency-performance
+
+    systemctl disable --now sshd.service
+    systemctl enable --now sshd.socket
 }
 
 install_pterodactyl() {
@@ -372,7 +375,6 @@ server {
     add_header Cross-Origin-Resource-Policy same-origin;
     add_header Cross-Origin-Opener-Policy same-origin;
     add_header X-XSS-Protection "0" always;
-    add_header Expect-CT "enforce, max-age=63072000";
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
