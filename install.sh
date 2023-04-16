@@ -179,6 +179,7 @@ enabled=0
 gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true
 EOF
+    dnf config-manager --disable nginx-stable
     dnf config-manager --enable nginx-mainline
     dnf install -y nginx
     systemctl enable --now nginx
