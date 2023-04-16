@@ -154,7 +154,7 @@ install_dependencies(){
 
     dnf module install -y composer:2/common
 
-    dnf module install -y redis:remi-7.0/common
+    dnf module install -y redis:remi-7.2/common
     systemctl enable --now redis
 
     #Adding upstream repo because RHEL's version is extremely oudated.
