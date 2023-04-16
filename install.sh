@@ -527,7 +527,7 @@ EOF
     output "Configuring your firewall..."
     dnf -y install firewalld
     systemctl enable --now firewalld
-    firewall-cmd --remove-service=cockpit
+    firewall-cmd --permanent --remove-service=cockpit
     if [ "$installoption" = "1" ]; then
         firewall-cmd --permanent --add-service=http
         firewall-cmd --permanent --add-service=https
