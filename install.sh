@@ -159,7 +159,7 @@ install_dependencies(){
 
     #Adding upstream repo because RHEL's version is extremely oudated.
     curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash
-    dnf install -y nginx mariadb-server
+    dnf install -y mariadb-server
     systemctl enable --now mariadb
 
     cat > /etc/yum.repos.d/nginx.repo <<- 'EOF'
