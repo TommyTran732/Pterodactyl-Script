@@ -328,6 +328,8 @@ pm.max_children = 9
 pm.process_idle_timeout = 10s
 pm.max_requests = 200
 EOF
+
+    chgrp -R nginx /var/lib/php/{opcache,session,wsdlcache}
     systemctl restart php-fpm
 
     output "Configuring Nginx web server..."
